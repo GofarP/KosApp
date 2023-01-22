@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter.ItemOnClick
 import com.example.kosapp.Model.Kos
-import com.example.kosapp.databinding.FragmentAllKosBinding
+import com.example.kosapp.databinding.FragmentSemuaKosBinding
 
 
-class AllKosFragment : Fragment(), ItemOnClick {
+class SemuaKosFragment : Fragment(), ItemOnClick {
 
-    private lateinit var binding:FragmentAllKosBinding
+    private lateinit var binding:FragmentSemuaKosBinding
     private  var kosArraList=ArrayList<Kos>()
     private var homeKosAdapter:HomeKosAdapter?=null
 
@@ -24,7 +24,7 @@ class AllKosFragment : Fragment(), ItemOnClick {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding=FragmentAllKosBinding.inflate(inflater,container,false)
+        binding=FragmentSemuaKosBinding.inflate(inflater,container,false)
 
         return binding.root
     }

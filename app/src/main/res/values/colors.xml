@@ -11,4 +11,5 @@
 <!--    New Color-->
     <color name="main_color">#1566E0</color>
     <color name="nav_unselected_color">#E2E2E2</color>
+    <color name="green_ok">#0ac958</color>
 </resources>

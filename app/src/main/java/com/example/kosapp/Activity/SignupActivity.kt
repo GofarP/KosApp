@@ -10,17 +10,29 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import com.example.kosapp.Model.Akun
+import com.example.kosapp.Model.Pengguna
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivitySignupBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class SignupActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignupBinding
 
     private var uri: Uri?=null
-    private lateinit var akun:Akun
+    private lateinit var pengguna:Pengguna
+    private  var storage = FirebaseStorage.getInstance()
+    private var auth=FirebaseAuth.getInstance()
+    val firestoreDatabase= Firebase.firestore
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +47,23 @@ class SignupActivity : AppCompatActivity() {
         setSpinner()
 
         binding.btnsignup.setOnClickListener{
+
             if(!gagalValidasi())
             {
-                signUp()
+                auth.fetchSignInMethodsForEmail(binding.txtemail.text.toString())
+                    .addOnCompleteListener {task->
+                        val belumTerdaftar=task.result.signInMethods?.isEmpty()
+
+                        if(belumTerdaftar == true)
+                        {
+                            signUp()
+                        }
+
+                        else
+                        {
+                            Toast.makeText(this@SignupActivity, "Email ini sudah digunakan", Toast.LENGTH_SHORT).show()
+                        }
+                    }
             }
 
             else
@@ -124,20 +150,33 @@ class SignupActivity : AppCompatActivity() {
         val email=binding.txtemail.text.toString()
         val noTelp=binding.txtnoTelp.toString()
         val jenisKelamin=binding.spinnerjk.selectedItem.toString()
-        val foto="foto"
         val password=binding.txtpassword.text.toString()
+        val formatter=SimpleDateFormat("dd-Mm-yyyy hh:mm:ss")
+        val imgName="profileImages/${formatter.format(Date())}${Random().nextInt(1000)}"
 
-        akun=Akun(
-            id = "random",
+        pengguna=Pengguna(
             username = username,
             email = email,
             noTelp = noTelp,
             jenisKelamin=jenisKelamin,
-            foto=foto,
-            password=password
+            foto=imgName
         )
 
-        Toast.makeText(this@SignupActivity, "Mendaftar", Toast.LENGTH_SHORT).show()
+        auth.createUserWithEmailAndPassword(email,password)
+
+        firestoreDatabase.collection("pengguna")
+            .add(pengguna)
+            .addOnSuccessListener {
+
+                storage.reference.child(imgName).putFile(uri!!)
+
+                Toast.makeText(this@SignupActivity, "Sukses Membuat Akun", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this@SignupActivity, SigninActivity::class.java))
+            }
+            .addOnFailureListener {
+                Toast.makeText(this@SignupActivity, it.localizedMessage, Toast.LENGTH_SHORT).show()
+            }
+
 
     }
 
@@ -168,7 +207,6 @@ class SignupActivity : AppCompatActivity() {
         }
 
     }
-
 
 
 }

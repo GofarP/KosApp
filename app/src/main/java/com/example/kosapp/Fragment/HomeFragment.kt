@@ -16,6 +16,8 @@ import com.example.kosapp.Helper.Helper
 import com.example.kosapp.R
 import com.example.kosapp.databinding.FragmentHomeBinding
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class HomeFragment : Fragment() {
@@ -33,12 +35,16 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        ambilNamaPengguna()
+
         binding.viewPager.adapter=HomePagerAdapter(requireActivity())
         TabLayoutMediator(binding.tabLayout,binding.viewPager){tab, index->
             tab.text=when(index){
                 0->{"Semua"}
                 1->{"Pria"}
                 2->{"Wanita"}
+                3->{"Campur"}
+
 
                 else->{throw Resources.NotFoundException("Posisi Tidak DItemukan")}
             }
@@ -51,6 +57,23 @@ class HomeFragment : Fragment() {
         binding.ivmessage.setOnClickListener {
             startActivity(Intent(activity,MenuChatActivity::class.java))
         }
+
+    }
+
+    fun ambilNamaPengguna()
+    {
+        val email=FirebaseAuth.getInstance().currentUser?.email
+        FirebaseFirestore.getInstance()
+            .collection("pengguna")
+            .whereEqualTo("email",email)
+            .get()
+            .addOnSuccessListener {result->
+                binding.lblnamapengguna.text=" Halo ${result.documents[0].data?.get("username").toString()}"
+
+            }
+            .addOnFailureListener {
+                Toast.makeText(activity, "Gagal Mengambil Nama", Toast.LENGTH_SHORT).show()
+            }
 
     }
 }

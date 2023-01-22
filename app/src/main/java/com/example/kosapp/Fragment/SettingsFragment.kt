@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kosapp.Adapter.RecyclerviewAdapter.SettingsAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.SettingsAdapter.ItemOnClick
 import com.example.kosapp.Activity.ProfileActivity
+import com.example.kosapp.Activity.SigninActivity
 import com.example.kosapp.databinding.FragmentSettingsBinding
+import com.google.firebase.auth.FirebaseAuth
 
 
 class SettingsFragment : Fragment(), ItemOnClick {
@@ -52,7 +54,10 @@ class SettingsFragment : Fragment(), ItemOnClick {
             }
 
             "Logout"->{
-                Toast.makeText(activity, "Logging Out", Toast.LENGTH_SHORT).show()
+                FirebaseAuth.getInstance().signOut()
+                Toast.makeText(activity, "Sukses Logout", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(activity,SigninActivity::class.java))
+                activity?.finish()
             }
         }
     }

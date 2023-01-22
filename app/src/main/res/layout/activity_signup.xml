@@ -108,6 +108,8 @@
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="20dp"
                     style="@style/EditText.Primary"
+                    android:padding="10dp"
+                    android:textColor="@color/main_color"
                     android:background="@drawable/edittext_outline"
                     android:hint="No.Telp"
                     />
@@ -130,7 +132,7 @@
                     android:layout_marginRight="20dp"
                     android:background="@drawable/edittext_outline"
                     android:hint="@string/password_anda"
-                    android:inputType="textEmailAddress"
+                    android:inputType="textPassword"
                     android:padding="10dp"
                     android:textColor="@color/main_color"
                     android:textSize="15dp" />
@@ -145,7 +147,7 @@
                     android:layout_marginRight="20dp"
                     android:background="@drawable/edittext_outline"
                     android:hint="@string/konfirmasi_password"
-                    android:inputType="textEmailAddress"
+                    android:inputType="textPassword"
                     android:padding="10dp"
                     android:textColor="@color/main_color"
                     android:textSize="15dp" />
@@ -159,7 +161,7 @@
                     android:layout_marginTop="30dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginBottom="30dp"
-                    android:text="Sign In"
+                    android:text="Sign Up"
                     android:textColor="@color/white" />
 
 

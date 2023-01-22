@@ -29,16 +29,18 @@
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_chat.xml" value="0.25" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_chat_activiity.xml" value="0.1675929884566054" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_detail_kos_saya.xml" value="0.25" />
+        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_detail_sewa_kos.xml" value="0.18" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_kos_saya.xml" value="0.1675929884566054" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_map.xml" value="0.33" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_profile.xml" value="0.25" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_signin.xml" value="0.22" />
-        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_signup.xml" value="0.18" />
+        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_signup.xml" value="0.10346301838392476" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_splash.xml" value="0.20416666666666666" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_tambah_kos.xml" value="0.25" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/fragment_all_kos.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/fragment_blank.xml" value="0.1" />
+        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/fragment_campur_kos.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/fragment_menyewa.xml" value="0.15604959384352288" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/fragment_my_kos.xml" value="0.1675929884566054" />

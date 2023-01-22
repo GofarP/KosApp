@@ -3,28 +3,29 @@ package com.example.kosapp.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Message
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import com.example.kosapp.Helper.Helper
-import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivitySigninBinding
-import com.example.kosapp.databinding.ActivitySignupBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class SigninActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySigninBinding
+    private  var auth= FirebaseAuth.getInstance()
+    private var user=FirebaseAuth.getInstance().currentUser
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivitySigninBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         Helper().setStatusBarColor(this@SigninActivity)
+
+        if(user!=null)
+        {
+            startActivity(Intent(this@SigninActivity, MainActivity::class.java))
+            finish()
+        }
 
 
         binding.btnsignin.setOnClickListener{
@@ -35,8 +36,7 @@ class SigninActivity : AppCompatActivity() {
 
             else
             {
-                startActivity(Intent(this@SigninActivity, MainActivity::class.java))
-                finish()
+                signIn()
             }
 
         }
@@ -65,8 +65,25 @@ class SigninActivity : AppCompatActivity() {
 
 
 
-    private fun signin()
+    private fun signIn()
     {
+        val email=binding.txtemail.text.trim().toString()
+        val password=binding.txtpassword.text.trim().toString()
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
+            result->
+            
+            if(result.isSuccessful)
+            {
+                startActivity(Intent(this@SigninActivity, MainActivity::class.java))
+                finish()
+            }
+
+            else
+            {
+                Toast.makeText(this@SigninActivity, "Gagal Login", Toast.LENGTH_SHORT).show()
+            }
+
+        }
 
     }
 
