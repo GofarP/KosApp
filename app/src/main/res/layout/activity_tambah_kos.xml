@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:mapbox="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activity.TambahKosActivity"
+    android:background="@color/main_color"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_color"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/tambah_kos"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/background_content_bottom"
+        >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+
+                    <EditText
+                        android:id="@+id/txtnamakos"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="70dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:hint="Nama Kos"
+                        android:padding="10dp"
+                        style="@style/EditText.Primary"
+                        android:background="@drawable/edittext_outline"
+
+                        />
+
+                    <EditText
+                        android:id="@+id/txtalamatkos"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:hint="@string/alamat_kos"
+                        android:padding="10dp"
+                        style="@style/EditText.Primary"
+                        android:background="@drawable/edittext_outline"
+                        />
+
+                    <Spinner
+                        android:id="@+id/spnjeniskos"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="30dp"
+                        />
+
+                    <Spinner
+                        android:id="@+id/spnjenisbayar"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginRight="30dp"
+                        />
+
+                    <EditText
+                        android:id="@+id/txtharga"
+                        android:inputType="number"
+                        android:hint="@string/harga_kos"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:padding="10dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        style="@style/EditText.Primary"
+                        android:background="@drawable/edittext_outline"
+                        />
+
+                <EditText
+                    android:id="@+id/txtfasilitas"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:background="@drawable/textmultiline_oval"
+                    android:layout_marginTop="30dp"
+                    android:inputType="text|textMultiLine"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:hint="Fasilitas Kos"
+                    />
+
+                <EditText
+                    android:id="@+id/txtdeskripsi"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:background="@drawable/textmultiline_oval"
+                    android:layout_marginTop="30dp"
+                    android:inputType="text|textMultiLine"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:hint="Deskripsi Kos (Peraturan Dll)"
+                    />
+
+                <com.makeramen.roundedimageview.RoundedImageView
+
+                    android:id="@+id/ivthumbnailkos"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    app:riv_corner_radius="20dp"
+                    app:riv_border_width="2dp"
+                    android:scaleType="fitXY"
+                    app:riv_border_color="@color/main_color"
+                    android:layout_marginTop="30dp"
+                    android:src="@drawable/placeholder_thumbnail_kos"
+                    android:layout_gravity="center"
+                    />
+
+                <com.denzcoskun.imageslider.ImageSlider
+                    android:id="@+id/sliderupload"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginTop="30dp"
+                    app:iss_placeholder="@drawable/placeholder_thumbnail_kos"
+                    android:background="@drawable/slideview_border"
+                    >
+
+                    <Button
+                        android:id="@+id/btnaddslideimage"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:text="+"
+                        android:textColor="@color/white"
+                        android:layout_alignParentEnd="true"
+                        android:background="@drawable/button_background_round"
+                        />
+                </com.denzcoskun.imageslider.ImageSlider>
+
+
+
+                <com.mapbox.mapboxsdk.maps.MapView
+                    android:id="@+id/mapviewtambahkos"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginBottom="30dp"
+                    mapbox:mapbox_cameraTargetLat="0.917535"
+                    mapbox:mapbox_cameraTargetLng="104.446795"
+                    mapbox:mapbox_cameraZoom="12"
+                    mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
+                    />
+
+                <Button
+                    android:id="@+id/btntambah"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="30dp"
+                    android:text="Tambah Kos"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_background"
+                    />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</LinearLayout>

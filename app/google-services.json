@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "46178249556",
+    "project_id": "kosapp-ddc24",
+    "storage_bucket": "kosapp-ddc24.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:46178249556:android:5c2afba8c06b4adeebb6c1",
+        "android_client_info": {
+          "package_name": "com.example.kosapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "46178249556-fqm5t2mmokb07unald6hkfckad5ll4nq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9_YKfj1nudRzx9jaJiK-6Mcgiams-m9k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "46178249556-fqm5t2mmokb07unald6hkfckad5ll4nq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
