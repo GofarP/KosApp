@@ -24,10 +24,9 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="70dp"
                 android:layout_marginRight="3dp"
-                android:textColor="@color/white"
-                android:src="@drawable/ic_help"
                 android:background="@drawable/button_background_round"
-                />
+                android:src="@drawable/ic_help"
+                android:textColor="@color/white" />
 
         </RelativeLayout>
 

@@ -43,27 +43,29 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/main_color"
         android:layout_alignParentBottom="true"
-        >
+        android:background="@color/main_color">
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/btncancel"
+            style="@style/Button.Ok"
             android:layout_width="320dp"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:layout_marginLeft="20dp"
-            android:textColor="@color/white"
-            android:text="Batalkan"
-            />
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/button_background_cancel"
+            android:text="@string/batalkan"
+            android:textColor="@color/white" />
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/ic_add_comment"
+            android:layout_marginTop="22dp"
             android:layout_marginEnd="20dp"
-            />
+            android:src="@drawable/ic_add_comment" />
 
     </RelativeLayout>
 

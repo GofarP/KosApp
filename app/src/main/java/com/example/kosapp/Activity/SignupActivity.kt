@@ -162,7 +162,7 @@ class SignupActivity : AppCompatActivity() {
             foto=imgName
         )
 
-        auth.createUserWithEmailAndPassword(email,password)
+
 
         firestoreDatabase.collection("pengguna")
             .add(pengguna)

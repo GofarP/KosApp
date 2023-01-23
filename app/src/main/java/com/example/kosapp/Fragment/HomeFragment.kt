@@ -51,7 +51,18 @@ class HomeFragment : Fragment() {
         }.attach()
 
         binding.textinputlayout.setEndIconOnClickListener {
-            Toast.makeText(activity, "Sedang Mencari Kos...", Toast.LENGTH_SHORT).show()
+            when(binding.tabLayout.selectedTabPosition)
+            {
+                0-> {
+                    Toast.makeText(activity, "Mencari Semua Kos", Toast.LENGTH_SHORT).show()
+                }
+                1->{
+                    Toast.makeText(activity, "Mencari Kos Pria.", Toast.LENGTH_SHORT).show()
+                }
+                2->{
+                    Toast.makeText(activity, "Mencari Kos Wanita...", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         binding.ivmessage.setOnClickListener {

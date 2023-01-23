@@ -1,5 +1,6 @@
 package com.example.kosapp.Fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kosapp.Activity.DetailSewaKosActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter.ItemOnClick
 import com.example.kosapp.Model.Kos
@@ -81,7 +83,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
     }
 
     override fun onClick(v: View, dataKos: Kos) {
-        Toast.makeText(activity, "Halo Kaka", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(activity, DetailSewaKosActivity::class.java))
     }
 
 }

@@ -27,8 +27,8 @@ class HomeKosAdapter(private val listKos: ArrayList<Kos>,private val  itemOnClic
                 binding.lblfasilitas.text="fasilitas 1, fasilitas 2, fasilitas 3"
                 binding.lblharga.text="Rp.${dataKos.biaya}"
 
-                itemView.setOnClickListener{
-                    itemAdapterCallback.onClick(it, dataKos)
+                itemView.setOnClickListener{view->
+                    itemAdapterCallback.onClick(view, dataKos)
                 }
 
             }

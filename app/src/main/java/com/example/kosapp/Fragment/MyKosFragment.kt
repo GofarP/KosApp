@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.kosapp.Activity.HistoryActivity
 import com.example.kosapp.Activity.KosSayaActivity
 import com.example.kosapp.Activity.TambahKosActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.MyKosAdapter
@@ -41,21 +42,27 @@ class MyKosFragment : Fragment(), ItemOnClick {
     override fun onClick(view: View, myKos: String) {
        when(myKos)
        {
-           "Buat Kos-Kosan"->{
+           "Buka Kos-Kosan"->{
                 startActivity(Intent(activity, TambahKosActivity::class.java))
            }
 
            "Kos-Kosan Saya"-> {
                 startActivity(Intent(activity, KosSayaActivity::class.java))
            }
+
+           "History Saya"->{
+               startActivity(Intent(activity, HistoryActivity::class.java))
+           }
+
        }
     }
 
 
     private fun addData()
     {
-        myKosArrayList.add("Buat Kos-Kosan")
+        myKosArrayList.add("Buka Kos-Kosan")
         myKosArrayList.add("Kos-Kosan Saya")
+        myKosArrayList.add("History Saya")
     }
 
 }

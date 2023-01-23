@@ -26,6 +26,7 @@ class KosSayaActivity : AppCompatActivity() {
             {
                 0->{"Menyewa"}
                 1->{"Disewa"}
+                2->{"Permintaan"}
                 else->{throw Resources.NotFoundException("Posisi Tidak DItemukan")}
             }
         }.attach()
