@@ -1,5 +1,6 @@
 package com.example.kosapp.Fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,13 +9,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kosapp.Activity.PenyewaActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.DisewaAdapter
-import com.example.kosapp.Adapter.RecyclerviewAdapter.DisewaAdapter.ItemOnClick
+import com.example.kosapp.Adapter.RecyclerviewAdapter.DisewaAdapter.ItemOnClickDisewa
 import com.example.kosapp.Model.Kos
-import com.example.kosapp.R
 import com.example.kosapp.databinding.FragmentDisewaBinding
 
-class DisewaFragment : Fragment(), ItemOnClick {
+class DisewaFragment : Fragment(), ItemOnClickDisewa {
 
 
     private lateinit var binding: FragmentDisewaBinding
@@ -33,7 +34,7 @@ class DisewaFragment : Fragment(), ItemOnClick {
 
         addData()
 
-        adapter= DisewaAdapter(kosArrayList, this)
+        adapter= DisewaAdapter(kosArrayList,this)
         val linearLayoutManager:RecyclerView.LayoutManager=LinearLayoutManager(activity)
         binding.rvdisewa.layoutManager=linearLayoutManager
         binding.rvdisewa.adapter=adapter
@@ -91,7 +92,7 @@ class DisewaFragment : Fragment(), ItemOnClick {
     }
 
     override fun onPeminjamClick(v: View, dataKos: Kos) {
-        Toast.makeText(activity, "Detail Peminjam", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(activity, PenyewaActivity::class.java))
     }
 
 }

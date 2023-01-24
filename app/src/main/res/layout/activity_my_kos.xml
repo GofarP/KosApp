@@ -13,16 +13,16 @@
         android:layout_height="wrap_content"
         android:background="@color/main_color"
         >
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Kos Saya"
             android:layout_centerInParent="true"
-            android:textColor="@color/white"
-            android:textSize="25dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            />
+            android:text="My Kos"
+            android:textColor="@color/white"
+            android:textSize="25dp" />
     </RelativeLayout>
     
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -56,16 +56,8 @@
             android:id="@+id/viewPagerKosSaya"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="80dp"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
-
-        <Button
-            android:id="@+id/btntest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="Test" />
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

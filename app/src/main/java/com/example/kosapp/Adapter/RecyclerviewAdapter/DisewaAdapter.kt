@@ -1,21 +1,28 @@
 package com.example.kosapp.Adapter.RecyclerviewAdapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Model.Kos
-import com.example.kosapp.databinding.FragmentDisewaBinding
 import com.example.kosapp.databinding.LayoutKosDisewaBinding
+import com.example.kosapp.databinding.LayoutKosMenyewaBinding
 
-class DisewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClick: ItemOnClick)
-    :RecyclerView.Adapter<DisewaAdapter.ViewHolder>() {
+class DisewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickDisewakan: ItemOnClickDisewa)
+    :RecyclerView.Adapter<DisewaAdapter.ViewHolderDisewa>() {
 
-        class ViewHolder(layoutDisewaBinding: LayoutKosDisewaBinding)
+        private val TYPE_DISEWA=1
+        private val TYPE_MENYEWA=2
+
+
+
+        class ViewHolderDisewa(layoutDisewaBinding: LayoutKosDisewaBinding)
             :RecyclerView.ViewHolder(layoutDisewaBinding.root) {
                 private val binding=layoutDisewaBinding
 
-                 fun bind(dataKos:Kos, itemAdapterCallback:ItemOnClick)
+                 fun bind(dataKos:Kos, itemAdapterCallback:ItemOnClickDisewa)
                  {
                      itemView.apply {
                          binding.lblnama.text=dataKos.nama
@@ -38,25 +45,33 @@ class DisewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClick: I
 
             }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderDisewa {
         val binding=LayoutKosDisewaBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-        return ViewHolder(binding)
+        return ViewHolderDisewa(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(kosArrayList[position], itemOnClick)
+    override fun onBindViewHolder(holder: ViewHolderDisewa, position: Int) {
+        holder.bind(kosArrayList[position], itemOnClickDisewakan)
     }
 
     override fun getItemCount(): Int {
         return kosArrayList.size
     }
 
-    interface  ItemOnClick
+    interface  ItemOnClickDisewa
     {
         fun OnEditClick(v: View, dataKos: Kos)
 
         fun OnDeleteClick(v:View, dataKos: Kos)
 
         fun onPeminjamClick(v:View, dataKos: Kos)
+    }
+
+    interface ItemOnCLickMenyewa
+    {
+        fun OnSelengkapnyaClick(v: View, dataKos: Kos)
     }
 }

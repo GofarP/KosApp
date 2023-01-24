@@ -7,14 +7,14 @@ import android.os.Bundle
 import com.example.kosapp.Adapter.PagerAdapter.MyKosPagerAdapter
 import com.example.kosapp.Helper.Helper
 import com.example.kosapp.R
-import com.example.kosapp.databinding.ActivityKosSayaBinding
+import com.example.kosapp.databinding.ActivityMyKosBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
 class KosSayaActivity : AppCompatActivity() {
-    private lateinit var binding:ActivityKosSayaBinding
+    private lateinit var binding:ActivityMyKosBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding=ActivityKosSayaBinding.inflate(layoutInflater)
+        binding=ActivityMyKosBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         Helper().setStatusBarColor(this@KosSayaActivity)
@@ -31,9 +31,7 @@ class KosSayaActivity : AppCompatActivity() {
             }
         }.attach()
 
-        binding.btntest.setOnClickListener {
-            startActivity(Intent(this@KosSayaActivity, DetailKosSayaActivity::class.java))
-        }
+
 
     }
 }

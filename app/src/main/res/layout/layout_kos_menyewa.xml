@@ -82,29 +82,14 @@
                 android:layout_marginEnd="10dp"
                 >
 
-                <ImageButton
-                    android:id="@+id/btndisewaedit"
-                    style="@style/Button.Round_Edit"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentStart="true"
-                    android:src="@drawable/ic_edit" />
-
-                <ImageButton
-                    android:id="@+id/btndisewahapus"
-                    style="@style/Button.Round_Delete"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_centerHorizontal="true"
-                    android:src="@drawable/ic_delete" />
-
-                <ImageButton
-                    android:id="@+id/btndisewapeminjam"
-                    style="@style/Button.Round_Detail"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/ic_people" />
+                <Button
+                    android:id="@+id/btnselengkapnya"
+                    android:layout_width="match_parent"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@color/white"
+                    android:text="Selengkapnya"
+                    android:layout_height="wrap_content"/>
 
             </RelativeLayout>
 

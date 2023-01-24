@@ -4,10 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Model.History
-import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.LayoutHistoryBinding
 
-class HistoryAdapter(private val listKos: ArrayList<History>, )
+class HistoryAdapter(private val listHistory: ArrayList<History>, )
     :RecyclerView.Adapter<HistoryAdapter.ViewHolder>()
 {
         class ViewHolder(layoutHistoryBinding: LayoutHistoryBinding)
@@ -15,9 +14,11 @@ class HistoryAdapter(private val listKos: ArrayList<History>, )
         {
                 val binding=layoutHistoryBinding
 
-                fun bind()
+                fun bind(dataHistory: History)
                 {
-
+                    binding.lbljudulhistory.text=dataHistory.title
+                    binding.lblbodyhistory.text=dataHistory.body
+                    binding.lbltglhistory.text=dataHistory.tanggal.toString()
                 }
 
         }
@@ -28,10 +29,11 @@ class HistoryAdapter(private val listKos: ArrayList<History>, )
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            TODO("Not yet implemented")
+           holder.bind(listHistory[position])
         }
 
         override fun getItemCount(): Int {
-            return listKos.size
+            return listHistory.size
         }
+
 }

@@ -4,11 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Activity.PenyewaActivity">
 
     <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/include_layout_detail"
         layout="@layout/layout_action_bar"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvpenyewa"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         />
 
 </LinearLayout>

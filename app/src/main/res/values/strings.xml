@@ -29,6 +29,15 @@
         tandai sebagai lokasi kosan anda. Jika sudah selanjutnya tekan tombol pilih lokasi.
         Titik berwarna biru/abu-abu merupakan lokasi pengguna saat ini
     </string>
+
     <string name="batalkan">Batalkan</string>
+    <string name="detail_kos_dummy">Kos nyaman yang terleta di jl.kaki. \n
+        Kos ini memiliki peraturan sebagai berikut: \n
+        1. Jam malam sampai jam 10. \n
+        2. Tidak Boleh membawa lawan jenis\n
+        3. Jangan lupa bayar uang kos \n
+        4. Jangan Lupa Kunci Pintu Kalau Malam\n
+        5. Jangan Jorok
+    </string>
 
 </resources>
