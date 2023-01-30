@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.example.kosapp.Helper.Helper
+import com.example.kosapp.Helper.PreferenceManager
 import com.example.kosapp.databinding.ActivitySigninBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -20,6 +21,8 @@ class SigninActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         Helper().setStatusBarColor(this@SigninActivity)
+
+
 
         if(user!=null)
         {
@@ -69,20 +72,14 @@ class SigninActivity : AppCompatActivity() {
     {
         val email=binding.txtemail.text.trim().toString()
         val password=binding.txtpassword.text.trim().toString()
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
-            result->
-            
-            if(result.isSuccessful)
-            {
-                startActivity(Intent(this@SigninActivity, MainActivity::class.java))
-                finish()
-            }
+        auth.signInWithEmailAndPassword(email, password).addOnSuccessListener {
 
-            else
-            {
-                Toast.makeText(this@SigninActivity, "Gagal Login", Toast.LENGTH_SHORT).show()
-            }
+            startActivity(Intent(this@SigninActivity, MainActivity::class.java))
 
+            finish()
+
+        }.addOnFailureListener {
+            Toast.makeText(this@SigninActivity, it.message, Toast.LENGTH_SHORT).show()
         }
 
     }

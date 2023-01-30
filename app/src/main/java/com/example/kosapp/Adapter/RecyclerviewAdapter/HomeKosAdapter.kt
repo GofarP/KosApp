@@ -1,11 +1,15 @@
 package com.example.kosapp.Adapter.RecyclerviewAdapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.LayoutHomeKosBinding
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
 class HomeKosAdapter(private val listKos: ArrayList<Kos>,private val  itemOnClick:ItemOnClick)
     : RecyclerView.Adapter<HomeKosAdapter.ViewHolder>()
@@ -15,17 +19,29 @@ class HomeKosAdapter(private val listKos: ArrayList<Kos>,private val  itemOnClic
         :RecyclerView.ViewHolder(layoutHomeKosBinding.root)
     {
         private val binding=layoutHomeKosBinding
+        private val store= Firebase.storage
 
         fun bind(dataKos: Kos, itemAdapterCallback: ItemOnClick) {
 
             itemView.apply {
 
                 binding.lbljeniskos.text=dataKos.jenis
-                binding.lblsisa.text= "Sisa:${dataKos.sisa.toString()}"
+                binding.lblsisa.text= "Sisa:${dataKos.sisa}"
                 binding.lblnama.text=dataKos.nama
                 binding.lblalamat.text=dataKos.alamat
-                binding.lblfasilitas.text="fasilitas 1, fasilitas 2, fasilitas 3"
+                binding.lblfasilitas.text=dataKos.fasilitas
                 binding.lblharga.text="Rp.${dataKos.biaya}"
+
+                store.reference.child(dataKos.gambarThumbnail)
+                    .downloadUrl
+                    .addOnSuccessListener {url->
+                        Glide.with(this.context)
+                            .load(url)
+                            .into(binding.ivkos)
+                    }
+                    .addOnFailureListener {error->
+                        binding.lblharga.text=error.message
+                    }
 
                 itemView.setOnClickListener{view->
                     itemAdapterCallback.onClick(view, dataKos)

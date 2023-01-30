@@ -1,10 +1,8 @@
 package com.example.kosapp.Activity
 
 import android.content.Intent
-import android.location.Location
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -15,14 +13,17 @@ import androidx.appcompat.app.AppCompatActivity
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
+import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
+import com.example.kosapp.Model.Kos
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityTambahKosBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
-import com.mapbox.android.core.location.LocationEngineListener
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.mapbox.android.core.permissions.PermissionsListener
-import com.mapbox.android.core.permissions.PermissionsManager
-import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.annotations.Marker
 import com.mapbox.mapboxsdk.annotations.MarkerOptions
@@ -30,16 +31,22 @@ import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.maps.MapboxMap
+import java.util.*
+import kotlin.collections.ArrayList
 
 
-class TambahKosActivity : AppCompatActivity(), PermissionsListener,MapboxMap.OnMapClickListener {
+class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
 
     private lateinit var binding:ActivityTambahKosBinding
 
-    private  var  uri: Uri?=null
+    private var uriThumbnail: Uri?=null
     private var sliderUri:Uri?=null
+    private var database=Firebase.database.reference
+    private var firebaseAuth=FirebaseAuth.getInstance()
+    private var firebaseStorage=FirebaseStorage.getInstance().reference
 
     private val slideImageArrayList=ArrayList<SlideModel>()
+    private var fasilitasKosList=ArrayList<String>()
 
     private lateinit var map:MapboxMap
     private lateinit var latLng: LatLng
@@ -61,7 +68,10 @@ class TambahKosActivity : AppCompatActivity(), PermissionsListener,MapboxMap.OnM
         slideImageArrayList.add(SlideModel(R.drawable.placeholder_add_kos_slide,  ScaleTypes.FIT))
         binding.sliderupload.setImageList(slideImageArrayList)
 
-
+        binding.mapviewtambahkos.getMapAsync {mapbox->
+            map=mapbox
+            map.addOnMapClickListener(this)
+        }
 
 
         binding.btnaddslideimage.setOnClickListener {
@@ -84,15 +94,70 @@ class TambahKosActivity : AppCompatActivity(), PermissionsListener,MapboxMap.OnM
                 }
         }
 
-        binding.mapviewtambahkos.getMapAsync {mapbox->
-            map=mapbox
-            map.addOnMapClickListener(this)
-        }
+
 
         binding.btntambah.setOnClickListener {
             if(!gagalValidasi())
             {
-                tambahKost()
+                val userEmail=firebaseAuth.currentUser?.email
+
+
+                val kosId=UUID.randomUUID().toString()
+                val namaKos=binding.txtnamakos.text.trim().toString()
+                val alamat=binding.txtalamatkos.text.trim().toString()
+                val biaya=binding.txtharga.text.trim().toString()
+                val jenisBayar=binding.spnjenisbayar.selectedItem.toString()
+                val gambarThumbnail="thumbnailKos/$kosId/${UUID.randomUUID()}"
+                val gambarFasilitasKos="fasilitasKos/$kosId/"
+                val jenisKos=binding.spnjeniskos.selectedItem.toString()
+                val jumlahKamar=binding.txtjumlahkamarkos.text.trim().toString()
+                val fasilitas=binding.txtfasilitas.text.trim().toString()
+                val deskripsi=binding.txtdeskripsi.text.trim().toString()
+
+                for(i in slideImageArrayList.indices)
+                {
+                    fasilitasKosList.add("$gambarFasilitasKos${UUID.randomUUID()}")
+                }
+
+                val kos=Kos(
+                    id=kosId,
+                    nama=namaKos,
+                    alamat = alamat,
+                    biaya =biaya.toDouble(),
+                    jenisBayar=jenisBayar,
+                    gambarKos =fasilitasKosList,
+                    gambarThumbnail = gambarThumbnail,
+                    jenis=jenisKos,
+                    sisa = jumlahKamar.toInt(),
+                    lattitude = lattitudeKos.toString(),
+                    longitude =  longitudeKos.toString(),
+                    fasilitas=fasilitas,
+                    deskripsi=deskripsi,
+                )
+
+
+                database.child("daftarKos")
+                    .child(userEmail.toString().replace(".",","))
+                    .child(kosId)
+                    .setValue(kos)
+                    .addOnSuccessListener {
+
+                        firebaseStorage.child(gambarThumbnail).putFile(uriThumbnail!!)
+
+                        for(i in slideImageArrayList.indices)
+                        {
+                            sliderUri=Uri.parse(slideImageArrayList[i].imageUrl)
+                            firebaseStorage.child(fasilitasKosList[i]).putFile(sliderUri!!)
+                        }
+
+                        Toast.makeText(this@TambahKosActivity, "Sukses Menambah Kos Baru", Toast.LENGTH_SHORT).show()
+                        clear()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this@TambahKosActivity, "Gagal Menambah Kos Baru", Toast.LENGTH_SHORT).show()
+                    }
+
+
             }
 
             else
@@ -122,8 +187,8 @@ class TambahKosActivity : AppCompatActivity(), PermissionsListener,MapboxMap.OnM
 
         if(result.resultCode == RESULT_OK)
         {
-            uri=result.data?.data
-            binding.ivthumbnailkos.setImageURI(uri!!)
+            uriThumbnail=result.data?.data
+            binding.ivthumbnailkos.setImageURI(uriThumbnail!!)
         }
 
         else if(result.resultCode==ImagePicker.RESULT_ERROR)
@@ -148,6 +213,7 @@ class TambahKosActivity : AppCompatActivity(), PermissionsListener,MapboxMap.OnM
             }
 
             slideImageArrayList.add(SlideModel(sliderUri.toString(),scaleType = ScaleTypes.FIT))
+
             binding.sliderupload.setImageList(slideImageArrayList)
 
             binding.sliderupload.setItemClickListener(object:ItemClickListener{
@@ -169,25 +235,14 @@ class TambahKosActivity : AppCompatActivity(), PermissionsListener,MapboxMap.OnM
 
     private fun setSpinner()
     {
-        val arrayJenisKos= arrayOf("Pilih Jenis Kos","Laki-Laki","Wanita","Campur")
+        val arrayJenisKos= arrayOf(Constant().JENISKOS_SPINNER_DEFAULT,Constant().KEY_PRIA,Constant().KEY_WANITA,Constant().KEY_CAMPUR)
         val jenisKosAdapter=ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayJenisKos)
         binding.spnjeniskos.adapter=jenisKosAdapter
 
-        val arrayJenisBayar= arrayOf("Pilih Jenis Bayar", "Bayar Di Tempat", "Bayar Transfer")
+        val arrayJenisBayar= arrayOf(Constant().JENISBAYAR_SPINNER_DEFAULT, Constant().KEY_TRANSFER, Constant().KEY_BAYARDITEMPAT)
         val jenisBayarAdapter=ArrayAdapter(this, android.R.layout.simple_spinner_item,arrayJenisBayar)
         binding.spnjenisbayar.adapter=jenisBayarAdapter
     }
-
-
-
-    override fun onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
-        Toast.makeText(applicationContext, "Need To Enbale Permission", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onPermissionResult(granted: Boolean) {
-
-    }
-
 
 
     override fun onMapClick(point: LatLng) {
@@ -199,22 +254,25 @@ class TambahKosActivity : AppCompatActivity(), PermissionsListener,MapboxMap.OnM
 
     private var getLatLong = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) { result: ActivityResult ->
+    ) { result->
         // Validity checks
         if (RESULT_OK != result.resultCode) {
             Toast.makeText(applicationContext, "Pengambilan Lokasi Dibatalkan", Toast.LENGTH_SHORT).show()
             return@registerForActivityResult
         }
         val intent = result.data
-        if (intent == null) {
+        if (intent == null)
+        {
             Toast.makeText(applicationContext, "Activity hasn't returned an intent.", Toast.LENGTH_SHORT).show()
             return@registerForActivityResult
         }
-        if (!intent.hasExtra("lattitudeKos") && !intent.hasExtra("longitudeKos")) {
 
-            Toast.makeText(applicationContext,  "Activity hasn't returned extra data.", Toast.LENGTH_SHORT).show()
+        if (!intent.hasExtra("lattitudeKos") && !intent.hasExtra("longitudeKos"))
+        {
+            Toast.makeText(applicationContext,  "Gagal Mengambil Lokasi Kos.", Toast.LENGTH_SHORT).show()
             return@registerForActivityResult
         }
+
         // Valid result returned
         lattitudeKos=intent.getStringExtra("lattitudeKos")!!.toDouble()
         longitudeKos=intent.getStringExtra("longitudeKos")!!.toDouble()
@@ -232,19 +290,16 @@ class TambahKosActivity : AppCompatActivity(), PermissionsListener,MapboxMap.OnM
 
 
         val cameraPosition = CameraPosition.Builder()
-            .target(latLng) // Sets the center of the map to Mountain View
-            .zoom(15.0) // Sets the zoom
+            .target(latLng)
+            .zoom(15.0)
             .build()
 
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
+
     }
 
 
-    private fun tambahKost()
-    {
-        //
-    }
 
     private fun gagalValidasi():Boolean
     {
@@ -300,7 +355,7 @@ class TambahKosActivity : AppCompatActivity(), PermissionsListener,MapboxMap.OnM
             gagal=true
         }
 
-        else if(uri==null)
+        else if(uriThumbnail==null)
         {
             Toast.makeText(applicationContext, "Silahkan Ambil Foto Thumbnail Kos", Toast.LENGTH_SHORT).show()
             gagal=true
@@ -321,6 +376,7 @@ class TambahKosActivity : AppCompatActivity(), PermissionsListener,MapboxMap.OnM
         dialogBuilder.setTitle("Hapus Gammbar?")
         dialogBuilder.setMessage("Hapus Gambar Ini Dari Daftar Gambar?")
         dialogBuilder.setPositiveButton("Hapus"){_, _->
+
             slideImageArrayList.removeAt(posisi)
 
             if(slideImageArrayList.isEmpty())
@@ -337,6 +393,34 @@ class TambahKosActivity : AppCompatActivity(), PermissionsListener,MapboxMap.OnM
         }
 
         dialogBuilder.show()
+    }
+
+
+
+
+
+    private fun clear()
+    {
+        binding.txtnamakos.text.clear()
+        binding.txtalamatkos.text.clear()
+        binding.txtjumlahkamarkos.text.clear()
+        binding.spnjeniskos.setSelection(0)
+        binding.spnjenisbayar.setSelection(0)
+        binding.txtharga.text.clear()
+        binding.txtfasilitas.text.clear()
+        binding.txtdeskripsi.text.clear()
+
+        uriThumbnail=null
+        binding.ivthumbnailkos.setImageResource(R.drawable.placeholder_thumbnail_kos)
+
+        sliderUri=null
+        slideImageArrayList.clear()
+        slideImageArrayList.add(SlideModel(R.drawable.placeholder_add_kos_slide,ScaleTypes.FIT))
+        binding.sliderupload.setImageList(slideImageArrayList)
+
+        map.clear()
+
+
     }
 
     override fun onStart() {

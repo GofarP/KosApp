@@ -54,8 +54,13 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
             sisa=3,
             jenis="Laki-Laki",
             gambarThumbnail = "hehe",
-            gambarFasilitas = arrayListOf("hehe","hihihi","huhuhu"),
-            biaya=300000.00
+            gambarKos = arrayListOf("hehe","hihihi","huhuhu"),
+            biaya=300000.00,
+            lattitude = "",
+            longitude = "",
+            jenisBayar = "",
+            fasilitas="",
+            deskripsi="",
         )
 
         kosArrayList.add(kos)
@@ -67,8 +72,13 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
             alamat = "Jl.kaki",
             sisa=3,
             gambarThumbnail = "hihi",
-            gambarFasilitas =  arrayListOf("hehe","hihihi","huhuhu"),
-            biaya = 200000.00
+            gambarKos =  arrayListOf("hehe","hihihi","huhuhu"),
+            biaya = 200000.00,
+            lattitude = "",
+            longitude = "",
+            jenisBayar = "",
+            fasilitas="",
+            deskripsi="",
         )
 
         kosArrayList.add(kos)
@@ -80,8 +90,13 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
             sisa=3,
             jenis = "Laki-Laki",
             gambarThumbnail = "huhahuha",
-            gambarFasilitas = arrayListOf("hihi","hehe","haha"),
-            biaya=100000.00
+            gambarKos = arrayListOf("hihi","hehe","haha"),
+            biaya=100000.00,
+            lattitude = "",
+            longitude = "",
+            jenisBayar = "",
+            fasilitas="",
+            deskripsi="",
         )
 
         kosArrayList.add(kos)
@@ -90,6 +105,7 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
     override fun OnSelengkapnyaClick(v: View, dataKos: Kos) {
       startActivity(Intent(activity, DetailKosSayaActivity::class.java))
     }
+
 
 
 }

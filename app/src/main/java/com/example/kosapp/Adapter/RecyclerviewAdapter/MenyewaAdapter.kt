@@ -53,4 +53,6 @@ class MenyewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickMe
     {
         fun OnSelengkapnyaClick(v: View, dataKos: Kos)
     }
+
+
 }

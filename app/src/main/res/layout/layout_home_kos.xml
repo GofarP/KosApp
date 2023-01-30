@@ -19,11 +19,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             >
-            
+
             <ImageView
                 android:id="@+id/ivkos"
                 android:layout_width="150dp"
-                android:layout_height="200dp"/>
+                android:layout_height="210dp"
+                android:scaleType="fitXY"
+                />
 
         </LinearLayout>
 
@@ -39,26 +41,26 @@
                 android:orientation="horizontal"
                 >
 
-            <TextView
-                android:id="@+id/lbljeniskos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/jenis_kos"
-                android:layout_marginStart="20dp"
-                android:textColor="@color/black"
-                android:layout_marginTop="20dp"
-                />
-            
-            <TextView
-                android:id="@+id/lblsisa"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/design_default_color_error"
-                android:text="Sisa: 99"
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="20dp"
-                />
-                
+                <TextView
+                    android:id="@+id/lbljeniskos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/jenis_kos"
+                    android:layout_marginStart="20dp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="20dp"
+                    />
+
+                <TextView
+                    android:id="@+id/lblsisa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/design_default_color_error"
+                    android:text="Sisa: 99"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    />
+
             </LinearLayout>
 
             <TextView
@@ -70,32 +72,33 @@
                 android:layout_marginTop="20dp"
                 android:textColor="@color/black"
                 android:textSize="15dp"
+                android:textStyle="bold"
                 />
 
-                <LinearLayout
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal"
+                >
+
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="15dp"
-                    android:orientation="horizontal"
-                    >
+                    android:src="@drawable/ic_pin"
+                    />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_pin"
-                        />
-
-                    <TextView
-                        android:id="@+id/lblalamat"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="alamat kos"
-                        android:textSize="15dp"
-                        android:layout_marginStart="10dp"
-                        android:textColor="@color/black"
-                        />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/lblalamat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="alamat kos"
+                    android:textSize="15dp"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@color/black"
+                    />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/lblfasilitas"
@@ -107,28 +110,20 @@
                 android:text="Fasilitas 1, Fasilitas 2"
                 />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_gravity="end"
-
-                >
-
             <TextView
                 android:id="@+id/lblharga"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rp.999,999"
                 android:layout_marginEnd="20dp"
-                android:textSize="17dp"
+                android:textSize="17sp"
+                android:layout_marginTop="20dp"
                 android:textColor="@color/black"
+                android:layout_gravity="end"
                 />
 
-            </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>

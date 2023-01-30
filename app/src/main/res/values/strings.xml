@@ -39,5 +39,11 @@
         4. Jangan Lupa Kunci Pintu Kalau Malam\n
         5. Jangan Jorok
     </string>
+    <string name="jumlah_kamar_kos">Jumlah Kamar Kos</string>
+    <string name="request_dummy_receiver">Anu Meminta Untuk Masuk Ke kOs Sini... Aoakah Anda MAu Terima?</string>
+    <string name="text_konfirmasi_sewa">Terima Kasih, Sekarang Tunggu Pemilik Kos Untuk Mengonfirmasi Permintaan Sewa Anda</string>
+    <string name="text_comment">Komentar Anda</string>
+    <string name="hint_ganti_username">Masukkan Username Baru Anda</string>
+    <string name="hint_ganti_password">Masukkan Password Baru Anda</string>
 
 </resources>

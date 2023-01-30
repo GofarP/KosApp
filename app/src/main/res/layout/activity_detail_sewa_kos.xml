@@ -44,16 +44,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/relativelayoutbottom"
-        android:layout_below="@+id/relativelayoutappbar"
-        />
+        android:layout_below="@+id/relativelayoutappbar" />
 
 
     <RelativeLayout
         android:id="@+id/relativelayoutbottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/main_color"
         android:layout_alignParentBottom="true"
+        android:background="@color/main_color"
 
         >
 

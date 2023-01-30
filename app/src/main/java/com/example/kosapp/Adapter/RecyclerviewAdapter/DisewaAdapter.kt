@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.LayoutKosDisewaBinding
 import com.example.kosapp.databinding.LayoutKosMenyewaBinding
+import com.google.firebase.storage.FirebaseStorage
 
 class DisewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickDisewakan: ItemOnClickDisewa)
     :RecyclerView.Adapter<DisewaAdapter.ViewHolderDisewa>() {
@@ -21,6 +23,7 @@ class DisewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickDis
         class ViewHolderDisewa(layoutDisewaBinding: LayoutKosDisewaBinding)
             :RecyclerView.ViewHolder(layoutDisewaBinding.root) {
                 private val binding=layoutDisewaBinding
+                private val storage=FirebaseStorage.getInstance().reference
 
                  fun bind(dataKos:Kos, itemAdapterCallback:ItemOnClickDisewa)
                  {
@@ -39,6 +42,13 @@ class DisewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickDis
                          binding.btndisewapeminjam.setOnClickListener {view->
                              itemAdapterCallback.onPeminjamClick(view, dataKos)
                          }
+
+                         storage.child(dataKos.gambarThumbnail)
+                             .downloadUrl.addOnSuccessListener { uri->
+                                 Glide.with(this.context)
+                                     .load(uri)
+                                     .into(binding.ivkos)
+                             }
 
                      }
                  }

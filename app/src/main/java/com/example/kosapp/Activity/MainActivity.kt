@@ -2,6 +2,8 @@ package com.example.kosapp.Activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
@@ -10,9 +12,12 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.kosapp.Helper.Helper
+import com.example.kosapp.Helper.PreferenceManager
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityMainBinding
 import com.example.kosapp.databinding.ActivitySigninBinding
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QueryDocumentSnapshot
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -31,5 +36,8 @@ class MainActivity : AppCompatActivity() {
         binding.bottomnav.setupWithNavController(navController)
 
     }
+
+
+
 
 }

@@ -1,5 +1,10 @@
 package com.example.kosapp.Model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+
+@Parcelize
  data class Kos
      (val id:String,
       val nama:String,
@@ -7,6 +12,11 @@ package com.example.kosapp.Model
       val sisa:Int,
       val alamat:String,
       val gambarThumbnail:String,
-      val gambarFasilitas:ArrayList<String>,
-      val biaya:Double
-      )
+      val gambarKos:ArrayList<String>,
+      val fasilitas:String,
+      val deskripsi:String,
+      val biaya:Double,
+      val jenisBayar:String,
+      val lattitude:String,
+      val longitude:String
+      ):Parcelable

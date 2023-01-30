@@ -2,6 +2,7 @@ package com.example.kosapp.Fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,18 +10,36 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kosapp.Activity.DetailSewaKosActivity
+import com.example.kosapp.Activity.EditKosActivity
 import com.example.kosapp.Activity.PenyewaActivity
+import com.example.kosapp.Activity.TestActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.DisewaAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.DisewaAdapter.ItemOnClickDisewa
+import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.FragmentDisewaBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 
 class DisewaFragment : Fragment(), ItemOnClickDisewa {
 
 
     private lateinit var binding: FragmentDisewaBinding
+    private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var adapter:DisewaAdapter
     private var kosArrayList=ArrayList<Kos>()
+    private var auth=FirebaseAuth.getInstance().currentUser
+    private var database= Firebase.database.reference
+    private lateinit var kos:Kos
+    private var userEmail=""
+    private var storage=FirebaseStorage.getInstance().reference
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,64 +50,83 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        addData()
-
-        adapter= DisewaAdapter(kosArrayList,this)
-        val linearLayoutManager:RecyclerView.LayoutManager=LinearLayoutManager(activity)
-        binding.rvdisewa.layoutManager=linearLayoutManager
-        binding.rvdisewa.adapter=adapter
+        getData()
     }
 
 
-    private fun addData()
+    private fun getData()
     {
-        var kos=Kos(
-            id="12345",
-            nama = "Kos Jaya Makmur",
-            alamat="Jl. Jalan",
-            sisa=3,
-            jenis="Laki-Laki",
-            gambarThumbnail = "hehe",
-            gambarFasilitas = arrayListOf("hehe","hihihi","huhuhu"),
-            biaya=300000.00
-        )
+        userEmail=auth?.email.toString()
+        database.child("daftarKos")
+            .child(userEmail.replace(".",","))
+            .addValueEventListener(object: ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
 
-        kosArrayList.add(kos)
+                    kosArrayList.clear()
+                    binding.rvdisewa.adapter=null
 
-        kos=Kos(
-            id="21345",
-            nama="Kos Strong n independent",
-            jenis = "Perempuan",
-            alamat = "Jl.kaki",
-            sisa=3,
-            gambarThumbnail = "hihi",
-            gambarFasilitas =  arrayListOf("hehe","hihihi","huhuhu"),
-            biaya = 200000.00
-        )
+                    snapshot.children.forEach {snap->
+                        kos=Kos(
+                            id=snap.child("id").value.toString(),
+                            alamat = snap.child("alamat").value.toString(),
+                            biaya = snap.child("biaya").value.toString().toDouble(),
+                            gambarKos = snap.child("gambarKos").value as ArrayList<String>,
+                            gambarThumbnail = snap.child("gambarThumbnail").value.toString(),
+                            jenis=snap.child("jenis").value.toString(),
+                            jenisBayar = snap.child("jenisBayar").value.toString(),
+                            lattitude = snap.child("lattitude").value.toString(),
+                            longitude = snap.child("longitude").value.toString(),
+                            nama = snap.child("nama").value.toString(),
+                            sisa = snap.child("sisa").value.toString().toInt(),
+                            fasilitas=snap.child("fasilitas").value.toString(),
+                            deskripsi=snap.child("deskripsi").value.toString(),
+                        )
 
-        kosArrayList.add(kos)
+                        kosArrayList.add(kos)
 
-        kos=Kos(
-            id="321292812",
-            nama="Kost Mandiri",
-            alamat = "Jl.Kemana",
-            sisa=3,
-            jenis = "Laki-Laki",
-            gambarThumbnail = "huhahuha",
-            gambarFasilitas = arrayListOf("hihi","hehe","haha"),
-            biaya=100000.00
-        )
+                    }
 
-        kosArrayList.add(kos)
+                    adapter= DisewaAdapter(kosArrayList,this@DisewaFragment)
+                    layoutManager=LinearLayoutManager(activity)
+                    binding.rvdisewa.layoutManager=layoutManager
+                    binding.rvdisewa.adapter=adapter
+                    adapter.notifyDataSetChanged()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
+                }
+
+            })
     }
 
     override fun OnEditClick(v: View, dataKos: Kos) {
-        Toast.makeText(activity, "mengedit...", Toast.LENGTH_SHORT).show()
+        val intent=Intent(activity, EditKosActivity::class.java).putExtra("dataKos", dataKos)
+        startActivity(intent)
     }
 
     override fun OnDeleteClick(v: View, dataKos: Kos) {
-        Toast.makeText(activity, "Menghapus...", Toast.LENGTH_SHORT).show()
+        userEmail= auth?.email.toString()
+        database.child("daftarKos")
+            .child(userEmail.replace(".",","))
+            .child(dataKos.id)
+            .removeValue()
+            .addOnSuccessListener {
+
+                kosArrayList.remove(kos)
+
+                Toast.makeText(activity, "Sukses Menghapus ${dataKos.nama}", Toast.LENGTH_SHORT).show()
+
+                storage.child(dataKos.gambarThumbnail).delete()
+
+                for(i in dataKos.gambarKos.indices)
+                {
+                    storage.child(dataKos.gambarKos[i]).delete()
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(activity, it.message.toString(), Toast.LENGTH_SHORT).show()
+            }
     }
 
     override fun onPeminjamClick(v: View, dataKos: Kos) {

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".Fragment.SettingsFragment">
 
@@ -36,10 +37,12 @@
         android:layout_gravity="center_horizontal"
         >
 
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/ivsettings"
+            android:scaleType="fitXY"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:background="@color/black"
+            app:riv_corner_radius="100dp"
             />
 
     </LinearLayout>

@@ -40,6 +40,7 @@ class PenyewaActivity : AppCompatActivity(), ItemOnClick {
     fun addData()
     {
         var pengguna=Pengguna(
+            id="",
             email="go@mail.com",
             username = "gofar",
             foto="",
@@ -51,6 +52,7 @@ class PenyewaActivity : AppCompatActivity(), ItemOnClick {
         peminjamArrayList.add(pengguna)
 
         pengguna=Pengguna(
+            id="",
             email="put@ra.id",
             username = "Putra",
             foto="",
@@ -62,6 +64,7 @@ class PenyewaActivity : AppCompatActivity(), ItemOnClick {
         peminjamArrayList.add(pengguna)
 
         pengguna=Pengguna(
+            id="",
             email="Perdana@pd.com",
             username = "Perdana",
             foto="",

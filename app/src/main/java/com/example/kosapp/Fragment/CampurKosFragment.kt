@@ -1,5 +1,6 @@
 package com.example.kosapp.Fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,19 +8,32 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.kosapp.Activity.DetailSewaKosActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter.ItemOnClick
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.R
 import com.example.kosapp.databinding.FragmentCampurKosBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 
 class CampurKosFragment : Fragment(), ItemOnClick {
 
 
     private lateinit var binding:FragmentCampurKosBinding
-    private lateinit var adapter:HomeKosAdapter
-    private  var kosArraList=ArrayList<Kos>()
+    private  var kosArrayList=ArrayList<Kos>()
+    private lateinit var kos:Kos
+    private var adapter:HomeKosAdapter?=null
+    private var auth= FirebaseAuth.getInstance().currentUser
+    private lateinit var layoutManager: RecyclerView.LayoutManager
+    private var database= Firebase.database.reference
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,58 +46,75 @@ class CampurKosFragment : Fragment(), ItemOnClick {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        addData()
-        adapter= HomeKosAdapter(kosArraList,this)
-        val layoutManager=LinearLayoutManager(activity)
-        binding.rvkoscampur.layoutManager=layoutManager
-        binding.rvkoscampur.adapter=adapter
+        getData()
     }
 
 
-    private fun addData()
+    private fun getData()
     {
-        var kos=Kos(
-            id="12345",
-            nama = "Kos Jaya Makmur",
-            alamat="Jl. Jalan",
-            sisa=3,
-            jenis="Laki-Laki",
-            gambarThumbnail = "hehe",
-            gambarFasilitas = arrayListOf("hehe","hihihi","huhuhu"),
-            biaya=300000.00
-        )
 
-        kosArraList.add(kos)
+        database.child("daftarKos")
+            .addValueEventListener(object:ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
 
-        kos=Kos(
-            id="21345",
-            nama="Kos Strong n independent",
-            jenis = "Perempuan",
-            alamat = "Jl.kaki",
-            sisa=3,
-            gambarThumbnail = "hihi",
-            gambarFasilitas =  arrayListOf("hehe","hihihi","huhuhu"),
-            biaya = 200000.00
-        )
+                    kosArrayList.clear()
+                    binding.rvkoscampur.adapter=null
 
-        kosArraList.add(kos)
+                    snapshot.children.forEach { snap->
+                        snap.children.forEach { snap->
 
-        kos=Kos(
-            id="321292812",
-            nama="Kost Mandiri",
-            alamat = "Jl.Kemana",
-            sisa=3,
-            jenis = "Laki-Laki",
-            gambarThumbnail = "huhahuha",
-            gambarFasilitas = arrayListOf("hihi","hehe","haha"),
-            biaya=100000.00
-        )
+                            if(snap.child("jenis").value.toString()!="Campur")
+                            {
+                                return@forEach
+                            }
 
-        kosArraList.add(kos)
+                            kos=Kos(
+                                id=snap.child("id").value.toString(),
+                                alamat = snap.child("alamat").value.toString(),
+                                biaya = snap.child("biaya").value.toString().toDouble(),
+                                gambarKos = snap.child("gambarkos").value as ArrayList<String>,
+                                gambarThumbnail = snap.child("gambarThumbnail").value.toString(),
+                                jenis=snap.child("jenis").value.toString(),
+                                jenisBayar = snap.child("jenisBayar").value.toString(),
+                                lattitude = snap.child("lattitude").value.toString(),
+                                longitude = snap.child("longitude").value.toString(),
+                                nama = snap.child("nama").value.toString(),
+                                sisa = snap.child("sisa").value.toString().toInt(),
+                                fasilitas=snap.child("fasilitas").value.toString(),
+                                deskripsi=snap.child("deskripsi").value.toString(),
+                            )
+
+                            kosArrayList.add(kos)
+                        }
+                    }
+
+                    adapter= HomeKosAdapter(kosArrayList,this@CampurKosFragment)
+                    layoutManager=LinearLayoutManager(activity)
+                    binding.rvkoscampur.layoutManager=layoutManager
+                    binding.rvkoscampur.adapter=adapter
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
+                }
+
+            })
     }
+
+
 
     override fun onClick(v: View, dataKos: Kos) {
-        Toast.makeText(activity, "Ok", Toast.LENGTH_SHORT).show()
+        if(dataKos.sisa==0)
+        {
+            Toast.makeText(activity, "Mohon Maaf, Kos Sedang Penuh", Toast.LENGTH_SHORT).show()
+        }
+
+        else
+        {
+            val intent=Intent(activity, DetailSewaKosActivity::class.java).putExtra("dataKos", dataKos)
+            startActivity(intent)
+        }
     }
 
 

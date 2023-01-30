@@ -8,26 +8,36 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
 import com.example.kosapp.Activity.MenuChatActivity
 import com.example.kosapp.Adapter.PagerAdapter.HomePagerAdapter
-import com.example.kosapp.Helper.Helper
-import com.example.kosapp.R
+import com.example.kosapp.Helper.Constant
+import com.example.kosapp.Helper.PreferenceManager
 import com.example.kosapp.databinding.FragmentHomeBinding
+import com.example.kosapp.databinding.FragmentTestBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding:FragmentHomeBinding
+    private lateinit var testBinding:FragmentTestBinding
+    private lateinit var preferenceManager: PreferenceManager
+
+
+    private var database=Firebase.database.reference
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding= FragmentHomeBinding.inflate(inflater,container,false)
+        testBinding=FragmentTestBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -35,7 +45,21 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ambilNamaPengguna()
+        preferenceManager=PreferenceManager()
+        preferenceManager.preferenceManager(view.context)
+
+
+        if(preferenceManagerNotValid())
+        {
+            getUser()
+        }
+
+        else
+        {
+            binding.lblnamapengguna.text= "Halo  ${preferenceManager.getString(Constant().KEY_USERNAME)}"
+        }
+
+
 
         binding.viewPager.adapter=HomePagerAdapter(requireActivity())
         TabLayoutMediator(binding.tabLayout,binding.viewPager){tab, index->
@@ -44,6 +68,7 @@ class HomeFragment : Fragment() {
                 1->{"Pria"}
                 2->{"Wanita"}
                 3->{"Campur"}
+                4->{"Test"}
 
 
                 else->{throw Resources.NotFoundException("Posisi Tidak DItemukan")}
@@ -62,6 +87,14 @@ class HomeFragment : Fragment() {
                 2->{
                     Toast.makeText(activity, "Mencari Kos Wanita...", Toast.LENGTH_SHORT).show()
                 }
+                3->{
+                    Toast.makeText(activity, "Mencari Kos Campuran...", Toast.LENGTH_SHORT).show()
+                }
+                4->{
+                    val str="Halo From Test Fragment"
+                    testBinding.lbltestfragment.text=str
+                    Toast.makeText(activity, str, Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -71,20 +104,48 @@ class HomeFragment : Fragment() {
 
     }
 
-    fun ambilNamaPengguna()
+    fun getUser()
     {
-        val email=FirebaseAuth.getInstance().currentUser?.email
-        FirebaseFirestore.getInstance()
-            .collection("pengguna")
-            .whereEqualTo("email",email)
-            .get()
-            .addOnSuccessListener {result->
-                binding.lblnamapengguna.text=" Halo ${result.documents[0].data?.get("username").toString()}"
+        val userId=FirebaseAuth.getInstance().currentUser?.uid
 
-            }
-            .addOnFailureListener {
-                Toast.makeText(activity, "Gagal Mengambil Nama", Toast.LENGTH_SHORT).show()
-            }
+        database.child("user")
+            .child(userId.toString())
+            .addListenerForSingleValueEvent(object:ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if(snapshot.exists())
+                    {
+                        preferenceManager.putString(Constant().KEY_USERNAME,snapshot.child(Constant().KEY_USERNAME).value.toString())
+                        preferenceManager.putString(Constant().KEY_EMAIL,snapshot.child(Constant().KEY_EMAIL).value.toString())
+                        preferenceManager.putString(Constant().KEY_JENIS_KELAMIN,snapshot.child(Constant().KEY_JENIS_KELAMIN).value.toString())
+
+                        binding.lblnamapengguna.text="Halo ${snapshot.child("username").value.toString()}"
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
+                }
+
+            })
+    }
+
+
+    private fun preferenceManagerNotValid():Boolean
+    {
+        var notValid=false
+
+        val preferenceManagerList= arrayListOf(
+            preferenceManager.getString(Constant().KEY_USERNAME),
+            preferenceManager.getString(Constant().KEY_EMAIL),
+            preferenceManager.getString(Constant().KEY_JENIS_KELAMIN)
+        )
+
+        for(i in preferenceManagerList.indices)
+        {
+            if (preferenceManagerList[0].isNullOrEmpty()) return true
+        }
+
+        return notValid
 
     }
 }

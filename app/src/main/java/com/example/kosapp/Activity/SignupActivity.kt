@@ -2,26 +2,27 @@ package com.example.kosapp.Activity
 
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.kosapp.Model.Pengguna
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivitySignupBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
+
 
 class SignupActivity : AppCompatActivity() {
 
@@ -31,8 +32,7 @@ class SignupActivity : AppCompatActivity() {
     private lateinit var pengguna:Pengguna
     private  var storage = FirebaseStorage.getInstance()
     private var auth=FirebaseAuth.getInstance()
-    val firestoreDatabase= Firebase.firestore
-
+    val database=Firebase.database.reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -148,35 +148,48 @@ class SignupActivity : AppCompatActivity() {
     {
         val username=binding.txtusername.text.toString()
         val email=binding.txtemail.text.toString()
-        val noTelp=binding.txtnoTelp.toString()
+        val noTelp=binding.txtnoTelp.text.toString()
         val jenisKelamin=binding.spinnerjk.selectedItem.toString()
         val password=binding.txtpassword.text.toString()
         val formatter=SimpleDateFormat("dd-Mm-yyyy hh:mm:ss")
         val imgName="profileImages/${formatter.format(Date())}${Random().nextInt(1000)}"
 
-        pengguna=Pengguna(
-            username = username,
-            email = email,
-            noTelp = noTelp,
-            jenisKelamin=jenisKelamin,
-            foto=imgName
-        )
 
+        auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener {task->
 
+            val id=task.result.user?.uid
 
-        firestoreDatabase.collection("pengguna")
-            .add(pengguna)
-            .addOnSuccessListener {
+            pengguna=Pengguna(
+                id=id.toString(),
+                username = username,
+                email = email,
+                noTelp = noTelp,
+                jenisKelamin=jenisKelamin,
+                foto=imgName
+            )
 
-                storage.reference.child(imgName).putFile(uri!!)
+            database.child("user")
+                .child(id.toString())
+                .setValue(pengguna)
+                .addOnSuccessListener {
+                    if(uri==null)
+                    {
+                        uri = Uri.parse(
+                            "android.resource://" + (com.example.kosapp.R::class.java.getPackage()
+                                ?.name ) + "/" + R.drawable.kindpng_2855863
+                        )
+                    }
 
-                Toast.makeText(this@SignupActivity, "Sukses Membuat Akun", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this@SignupActivity, SigninActivity::class.java))
-            }
-            .addOnFailureListener {
-                Toast.makeText(this@SignupActivity, it.localizedMessage, Toast.LENGTH_SHORT).show()
-            }
+                    storage.reference.child(imgName).putFile(uri!!)
 
+                    Toast.makeText(this@SignupActivity, "Sukses Membuat Akun", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this@SignupActivity, SigninActivity::class.java))
+                }
+                .addOnFailureListener {exception->
+                    Toast.makeText(this@SignupActivity, exception.message, Toast.LENGTH_SHORT).show()
+                }
+
+        }
 
     }
 
