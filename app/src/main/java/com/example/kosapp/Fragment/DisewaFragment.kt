@@ -17,6 +17,7 @@ import com.example.kosapp.Activity.TestActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.DisewaAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.DisewaAdapter.ItemOnClickDisewa
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
+import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.FragmentDisewaBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -54,6 +55,22 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
     }
 
 
+//    private fun getData()
+//    {
+//        userEmail=auth?.email.toString()
+//        database.child(Constant().DAFTAR_KOS)
+//            .addValueEventListener(object: ValueEventListener{
+//                override fun onDataChange(snapshot: DataSnapshot) {
+//                    Log.d("debug",snapshot.value.toString())
+//                }
+//
+//                override fun onCancelled(error: DatabaseError) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//            })
+//    }
+
     private fun getData()
     {
         userEmail=auth?.email.toString()
@@ -66,10 +83,12 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
                     binding.rvdisewa.adapter=null
 
                     snapshot.children.forEach {snap->
+                        Log.d("snap",snap.value.toString())
                         kos=Kos(
                             id=snap.child("id").value.toString(),
                             alamat = snap.child("alamat").value.toString(),
                             biaya = snap.child("biaya").value.toString().toDouble(),
+                            emailPemilik=snap.child("emailPemilik").value.toString(),
                             gambarKos = snap.child("gambarKos").value as ArrayList<String>,
                             gambarThumbnail = snap.child("gambarThumbnail").value.toString(),
                             jenis=snap.child("jenis").value.toString(),

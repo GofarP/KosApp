@@ -8,6 +8,7 @@ import kotlinx.android.parcel.Parcelize
  data class Kos
      (val id:String,
       val nama:String,
+      val emailPemilik:String,
       val jenis:String,
       val sisa:Int,
       val alamat:String,

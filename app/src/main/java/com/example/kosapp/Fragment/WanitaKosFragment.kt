@@ -80,6 +80,7 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
                                 id=snap.child("id").value.toString(),
                                 alamat = snap.child("alamat").value.toString(),
                                 biaya = snap.child("biaya").value.toString().toDouble(),
+                                emailPemilik=snap.child("emailPemilik").value.toString(),
                                 gambarKos = snap.child("gambarKos").value as ArrayList<String>,
                                 gambarThumbnail = snap.child("gambarThumbnail").value.toString(),
                                 jenis=snap.child("jenis").value.toString(),
@@ -90,6 +91,7 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
                                 sisa = snap.child("sisa").value.toString().toInt(),
                                 fasilitas=snap.child("fasilitas").value.toString(),
                                 deskripsi=snap.child("deskripsi").value.toString(),
+
                             )
 
                             kosArrayList.add(kos)

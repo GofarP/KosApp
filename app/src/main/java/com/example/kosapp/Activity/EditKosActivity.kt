@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
+import com.example.kosapp.Callback.EditKosCallback
+import com.example.kosapp.Callback.SewaKosCallback
 import com.example.kosapp.Helper.Helper
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.R
@@ -54,7 +56,6 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
     private lateinit var dataKosIntent:Intent
 
-
     private var lattitude=""
     private var longitude=""
     private lateinit var alamat:String
@@ -81,12 +82,24 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
         Helper().setStatusBarColor(this@EditKosActivity)
 
-
-
         dataKosIntent=intent
         kos=dataKosIntent.getParcelableExtra("dataKos")!!
 
         setDataEditKos()
+
+        editKosCallback(object :EditKosCallback{
+            override fun setImageList(arrayListImage: ArrayList<SlideModel>) {
+                binding.sliderupload.setImageList(arrayListImage)
+            }
+
+            override fun setImageThumbnail(uri: String) {
+                Glide.with(this@EditKosActivity)
+                    .load(uri)
+                    .into(binding.ivthumbnailkos)
+            }
+
+        })
+
 
         binding.btnedit.setOnClickListener {
             if(!gagalValidasi())
@@ -150,30 +163,6 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
             map.addOnMapClickListener(this)
         }
-
-
-        storage.child(kos.gambarThumbnail)
-            .downloadUrl
-            .addOnSuccessListener { uri->
-                Glide.with(this@EditKosActivity)
-                    .load(uri)
-                    .into(binding.ivthumbnailkos)
-            }
-
-
-        kos.gambarKos.indices.forEachIndexed { _, i ->
-           storage.child(kos.gambarKos[i])
-               .downloadUrl
-               .addOnSuccessListener { uri->
-                    slideArrayList.add(SlideModel(uri.toString(),ScaleTypes.FIT))
-
-                    if(i ==  kos.gambarKos.size -1)
-                    {
-                        binding.sliderupload.setImageList(slideArrayList)
-                    }
-               }
-        }
-
     }
 
 
@@ -260,6 +249,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
             nama=nama,
             alamat = alamat,
             biaya =biaya.toDouble(),
+            emailPemilik=userEmail.toString(),
             jenisBayar=jenisBayar,
             gambarKos =kos.gambarKos,
             gambarThumbnail = gambarThumbnail,
@@ -373,6 +363,51 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     override fun onMapClick(point: LatLng) {
         val intent = Intent(this@EditKosActivity, MapActivity::class.java)
         getLatLong.launch(intent)
+    }
+
+
+    private fun editKosCallback(editKosCallback: EditKosCallback)
+    {
+        kos.gambarKos.indices.forEachIndexed { _, i ->
+            storage.child(kos.gambarKos[i])
+                .downloadUrl
+                .addOnSuccessListener { uri->
+                    slideArrayList.add(SlideModel(uri.toString(),ScaleTypes.FIT))
+                    editKosCallback.setImageList(slideArrayList)
+                }
+        }
+
+        storage.child(kos.gambarThumbnail)
+            .downloadUrl
+            .addOnSuccessListener { uri->
+                editKosCallback.setImageThumbnail(uri.toString())
+            }
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.mapviewtambahkos.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.mapviewtambahkos.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.mapviewtambahkos.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.mapviewtambahkos.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.mapviewtambahkos.onDestroy()
     }
 
 

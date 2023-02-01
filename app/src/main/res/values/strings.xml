@@ -45,5 +45,9 @@
     <string name="text_comment">Komentar Anda</string>
     <string name="hint_ganti_username">Masukkan Username Baru Anda</string>
     <string name="hint_ganti_password">Masukkan Password Baru Anda</string>
+    <string name="text_permintaan_judul">Judul</string>
+    <string name="text_permintaan_terima">Terima</string>
+    <string name="text_permintaan_tola">Tolak</string>
+    <string name="text_permintaan_tanggal">03-03-2003 09:30:25</string>
 
 </resources>

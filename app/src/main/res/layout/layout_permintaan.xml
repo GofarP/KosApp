@@ -1,69 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     >
 
-    <com.google.android.material.card.MaterialCardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10sp"
+        android:layout_margin="10sp"
 
-        <RelativeLayout
-            android:id="@+id/relativelayouttext"
+        >
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
 
-            <TextView
-                android:id="@+id/lblbody"
-                android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/lbljudulpermintaan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_permintaan_judul"
+            android:layout_marginStart="20sp"
+            android:layout_marginTop="20sp"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/lblisipermintaan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_permintaan_judul"
+            android:layout_marginStart="20sp"
+            android:layout_marginTop="15sp"
+            android:textSize="17sp"
+            />
+
+            <Button
+                android:id="@+id/btnterima"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="@string/request_dummy_receiver"
-                android:textColor="@color/black"
-                android:textSize="19dp"
-                android:singleLine="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="20sp"
+                android:layout_marginEnd="20sp"
+                android:layout_marginTop="20sp"
+                style="@style/Button.Ok"
+                android:text="@string/text_permintaan_terima"
                 />
 
             <Button
-                android:id="@+id/btnterimarequest"
-                style="@style/Button.Ok"
-                android:layout_width="wrap_content"
+                android:id="@+id/btntolak"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/lblbody"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20sp"
+                android:layout_marginEnd="20sp"
+                android:text="@string/text_permintaan_tola"
+                style="@style/Button.Cancel"
                 android:layout_marginTop="10dp"
-                android:background="@color/green_ok"
-                android:text="Terima" />
-
-            <Button
-                android:id="@+id/btntolakrequest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_below="@+id/lblbody"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp"
-                android:background="@color/red_cancel"
-                android:text="Tolak"
+                android:layout_marginBottom="10dp"
                 />
 
             <TextView
                 android:id="@+id/lbltanggal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/btntolakrequest"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="10dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="7dp"
                 android:layout_marginEnd="20dp"
-                android:text="03-03-2003 09:30:25"
+                android:text="@string/text_permintaan_tanggal"
                 android:textColor="@color/black"
+                android:layout_marginBottom="20sp"
                 android:textSize="17sp" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

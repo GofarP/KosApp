@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Model.Permintaan
 import com.example.kosapp.databinding.LayoutPermintaanBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class PermintaanAdapter(private var permintaanArrayList:ArrayList<Permintaan>,private val itemClickListner:OnClickListener)
     :RecyclerView.Adapter<PermintaanAdapter.ViewHolder>() {
@@ -14,19 +15,37 @@ class PermintaanAdapter(private var permintaanArrayList:ArrayList<Permintaan>,pr
             :RecyclerView.ViewHolder(layoutPermintaanBinding.root)
         {
                  val binding=layoutPermintaanBinding
+                 val emailUser=FirebaseAuth.getInstance().currentUser?.email.toString()
+                 var isiPermintaan:String?=null
+                 var judulPermintaan:String?=null
 
                  fun bind(dataPermintaan:Permintaan, itemClickListner: OnClickListener)
                  {
+                     judulPermintaan=dataPermintaan.judul
 
                      itemView.apply {
-                         binding.lblbody.text=dataPermintaan.body
+
+                         if(emailUser==dataPermintaan.kepada)
+                         {
+                            isiPermintaan="${dataPermintaan.dari} ${dataPermintaan.isi}"
+                         }
+
+                         else
+                         {
+                             isiPermintaan="Anda ${dataPermintaan.isi}"
+                             binding.btntolak.text="Batalkan"
+                             binding.btnterima.visibility=View.GONE
+                         }
+
+                         binding.lbljudulpermintaan.text=judulPermintaan
+                         binding.lblisipermintaan.text=isiPermintaan
                          binding.lbltanggal.text= dataPermintaan.tanggal.toString()
 
-                         binding.btnterimarequest.setOnClickListener {view->
+                         binding.btnterima.setOnClickListener {view->
                              itemClickListner.onTerimaCLickListener(view, dataPermintaan)
                          }
 
-                         binding.btntolakrequest.setOnClickListener { view->
+                         binding.btntolak.setOnClickListener { view->
                              itemClickListner.onTolakClickListener(view, dataPermintaan)
                          }
                      }

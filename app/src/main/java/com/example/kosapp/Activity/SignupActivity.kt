@@ -10,6 +10,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Model.Pengguna
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivitySignupBinding
@@ -197,7 +198,7 @@ class SignupActivity : AppCompatActivity() {
 
     private fun setSpinner()
     {
-        val arrayJenisKelamin=arrayOf("Pilih Jenis Kelamin","Laki-Laki","Wanita")
+        val arrayJenisKelamin=arrayOf("Pilih Jenis Kelamin",Constant().KEY_PRIA,Constant().KEY_WANITA)
         val arrayAdapter=ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayJenisKelamin)
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerjk.adapter=arrayAdapter

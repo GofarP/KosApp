@@ -37,7 +37,7 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        addData()
+//        addData()
         adapter= MenyewaAdapter(kosArrayList,this)
         var linearLayout=LinearLayoutManager(activity)
         binding.rvmenyewa.layoutManager=linearLayout
@@ -45,62 +45,62 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
 
     }
 
-    private fun addData()
-    {
-        var kos= Kos(
-            id="12345",
-            nama = "Kos Jaya Makmur",
-            alamat="Jl. Jalan",
-            sisa=3,
-            jenis="Laki-Laki",
-            gambarThumbnail = "hehe",
-            gambarKos = arrayListOf("hehe","hihihi","huhuhu"),
-            biaya=300000.00,
-            lattitude = "",
-            longitude = "",
-            jenisBayar = "",
-            fasilitas="",
-            deskripsi="",
-        )
-
-        kosArrayList.add(kos)
-
-        kos= Kos(
-            id="21345",
-            nama="Kos Strong n independent",
-            jenis = "Perempuan",
-            alamat = "Jl.kaki",
-            sisa=3,
-            gambarThumbnail = "hihi",
-            gambarKos =  arrayListOf("hehe","hihihi","huhuhu"),
-            biaya = 200000.00,
-            lattitude = "",
-            longitude = "",
-            jenisBayar = "",
-            fasilitas="",
-            deskripsi="",
-        )
-
-        kosArrayList.add(kos)
-
-        kos= Kos(
-            id="321292812",
-            nama="Kost Mandiri",
-            alamat = "Jl.Kemana",
-            sisa=3,
-            jenis = "Laki-Laki",
-            gambarThumbnail = "huhahuha",
-            gambarKos = arrayListOf("hihi","hehe","haha"),
-            biaya=100000.00,
-            lattitude = "",
-            longitude = "",
-            jenisBayar = "",
-            fasilitas="",
-            deskripsi="",
-        )
-
-        kosArrayList.add(kos)
-    }
+//    private fun addData()
+//    {
+//        var kos= Kos(
+//            id="12345",
+//            nama = "Kos Jaya Makmur",
+//            alamat="Jl. Jalan",
+//            sisa=3,
+//            jenis="Laki-Laki",
+//            gambarThumbnail = "hehe",
+//            gambarKos = arrayListOf("hehe","hihihi","huhuhu"),
+//            biaya=300000.00,
+//            lattitude = "",
+//            longitude = "",
+//            jenisBayar = "",
+//            fasilitas="",
+//            deskripsi="",
+//        )
+//
+//        kosArrayList.add(kos)
+//
+//        kos= Kos(
+//            id="21345",
+//            nama="Kos Strong n independent",
+//            jenis = "Perempuan",
+//            alamat = "Jl.kaki",
+//            sisa=3,
+//            gambarThumbnail = "hihi",
+//            gambarKos =  arrayListOf("hehe","hihihi","huhuhu"),
+//            biaya = 200000.00,
+//            lattitude = "",
+//            longitude = "",
+//            jenisBayar = "",
+//            fasilitas="",
+//            deskripsi="",
+//        )
+//
+//        kosArrayList.add(kos)
+//
+//        kos= Kos(
+//            id="321292812",
+//            nama="Kost Mandiri",
+//            alamat = "Jl.Kemana",
+//            sisa=3,
+//            jenis = "Laki-Laki",
+//            gambarThumbnail = "huhahuha",
+//            gambarKos = arrayListOf("hihi","hehe","haha"),
+//            biaya=100000.00,
+//            lattitude = "",
+//            longitude = "",
+//            jenisBayar = "",
+//            fasilitas="",
+//            deskripsi="",
+//        )
+//
+//        kosArrayList.add(kos)
+//    }
 
     override fun OnSelengkapnyaClick(v: View, dataKos: Kos) {
       startActivity(Intent(activity, DetailKosSayaActivity::class.java))

@@ -65,7 +65,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
     private fun getData()
     {
 
-        database.child("daftarKos")
+        database.child(Constant().DAFTAR_KOS)
             .addValueEventListener(object:ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
 
@@ -79,6 +79,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                                id=snap.child("id").value.toString(),
                                alamat = snap.child("alamat").value.toString(),
                                biaya = snap.child("biaya").value.toString().toDouble(),
+                               emailPemilik=snap.child("emailPemilik").value.toString(),
                                gambarKos = snap.child("gambarKos").value as ArrayList<String>,
                                gambarThumbnail = snap.child("gambarThumbnail").value.toString(),
                                jenis=snap.child("jenis").value.toString(),
@@ -120,9 +121,9 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
             Toast.makeText(activity, "Mohon Maaf, Kos Sedang Penuh", Toast.LENGTH_SHORT).show()
         }
 
-        else if(dataKos.jenis != jenisKelaminUser)
+        else if(dataKos.jenis != jenisKelaminUser && dataKos.jenis!="Campur")
         {
-            Toast.makeText(activity, "Jenis Kelamin Anda Tidak Cocok Untuk Kos Ini", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, "Jenis Kelamin Anda Tidak Cocok Untuk Kos Ini $jenisKelaminUser", Toast.LENGTH_SHORT).show()
         }
 
         else

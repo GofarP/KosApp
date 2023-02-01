@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -23,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.annotations.Marker
 import com.mapbox.mapboxsdk.annotations.MarkerOptions
@@ -42,7 +40,7 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
     private var uriThumbnail: Uri?=null
     private var sliderUri:Uri?=null
     private var database=Firebase.database.reference
-    private var firebaseAuth=FirebaseAuth.getInstance()
+    private var auth=FirebaseAuth.getInstance()
     private var firebaseStorage=FirebaseStorage.getInstance().reference
 
     private val slideImageArrayList=ArrayList<SlideModel>()
@@ -99,7 +97,7 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
         binding.btntambah.setOnClickListener {
             if(!gagalValidasi())
             {
-                val userEmail=firebaseAuth.currentUser?.email
+                val userEmail=auth.currentUser?.email
 
 
                 val kosId=UUID.randomUUID().toString()
@@ -122,6 +120,7 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                 val kos=Kos(
                     id=kosId,
                     nama=namaKos,
+                    emailPemilik=auth.currentUser?.email.toString(),
                     alamat = alamat,
                     biaya =biaya.toDouble(),
                     jenisBayar=jenisBayar,

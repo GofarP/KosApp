@@ -59,7 +59,7 @@
 
         <Button
             android:id="@+id/btncancel"
-            style="@style/Button.Ok"
+            style="@style/Button.Cancel"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"

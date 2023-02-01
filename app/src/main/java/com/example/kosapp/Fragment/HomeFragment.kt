@@ -116,9 +116,9 @@ class HomeFragment : Fragment() {
                     {
                         preferenceManager.putString(Constant().KEY_USERNAME,snapshot.child(Constant().KEY_USERNAME).value.toString())
                         preferenceManager.putString(Constant().KEY_EMAIL,snapshot.child(Constant().KEY_EMAIL).value.toString())
-                        preferenceManager.putString(Constant().KEY_JENIS_KELAMIN,snapshot.child(Constant().KEY_JENIS_KELAMIN).value.toString())
+                        preferenceManager.putString(Constant().KEY_JENIS_KELAMIN,snapshot.child("jenisKelamin").value.toString())
 
-                        binding.lblnamapengguna.text="Halo ${snapshot.child("username").value.toString()}"
+                        binding.lblnamapengguna.text="Halo ${snapshot.child(Constant().KEY_USERNAME).value.toString()}"
                     }
                 }
 

@@ -84,6 +84,7 @@ class PriaKosFragment : Fragment(), ItemOnClick {
                             kos=Kos(
                                 id=snap.child("id").value.toString(),
                                 alamat = snap.child("alamat").value.toString(),
+                                emailPemilik=snap.child("emailPemilik").value.toString(),
                                 biaya = snap.child("biaya").value.toString().toDouble(),
                                 gambarKos = snap.child("gambarKos").value as ArrayList<String>,
                                 gambarThumbnail = snap.child("gambarThumbnail").value.toString(),

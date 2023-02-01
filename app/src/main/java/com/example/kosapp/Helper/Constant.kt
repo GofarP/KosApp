@@ -1,6 +1,9 @@
 package com.example.kosapp.Helper
 
+import com.example.kosapp.Model.History
+
 class Constant {
+
     val KEY_USERNAME="username"
     val KEY_EMAIL="email"
     val KEY_JENIS_KELAMIN="jenisKelamin"
@@ -15,6 +18,7 @@ class Constant {
 
     val ID_KOS="id"
     val NAMA_KOS="nama"
+    val EMAIL_PEMILIK="emailPemilik"
     val ALAMAT_KOS="alamat"
     val BIAYA_KOS="biaya"
     val JENIS_BAYAR_KOS="jenisBayar"
@@ -33,7 +37,20 @@ class Constant {
     val DAFTAR_SEWA_KOS="daftarSewa"
     val DAFTAR_KOS="daftarKos"
     val USER="user"
+
     val PERMINTAAN="permintaan"
+    val ID_PERMINTAAN="idPermintaan"
+    val JUDUL="judul"
+    val ISI="isi"
+    val DARI="dari"
+    val KEPADA="kepada"
+    val TANGGAL="tanggal"
+
+    val HISTORY="history"
+    val ID_HISTORY="idHistory"
+    val TYPE="tipe"
+
+
 
 
 }

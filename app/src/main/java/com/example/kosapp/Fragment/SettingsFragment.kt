@@ -14,6 +14,7 @@ import com.example.kosapp.Adapter.RecyclerviewAdapter.SettingsAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.SettingsAdapter.ItemOnClick
 import com.example.kosapp.Activity.ProfileActivity
 import com.example.kosapp.Activity.SigninActivity
+import com.example.kosapp.Helper.PreferenceManager
 import com.example.kosapp.databinding.FragmentSettingsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -33,6 +34,7 @@ class SettingsFragment : Fragment(), ItemOnClick {
     private var auth=FirebaseAuth.getInstance().currentUser
     private var storage=FirebaseStorage.getInstance().reference
     private var database=Firebase.database.reference
+    private lateinit var preferenceManager:PreferenceManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +50,10 @@ class SettingsFragment : Fragment(), ItemOnClick {
 
         addSettings()
         getDataProfile()
+
+        preferenceManager= PreferenceManager()
+        preferenceManager.preferenceManager(view.context)
+
 
     }
 
@@ -107,6 +113,7 @@ class SettingsFragment : Fragment(), ItemOnClick {
 
             "Logout"->{
                 FirebaseAuth.getInstance().signOut()
+                preferenceManager.clear()
                 Toast.makeText(activity, "Sukses Logout", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(activity,SigninActivity::class.java))
                 activity?.finish()
