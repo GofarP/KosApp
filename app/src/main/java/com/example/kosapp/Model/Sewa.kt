@@ -1,4 +1,6 @@
 package com.example.kosapp.Model
 
-class Sewa {
-}
+data class Sewa(
+    val idSewa:String,
+    val email:String
+)

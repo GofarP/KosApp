@@ -49,14 +49,11 @@ class PermintaanAdapter(private var permintaanArrayList:ArrayList<Permintaan>,pr
                              itemClickListner.onTolakClickListener(view, dataPermintaan)
                          }
                      }
-
                  }
-
             }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val bind=LayoutPermintaanBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-
         return ViewHolder(bind)
     }
 

@@ -15,6 +15,7 @@ import com.example.kosapp.Callback.PermintaanCallback
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Model.History
 import com.example.kosapp.Model.Permintaan
+import com.example.kosapp.Model.Sewa
 import com.example.kosapp.databinding.FragmentPermintaanBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -35,6 +36,9 @@ class PermintaanFragment : Fragment(), OnClickListener {
     private var emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
     private var permintaanArrayList=ArrayList<Permintaan>()
     private lateinit var permintaan: Permintaan
+    private lateinit var sewa: Sewa
+    private lateinit var history: History
+
     private var pengirim=false
 
     override fun onCreateView(
@@ -107,11 +111,42 @@ class PermintaanFragment : Fragment(), OnClickListener {
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach {snap->
-                        if(snap.child("idPermintaan").value.toString()==permintaanId)
+                        if(snap.child(Constant().ID_PERMINTAAN).value.toString()==permintaanId)
                         {
                             snap.ref.removeValue()
                                 .addOnSuccessListener {
+
+                                    sewa=Sewa(
+                                        idSewa = UUID.randomUUID().toString(),
+                                        email=permintaan.dari
+                                    )
+
+                                    history=History(
+                                        dari=emailPengguna,
+                                        historyId = UUID.randomUUID().toString(),
+                                        isi="Permintaan Sewa Diterima",
+                                        judul="Permintaan Sewa",
+                                        kepada=permintaan.dari,
+                                        tanggal=Date(),
+                                        tipe=Constant().TERIMA_SEWA
+                                    )
+
+                                    database.child(Constant().DAFTAR_SEWA_KOS)
+                                        .child(permintaan.idKos)
+                                        .child(permintaan.dari)
+                                        .setValue(sewa)
+
+                                    database.child(Constant().HISTORY)
+                                        .push()
+                                        .setValue(history)
+
+//                                    database.child(Constant().DAFTAR_KOS)
+//                                        .child(emailPengguna)
+//                                        .child(Constant().JUMLAH_KAMAR_KOS)
+//
+
                                     Toast.makeText(activity, "Sukses Menerima Permintaan", Toast.LENGTH_SHORT).show()
+
                                 }
                                 .addOnFailureListener {error->
                                     Toast.makeText(activity, "Gagal Menerima Permintaan", Toast.LENGTH_SHORT).show()
@@ -133,16 +168,16 @@ class PermintaanFragment : Fragment(), OnClickListener {
             .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach {snap->
-                        if(snap.child("idPermintaan").value.toString()==permintaanId)
+                        if(snap.child(Constant().ID_PERMINTAAN).value.toString()==permintaanId)
                         {
                            snap.ref.removeValue()
                                .addOnSuccessListener {
 
                                    val history=History(
                                        historyId=UUID.randomUUID().toString(),
-                                       judul = "Permintaan Sewa Ditolak",
-                                       isi = "Permintaan Sewa Kos Anda Ditolak",
-                                       tipe="permintaan sewa",
+                                       judul = "Permintaan Sewa Dibatalkan",
+                                       isi = "Anda Membatalkan Permintaan Sewa",
+                                       tipe=Constant().BATAL_SEWA,
                                        dari=emailPengguna,
                                        kepada=permintaan.dari,
                                        tanggal=Date()
@@ -168,12 +203,59 @@ class PermintaanFragment : Fragment(), OnClickListener {
             })
     }
 
+
+    private fun batalkanPermintaan(idPermintaan: String)
+    {
+        database.child(Constant().PERMINTAAN)
+            .addValueEventListener(object :ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach { snap->
+                        if(snap.child(Constant().ID_PERMINTAAN).value.toString()==idPermintaan)
+                        {
+                            snap.ref.removeValue()
+                                .addOnSuccessListener {
+
+                                    val history=History(
+                                        historyId=UUID.randomUUID().toString(),
+                                        judul = "Permintaan Sewa Ditolak",
+                                        isi = "Permintaan Sewa Kos Anda Ditolak",
+                                        tipe="permintaan sewa",
+                                        dari=emailPengguna,
+                                        kepada=permintaan.dari,
+                                        tanggal=Date()
+                                    )
+
+                                    database.child(Constant().HISTORY)
+                                        .push()
+                                        .setValue(history)
+
+                                    Toast.makeText(activity, "Sukses Membatalkan Permintaan", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+            })
+    }
+
     override fun onTerimaCLickListener(view: View, dataPermintaan: Permintaan) {
         terimaPermintaan(dataPermintaan.idPermintaan)
     }
 
     override fun onTolakClickListener(view: View, dataPermintaan: Permintaan) {
-        tolakPermintaan(dataPermintaan.idPermintaan)
+        if(dataPermintaan.dari==emailPengguna)
+        {
+            batalkanPermintaan(dataPermintaan.idPermintaan)
+        }
+
+        else
+        {
+            tolakPermintaan(dataPermintaan.idPermintaan)
+        }
     }
 
 

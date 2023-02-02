@@ -50,7 +50,9 @@ class Constant {
     val ID_HISTORY="idHistory"
     val TYPE="tipe"
 
-
+    val TERIMA_SEWA="terima sewa"
+    val BATAL_SEWA="batal sewa"
+    val TOLAK_SEWA="tolak sewa"
 
 
 }

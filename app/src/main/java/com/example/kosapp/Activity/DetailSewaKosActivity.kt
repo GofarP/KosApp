@@ -85,7 +85,6 @@ class DetailSewaKosActivity : AppCompatActivity() {
 
             else
             {
-                Toast.makeText(this@DetailSewaKosActivity, "Menagjukan Permintaan Untuk Menyewa Kos", Toast.LENGTH_SHORT).show()
                 sewaKos()
             }
 
@@ -111,9 +110,17 @@ class DetailSewaKosActivity : AppCompatActivity() {
             isi ="Mengajukan Permintaan Untuk Menyewa Kos",
             tanggal = Date()
         )
+
         database.child(Constant().PERMINTAAN)
             .push()
             .ref.setValue(permintaan)
+            .addOnSuccessListener {
+
+                Toast.makeText(this@DetailSewaKosActivity, "Sukses Mengajukan Permintaan Untuk Menyewa Kos", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this@DetailSewaKosActivity, "Gagal Mengajukan Permintaan Untuk Menyewa Kos", Toast.LENGTH_SHORT).show()
+            }
     }
 
 
