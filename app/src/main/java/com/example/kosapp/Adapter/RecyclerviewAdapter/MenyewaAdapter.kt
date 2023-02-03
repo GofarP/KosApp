@@ -1,20 +1,25 @@
 package com.example.kosapp.Adapter.RecyclerviewAdapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Model.Kos
+import com.example.kosapp.Model.Sewa
 import com.example.kosapp.databinding.LayoutKosMenyewaBinding
+import com.google.firebase.storage.FirebaseStorage
 
 class MenyewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickMenyewakan: ItemOnCLickMenyewa)
     :RecyclerView.Adapter<MenyewaAdapter.ViewHolderDisewa>() {
 
 
-
         class ViewHolderDisewa(layoutMenyewaBinding: LayoutKosMenyewaBinding)
             :RecyclerView.ViewHolder(layoutMenyewaBinding.root) {
                 private val binding=layoutMenyewaBinding
+                private val storage=FirebaseStorage.getInstance().reference
 
                  fun bind(dataKos:Kos, itemAdapterCallback:ItemOnCLickMenyewa)
                  {
@@ -22,6 +27,14 @@ class MenyewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickMe
                          binding.lblnama.text=dataKos.nama
                          binding.lblalamat.text=dataKos.alamat
 
+                         storage.child(dataKos.gambarThumbnail)
+                             .downloadUrl.addOnSuccessListener { url->
+                             Glide.with(this.context)
+                                 .load(url)
+                                 .into(binding.ivkos)
+                         }.addOnFailureListener {
+                             Log.d("Failed", it.message.toString())
+                         }
 
                          binding.btnselengkapnya.setOnClickListener {view->
                              itemAdapterCallback.OnSelengkapnyaClick(view, dataKos)

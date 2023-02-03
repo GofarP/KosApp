@@ -7,5 +7,5 @@ data class Comment(
     var namaPengguna: String,
     var gambar:String,
     var comment: String,
-    var tanggal:Date
+    var tanggal:String
 )

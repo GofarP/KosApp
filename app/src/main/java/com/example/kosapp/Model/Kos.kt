@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
  data class Kos
-     (val id:String,
+     (val idKos:String,
       val nama:String,
       val emailPemilik:String,
       val jenis:String,

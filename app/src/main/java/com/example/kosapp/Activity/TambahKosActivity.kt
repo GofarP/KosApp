@@ -118,7 +118,7 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                 }
 
                 val kos=Kos(
-                    id=kosId,
+                    idKos=kosId,
                     nama=namaKos,
                     emailPemilik=auth.currentUser?.email.toString(),
                     alamat = alamat,
@@ -135,8 +135,7 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                 )
 
 
-                database.child("daftarKos")
-                    .child(userEmail.toString().replace(".",","))
+                database.child(Constant().DAFTAR_KOS)
                     .child(kosId)
                     .setValue(kos)
                     .addOnSuccessListener {

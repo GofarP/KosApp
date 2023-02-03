@@ -49,67 +49,55 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        getData()
+        getDataKos()
 
         preferenceManager= PreferenceManager()
         preferenceManager.preferenceManager(view.context)
 
-        homeKosAdapter= HomeKosAdapter(kosArrayList, this)
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
-        binding.rvkossemua.layoutManager=layoutManager
-        binding.rvkossemua.adapter=homeKosAdapter
 
     }
 
 
-    private fun getData()
-    {
+        private fun getDataKos()
+        {
+            database.child(Constant().DAFTAR_KOS)
+                .addValueEventListener(object :ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        kosArrayList.clear()
+                        binding.rvkossemua.adapter=null
 
-        database.child(Constant().DAFTAR_KOS)
-            .addValueEventListener(object:ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
+                        snapshot.children.forEach { snap->
+                            kos=Kos(
+                                idKos=snap.child(Constant().ID_KOS).value.toString(),
+                                alamat = snap.child(Constant().ALAMAT_KOS).value.toString(),
+                                biaya = snap.child(Constant().BIAYA_KOS).value.toString().toDouble(),
+                                emailPemilik=snap.child(Constant().EMAIL_PEMILIK).value.toString(),
+                                gambarKos = snap.child(Constant().GAMBAR_KOS).value as ArrayList<String>,
+                                gambarThumbnail = snap.child(Constant().GAMBAR_THUMBNAIL_KOS).value.toString(),
+                                jenis=snap.child(Constant().JENIS_KOS).value.toString(),
+                                jenisBayar = snap.child(Constant().JENIS_BAYAR_KOS).value.toString(),
+                                lattitude = snap.child(Constant().LATTITUDE_KOS).value.toString(),
+                                longitude = snap.child(Constant().LONGITUDE_KOS).value.toString(),
+                                nama = snap.child(Constant().NAMA_KOS).value.toString(),
+                                sisa = snap.child(Constant().JUMLAH_KAMAR_KOS).value.toString().toInt(),
+                                fasilitas=snap.child(Constant().FASILITAS).value.toString(),
+                                deskripsi=snap.child(Constant().DESKRIPSI).value.toString(),
+                            )
+                            kosArrayList.add(kos)
+                        }
 
-                    kosArrayList.clear()
-                    binding.rvkossemua.adapter=null
-
-                    snapshot.children.forEach { snap->
-                       snap.children.forEach { snap->
-
-                           kos=Kos(
-                               id=snap.child("id").value.toString(),
-                               alamat = snap.child("alamat").value.toString(),
-                               biaya = snap.child("biaya").value.toString().toDouble(),
-                               emailPemilik=snap.child("emailPemilik").value.toString(),
-                               gambarKos = snap.child("gambarKos").value as ArrayList<String>,
-                               gambarThumbnail = snap.child("gambarThumbnail").value.toString(),
-                               jenis=snap.child("jenis").value.toString(),
-                               jenisBayar = snap.child("jenisBayar").value.toString(),
-                               lattitude = snap.child("lattitude").value.toString(),
-                               longitude = snap.child("longitude").value.toString(),
-                               nama = snap.child("nama").value.toString(),
-                               sisa = snap.child("sisa").value.toString().toInt(),
-                               fasilitas=snap.child("fasilitas").value.toString(),
-                               deskripsi=snap.child("deskripsi").value.toString(),
-                           )
-
-                           kosArrayList.add(kos)
-                       }
+                        homeKosAdapter= HomeKosAdapter(kosArrayList,this@SemuaKosFragment)
+                        layoutManager=LinearLayoutManager(activity)
+                        binding.rvkossemua.layoutManager=layoutManager
+                        binding.rvkossemua.adapter=homeKosAdapter
                     }
 
-                    homeKosAdapter= HomeKosAdapter(kosArrayList,this@SemuaKosFragment)
-                    layoutManager=LinearLayoutManager(activity)
-                    binding.rvkossemua.layoutManager=layoutManager
-                    binding.rvkossemua.adapter=homeKosAdapter
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
-                }
-
-            })
-    }
-
+                })
+        }
 
 
     override fun onClick(v: View, dataKos: Kos) {

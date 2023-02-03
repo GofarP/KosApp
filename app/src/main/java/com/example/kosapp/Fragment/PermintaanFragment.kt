@@ -20,9 +20,11 @@ import com.example.kosapp.databinding.FragmentPermintaanBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -38,8 +40,9 @@ class PermintaanFragment : Fragment(), OnClickListener {
     private lateinit var permintaan: Permintaan
     private lateinit var sewa: Sewa
     private lateinit var history: History
-
-    private var pengirim=false
+    private lateinit var format:SimpleDateFormat
+    private var calendar=Calendar.getInstance()
+    private lateinit var tanggalHariIni:String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,6 +55,10 @@ class PermintaanFragment : Fragment(), OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        tanggalHariIni=SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(calendar.time)
+
+        format= SimpleDateFormat("dd-MM-yyyy HH:mm:ss",Locale.getDefault())
 
         getPermintaan(object: PermintaanCallback{
             override fun getData(arrayListPermintaan: ArrayList<Permintaan>) {
@@ -71,10 +78,11 @@ class PermintaanFragment : Fragment(), OnClickListener {
         database.child(Constant().PERMINTAAN)
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    snapshot.children.forEach { snap->
 
-                            permintaanArrayList.clear()
-                            binding.rvpermintaan.adapter=null
+                    permintaanArrayList.clear()
+                    binding.rvpermintaan.adapter=null
+
+                    snapshot.children.forEach { snap->
 
                             val emailChildKepada=snap.child(Constant().KEPADA).value.toString()
                             val emailChildDari=snap.child(Constant().DARI).value.toString()
@@ -89,7 +97,7 @@ class PermintaanFragment : Fragment(), OnClickListener {
                                     judul=snap.child(Constant().JUDUL).value.toString(),
                                     kepada = snap.child(Constant().KEPADA).value.toString(),
                                     namaKos = snap.child(Constant().NAMA_KOS).value.toString(),
-                                    tanggal =  Date()
+                                    tanggal =  tanggalHariIni
                                 )
                                 permintaanArrayList.add(permintaan)
                                 permintaanCallback.getData(permintaanArrayList)
@@ -107,6 +115,7 @@ class PermintaanFragment : Fragment(), OnClickListener {
 
     private fun terimaPermintaan(permintaanId: String)
     {
+
         database.child(Constant().PERMINTAAN)
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -118,7 +127,9 @@ class PermintaanFragment : Fragment(), OnClickListener {
 
                                     sewa=Sewa(
                                         idSewa = UUID.randomUUID().toString(),
-                                        email=permintaan.dari
+                                        email=permintaan.dari,
+                                        tanggal=tanggalHariIni,
+                                        idKos = permintaan.idKos
                                     )
 
                                     history=History(
@@ -127,13 +138,12 @@ class PermintaanFragment : Fragment(), OnClickListener {
                                         isi="Permintaan Sewa Diterima",
                                         judul="Permintaan Sewa",
                                         kepada=permintaan.dari,
-                                        tanggal=Date(),
+                                        tanggal=tanggalHariIni,
                                         tipe=Constant().TERIMA_SEWA
                                     )
 
                                     database.child(Constant().DAFTAR_SEWA_KOS)
-                                        .child(permintaan.idKos)
-                                        .child(permintaan.dari)
+                                        .push()
                                         .setValue(sewa)
 
                                     database.child(Constant().HISTORY)
@@ -141,8 +151,9 @@ class PermintaanFragment : Fragment(), OnClickListener {
                                         .setValue(history)
 
 //                                    database.child(Constant().DAFTAR_KOS)
-//                                        .child(emailPengguna)
+//                                        .child(emailPengguna.replace(".",","))
 //                                        .child(Constant().JUMLAH_KAMAR_KOS)
+//                                        .setValue(ServerValue.increment(-1))
 //
 
                                     Toast.makeText(activity, "Sukses Menerima Permintaan", Toast.LENGTH_SHORT).show()
@@ -180,7 +191,7 @@ class PermintaanFragment : Fragment(), OnClickListener {
                                        tipe=Constant().BATAL_SEWA,
                                        dari=emailPengguna,
                                        kepada=permintaan.dari,
-                                       tanggal=Date()
+                                       tanggal=tanggalHariIni
                                    )
                                    database.child(Constant().HISTORY)
                                        .push()
@@ -217,12 +228,12 @@ class PermintaanFragment : Fragment(), OnClickListener {
 
                                     val history=History(
                                         historyId=UUID.randomUUID().toString(),
-                                        judul = "Permintaan Sewa Ditolak",
-                                        isi = "Permintaan Sewa Kos Anda Ditolak",
-                                        tipe="permintaan sewa",
+                                        judul = "Permintaan Sewa Dibatalkan",
+                                        isi = "Anda Membatalkan Permintaan Sewa Kos ${permintaan.namaKos}",
+                                        tipe=Constant().BATAL_SEWA,
                                         dari=emailPengguna,
                                         kepada=permintaan.dari,
-                                        tanggal=Date()
+                                        tanggal=tanggalHariIni
                                     )
 
                                     database.child(Constant().HISTORY)

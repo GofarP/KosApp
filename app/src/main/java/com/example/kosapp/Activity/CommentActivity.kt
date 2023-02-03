@@ -9,6 +9,7 @@ import com.example.kosapp.R
 import com.example.kosapp.Helper.Helper
 import com.example.kosapp.Model.Comment
 import com.example.kosapp.databinding.ActivityCommentBinding
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -18,10 +19,16 @@ class CommentActivity : AppCompatActivity() {
     private var commentArrayList=ArrayList<Comment>()
     private lateinit var commentAdapter:CommentAdapter
 
+    private var calendar=Calendar.getInstance()
+
+    private lateinit var tanggalHariIni: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bind=ActivityCommentBinding.inflate(layoutInflater)
         setContentView(bind.root)
+
+        tanggalHariIni=SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(calendar.time)
 
         Helper().setStatusBarColor(this@CommentActivity)
 
@@ -55,7 +62,7 @@ class CommentActivity : AppCompatActivity() {
             namaPengguna = "Gopro 123",
             gambar="",
             comment = "Kos nya bau kelabang, udah gitu pengap lagi, duh.",
-            tanggal = Date()
+            tanggal = tanggalHariIni
         )
 
         commentArrayList.add(comment)
@@ -66,7 +73,7 @@ class CommentActivity : AppCompatActivity() {
             namaPengguna = "xxPutraxx",
             gambar="",
             comment = "Kosnya nyaman banget... et tapi boong",
-            tanggal = Date()
+            tanggal = tanggalHariIni
         )
 
         commentArrayList.add(comment)
@@ -76,7 +83,7 @@ class CommentActivity : AppCompatActivity() {
             namaPengguna = "Perdana aja",
             gambar="",
             comment = "Ya lumayanlah, sesuai dengan harga",
-            tanggal = Date()
+            tanggal = tanggalHariIni
         )
 
         commentArrayList.add(comment)

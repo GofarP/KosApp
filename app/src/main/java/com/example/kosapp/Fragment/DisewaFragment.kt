@@ -10,13 +10,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kosapp.Activity.DetailSewaKosActivity
 import com.example.kosapp.Activity.EditKosActivity
 import com.example.kosapp.Activity.PenyewaActivity
-import com.example.kosapp.Activity.TestActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.DisewaAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.DisewaAdapter.ItemOnClickDisewa
-import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.FragmentDisewaBinding
@@ -38,7 +35,7 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
     private var auth=FirebaseAuth.getInstance().currentUser
     private var database= Firebase.database.reference
     private lateinit var kos:Kos
-    private var userEmail=""
+    private var emailPengguna=""
     private var storage=FirebaseStorage.getInstance().reference
 
     override fun onCreateView(
@@ -54,51 +51,40 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
         getData()
     }
 
-
-//    private fun getData()
-//    {
-//        userEmail=auth?.email.toString()
-//        database.child(Constant().DAFTAR_KOS)
-//            .addValueEventListener(object: ValueEventListener{
-//                override fun onDataChange(snapshot: DataSnapshot) {
-//                    Log.d("debug",snapshot.value.toString())
-//                }
-//
-//                override fun onCancelled(error: DatabaseError) {
-//                    TODO("Not yet implemented")
-//                }
-//
-//            })
-//    }
-
     private fun getData()
     {
-        userEmail=auth?.email.toString()
-        database.child("daftarKos")
-            .child(userEmail.replace(".",","))
+        emailPengguna=auth?.email.toString()
+
+        database.child(Constant().DAFTAR_KOS)
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
 
                     kosArrayList.clear()
                     binding.rvdisewa.adapter=null
 
+
                     snapshot.children.forEach {snap->
-                        Log.d("snap",snap.value.toString())
+
+                        if(snap.child(Constant().EMAIL_PEMILIK).value.toString()!=emailPengguna)
+                        {
+                            return@forEach
+                        }
+
                         kos=Kos(
-                            id=snap.child("id").value.toString(),
-                            alamat = snap.child("alamat").value.toString(),
-                            biaya = snap.child("biaya").value.toString().toDouble(),
-                            emailPemilik=snap.child("emailPemilik").value.toString(),
-                            gambarKos = snap.child("gambarKos").value as ArrayList<String>,
-                            gambarThumbnail = snap.child("gambarThumbnail").value.toString(),
-                            jenis=snap.child("jenis").value.toString(),
-                            jenisBayar = snap.child("jenisBayar").value.toString(),
-                            lattitude = snap.child("lattitude").value.toString(),
-                            longitude = snap.child("longitude").value.toString(),
-                            nama = snap.child("nama").value.toString(),
-                            sisa = snap.child("sisa").value.toString().toInt(),
-                            fasilitas=snap.child("fasilitas").value.toString(),
-                            deskripsi=snap.child("deskripsi").value.toString(),
+                            idKos=snap.child(Constant().ID_KOS).value.toString(),
+                            alamat = snap.child(Constant().ALAMAT_KOS).value.toString(),
+                            biaya = snap.child(Constant().BIAYA_KOS).value.toString().toDouble(),
+                            emailPemilik=snap.child(Constant().EMAIL_PEMILIK).value.toString(),
+                            gambarKos = snap.child(Constant().GAMBAR_KOS).value as ArrayList<String>,
+                            gambarThumbnail = snap.child(Constant().GAMBAR_THUMBNAIL_KOS).value.toString(),
+                            jenis=snap.child(Constant().JENIS_KOS).value.toString(),
+                            jenisBayar = snap.child(Constant().JENIS_BAYAR_KOS).value.toString(),
+                            lattitude = snap.child(Constant().LATTITUDE_KOS).value.toString(),
+                            longitude = snap.child(Constant().LONGITUDE_KOS).value.toString(),
+                            nama = snap.child(Constant().NAMA_KOS).value.toString(),
+                            sisa = snap.child(Constant().JUMLAH_KAMAR_KOS).value.toString().toInt(),
+                            fasilitas=snap.child(Constant().FASILITAS).value.toString(),
+                            deskripsi=snap.child(Constant().DESKRIPSI).value.toString(),
                         )
 
                         kosArrayList.add(kos)
@@ -125,10 +111,10 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
     }
 
     override fun OnDeleteClick(v: View, dataKos: Kos) {
-        userEmail= auth?.email.toString()
+        emailPengguna= auth?.email.toString()
         database.child("daftarKos")
-            .child(userEmail.replace(".",","))
-            .child(dataKos.id)
+            .child(emailPengguna.replace(".",","))
+            .child(dataKos.idKos)
             .removeValue()
             .addOnSuccessListener {
 

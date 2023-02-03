@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -28,13 +29,18 @@ class HistoryActivity : AppCompatActivity() {
     private var database=Firebase.database.reference
     private var emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
     private lateinit var history:History
+    private var calendar=Calendar.getInstance()
+    private lateinit var tglHariIni:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivityHistoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        tglHariIni=SimpleDateFormat("dd-MM-yy HH:mm:ss", Locale.getDefault()).format(calendar.time)
+
         Helper().setStatusBarColor(this@HistoryActivity)
+
 
         getDataHistory()
         adapter=HistoryAdapter(historyList)
@@ -49,6 +55,9 @@ class HistoryActivity : AppCompatActivity() {
             .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
 
+                    historyList.clear()
+                    binding.rvhistory.adapter=null
+
                     snapshot.children.forEach { snap->
                         val childDari=snap.child(Constant().DARI).value.toString()
                         val childKepada=snap.child(Constant().KEPADA).value.toString()
@@ -62,7 +71,7 @@ class HistoryActivity : AppCompatActivity() {
                                 judul=snap.child(Constant().JUDUL).value.toString(),
                                 isi = snap.child(Constant().ISI).value.toString(),
                                 tipe = snap.child(Constant().TYPE).value.toString(),
-                                tanggal = Date()
+                                tanggal = snap.child(Constant().TANGGAL).value.toString()
                             )
 
                             historyList.add(history)

@@ -174,7 +174,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         biaya=binding.txtalamatkos.text.trim().toString()
         deskripsi=binding.txtdeskripsi.text.trim().toString()
         fasilitas=binding.txtfasilitas.text.trim().toString()
-        kosId=kos.id
+        kosId=kos.idKos
         jenis=binding.spnjeniskos.selectedItemPosition
         jenisBayar=binding.spnjenisbayar.selectedItemPosition
         nama=binding.txtnamakos.text.trim().toString()
@@ -237,7 +237,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         biaya=binding.txtharga.text.trim().toString()
         deskripsi=binding.txtdeskripsi.text.trim().toString()
         fasilitas=binding.txtfasilitas.text.trim().toString()
-        kosId=kos.id
+        kosId=kos.idKos
         val jenis=binding.spnjeniskos.selectedItem.toString()
         val jenisBayar=binding.spnjenisbayar.selectedItem.toString()
         nama=binding.txtnamakos.text.trim().toString()
@@ -245,7 +245,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
 
         kos=Kos(
-            id=kosId,
+            idKos=kosId,
             nama=nama,
             alamat = alamat,
             biaya =biaya.toDouble(),
@@ -262,7 +262,6 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         )
 
         database.child("daftarKos")
-            .child(userEmail.toString().replace(".",","))
             .child(kosId)
             .setValue(kos)
             .addOnSuccessListener {
@@ -293,7 +292,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     {result->
         if(result.resultCode== RESULT_OK)
         {
-            gambarThumbnail="thumbnailKos/${kos.id}/${UUID.randomUUID()}"
+            gambarThumbnail="thumbnailKos/${kos.idKos}/${UUID.randomUUID()}"
             thumbnailBaru=true
             uriThumbail=result.data?.data
             binding.ivthumbnailkos.setImageURI(uriThumbail)

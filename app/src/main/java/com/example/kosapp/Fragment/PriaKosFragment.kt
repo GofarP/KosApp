@@ -82,20 +82,20 @@ class PriaKosFragment : Fragment(), ItemOnClick {
                             }
 
                             kos=Kos(
-                                id=snap.child("id").value.toString(),
-                                alamat = snap.child("alamat").value.toString(),
-                                emailPemilik=snap.child("emailPemilik").value.toString(),
-                                biaya = snap.child("biaya").value.toString().toDouble(),
-                                gambarKos = snap.child("gambarKos").value as ArrayList<String>,
-                                gambarThumbnail = snap.child("gambarThumbnail").value.toString(),
-                                jenis=snap.child("jenis").value.toString(),
-                                jenisBayar = snap.child("jenisBayar").value.toString(),
-                                lattitude = snap.child("lattitude").value.toString(),
-                                longitude = snap.child("longitude").value.toString(),
-                                nama = snap.child("nama").value.toString(),
-                                sisa = snap.child("sisa").value.toString().toInt(),
-                                fasilitas=snap.child("fasilitas").value.toString(),
-                                deskripsi=snap.child("deskripsi").value.toString(),
+                                idKos=snap.child(Constant().ID_KOS).value.toString(),
+                                alamat = snap.child(Constant().ALAMAT_KOS).value.toString(),
+                                biaya = snap.child(Constant().BIAYA_KOS).value.toString().toDouble(),
+                                emailPemilik=snap.child(Constant().EMAIL_PEMILIK).value.toString(),
+                                gambarKos = snap.child(Constant().GAMBAR_KOS).value as ArrayList<String>,
+                                gambarThumbnail = snap.child(Constant().GAMBAR_THUMBNAIL_KOS).value.toString(),
+                                jenis=snap.child(Constant().JENIS_KOS).value.toString(),
+                                jenisBayar = snap.child(Constant().JENIS_BAYAR_KOS).value.toString(),
+                                lattitude = snap.child(Constant().LATTITUDE_KOS).value.toString(),
+                                longitude = snap.child(Constant().LONGITUDE_KOS).value.toString(),
+                                nama = snap.child(Constant().NAMA_KOS).value.toString(),
+                                sisa = snap.child(Constant().JUMLAH_KAMAR_KOS).value.toString().toInt(),
+                                fasilitas=snap.child(Constant().FASILITAS).value.toString(),
+                                deskripsi=snap.child(Constant().DESKRIPSI).value.toString(),
                             )
 
                             kosArrayList.add(kos)

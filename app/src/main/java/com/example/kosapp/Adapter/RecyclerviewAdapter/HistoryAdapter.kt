@@ -39,7 +39,7 @@ class HistoryAdapter(private val listHistory: ArrayList<History>, )
 
                     binding.lbljudulhistory.text=judulHistory
                     binding.lblbodyhistory.text=isiHistory
-                    binding.lbltglhistory.text=dataHistory.tanggal.toString()
+                    binding.lbltglhistory.text=dataHistory.tanggal
 
                 }
         }

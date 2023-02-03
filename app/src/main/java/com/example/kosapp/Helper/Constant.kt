@@ -16,7 +16,7 @@ class Constant {
     val KEY_TRANSFER="Bayar Transfer"
     val KEY_BAYARDITEMPAT="Bayar DItempat"
 
-    val ID_KOS="id"
+    val ID_KOS="idKos"
     val NAMA_KOS="nama"
     val EMAIL_PEMILIK="emailPemilik"
     val ALAMAT_KOS="alamat"
@@ -28,8 +28,8 @@ class Constant {
     val JUMLAH_KAMAR_KOS="sisa"
     val LATTITUDE_KOS="lattitude"
     val LONGITUDE_KOS="longitude"
-    val fasilitas="fasilitas"
-    val deskripsi="deskripsi"
+    val FASILITAS="fasilitas"
+    val DESKRIPSI="deskripsi"
 
     val JENISKOS_SPINNER_DEFAULT="Pilih Jenis Kos"
     val JENISBAYAR_SPINNER_DEFAULT="Pilih Jenis Bayar"
@@ -50,6 +50,9 @@ class Constant {
     val ID_HISTORY="idHistory"
     val TYPE="tipe"
 
+    val ID_SEWA="idSewa"
+    val PERMINTAAN_SEWA="permintaan sewa"
+    val PERMINTAAN_BATAL_SEWA="permintaan batal sewa"
     val TERIMA_SEWA="terima sewa"
     val BATAL_SEWA="batal sewa"
     val TOLAK_SEWA="tolak sewa"

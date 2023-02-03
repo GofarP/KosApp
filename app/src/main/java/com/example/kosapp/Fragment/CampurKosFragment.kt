@@ -70,7 +70,7 @@ class CampurKosFragment : Fragment(), ItemOnClick {
                             }
 
                             kos=Kos(
-                                id=snap.child(Constant().ID_KOS).value.toString(),
+                                idKos=snap.child(Constant().ID_KOS).value.toString(),
                                 alamat = snap.child(Constant().ALAMAT_KOS).value.toString(),
                                 emailPemilik=snap.child(Constant().EMAIL_PEMILIK).value.toString(),
                                 biaya = snap.child(Constant().BIAYA_KOS).value.toString().toDouble(),
@@ -82,8 +82,8 @@ class CampurKosFragment : Fragment(), ItemOnClick {
                                 longitude = snap.child(Constant().LONGITUDE_KOS).value.toString(),
                                 nama = snap.child(Constant().NAMA_KOS).value.toString(),
                                 sisa = snap.child(Constant().JUMLAH_KAMAR_KOS).value.toString().toInt(),
-                                fasilitas=snap.child(Constant().fasilitas).value.toString(),
-                                deskripsi=snap.child(Constant().deskripsi).value.toString(),
+                                fasilitas=snap.child(Constant().FASILITAS).value.toString(),
+                                deskripsi=snap.child(Constant().DESKRIPSI).value.toString(),
                             )
 
                             kosArrayList.add(kos)

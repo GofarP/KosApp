@@ -50,5 +50,7 @@
     <string name="text_permintaan_tola">Tolak</string>
     <string name="text_permintaan_tanggal">03-03-2003 09:30:25</string>
     <string name="text_button_konfirmasi_password">Konfirmasi Password</string>
+    <string name="text_btn_selengkapnya">Selengkapnya</string>
+    <string name="text_btn_petunjuk">Petunjuk</string>
 
 </resources>

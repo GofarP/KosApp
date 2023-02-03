@@ -6,5 +6,4 @@ interface SewaKosCallback {
 
     fun permintaanDitemukan(found:Boolean)
     fun kosSudahDisewa(found:Boolean)
-    fun setImageList(arrayListImage:ArrayList<SlideModel>)
 }

@@ -10,5 +10,5 @@ data class Permintaan(
     val isi:String,
     val dari:String,
     val kepada:String,
-    val tanggal:Date
+    val tanggal:String
 )

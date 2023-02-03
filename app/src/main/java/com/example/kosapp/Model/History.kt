@@ -5,7 +5,7 @@ import java.util.*
 data class History(
     val historyId:String,
     val tipe:String,
-    val tanggal:Date,
+    val tanggal:String,
     val judul:String,
     val dari:String,
     val kepada:String,

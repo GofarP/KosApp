@@ -1,5 +1,6 @@
 package com.example.kosapp.Activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -7,23 +8,36 @@ import android.widget.Toast
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
+import com.example.kosapp.Callback.SetImageListCallback
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
+import com.example.kosapp.Model.Kos
 import com.example.kosapp.Model.Permintaan
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityDetailKosSayaBinding
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import java.lang.Exception
+import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
 class DetailKosSayaActivity : AppCompatActivity() {
 
     private lateinit var binding:ActivityDetailKosSayaBinding
-    private val slideImageArrayList=ArrayList<SlideModel>()
+    private val slideArrayList=ArrayList<SlideModel>()
+    private val storage=FirebaseStorage.getInstance().reference
     private var database=Firebase.database.reference
     private lateinit var permintaan:Permintaan
+    private lateinit var kos: Kos
+    private lateinit var dataKosIntent: Intent
+    private var emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
+    private var calendar=Calendar.getInstance()
+    private lateinit var tglHariIni:String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,12 +46,19 @@ class DetailKosSayaActivity : AppCompatActivity() {
 
         Helper().setStatusBarColor(this@DetailKosSayaActivity)
 
-        slideImageArrayList.add(SlideModel(imageUrl = "https://bit.ly/2BteuF2",scaleType = ScaleTypes.FIT))
-        slideImageArrayList.add(SlideModel(imageUrl = "https://i.postimg.cc/SK8kvj0y/mobile-devices.jpg",scaleType = ScaleTypes.FIT))
-        slideImageArrayList.add(SlideModel(R.drawable.ic_sample_product2,scaleType = ScaleTypes.FIT))
-        slideImageArrayList.add(SlideModel("https://bit.ly/3fLJf72",scaleType = ScaleTypes.FIT))
+        dataKosIntent=intent
+        kos=dataKosIntent.getParcelableExtra("dataKos")!!
 
-        binding.includeLayoutDetail.sliderDetailKos.setImageList(slideImageArrayList)
+        tglHariIni=SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(calendar.time)
+
+        setDataKos()
+
+        setGambarKos(object:SetImageListCallback{
+            override fun setImageList(arrayListImage: ArrayList<SlideModel>) {
+                binding.includeLayoutDetail.sliderDetailKos.setImageList(arrayListImage)
+            }
+
+        })
 
         binding.btncancel.setOnClickListener {
             keluarKos()
@@ -45,20 +66,50 @@ class DetailKosSayaActivity : AppCompatActivity() {
 
     }
 
+    private fun setDataKos()
+    {
+        val format: NumberFormat = NumberFormat.getCurrencyInstance()
+        format.maximumFractionDigits = 2
+
+        binding.includeLayoutDetail.lblnamakos.text= kos.nama
+        binding.includeLayoutDetail.lblfasilitas.text= kos.fasilitas
+        binding.includeLayoutDetail.lblhargakos.text=  format.format(kos.biaya)
+        binding.includeLayoutDetail.lbljenispembayaran.text=kos.jenisBayar
+        binding.includeLayoutDetail.lbljeniskos.text=kos.jenis
+        binding.includeLayoutDetail.lbldeskripsikos.text=kos.deskripsi
+
+    }
+
+    private fun setGambarKos(setImageListCallback: SetImageListCallback)
+    {
+        kos.gambarKos.indices.forEachIndexed { _, i ->
+            storage.child(kos.gambarKos[i])
+                .downloadUrl
+                .addOnSuccessListener {uri->
+
+                    slideArrayList.add(SlideModel(uri.toString(), ScaleTypes.FIT))
+                    setImageListCallback.setImageList(slideArrayList)
+
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this@DetailKosSayaActivity, it.message, Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
 
     private fun keluarKos()
     {
-//        permintaan= Permintaan(
-//            idPermintaan= UUID.randomUUID().toString(),
-//            idKos=kos.id,
-//            namaKos=kos.nama,
-//            dari = emailPengguna,
-//            kepada = kos.emailPemilik,
-//            judul = "Permintaan Sewa Kos",
-//            isi ="Mengajukan Permintaan Untuk Menyewa Kos",
-//            tanggal = Date()
-//        )
-//
+        permintaan= Permintaan(
+            idPermintaan= UUID.randomUUID().toString(),
+            idKos=kos.idKos,
+            namaKos=kos.nama,
+            dari = emailPengguna,
+            kepada = kos.emailPemilik,
+            judul = Constant().PERMINTAAN_BATAL_SEWA,
+            isi ="Mengajukan Permintaan Untuk Menyewa Kos",
+            tanggal = tglHariIni
+        )
+
 //        database.child(Constant().PERMINTAAN)
 //            .push()
 //            .ref.setValue(permintaan)

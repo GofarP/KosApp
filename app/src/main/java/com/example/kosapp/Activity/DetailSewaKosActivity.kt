@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
+import com.example.kosapp.Callback.SetImageListCallback
 import com.example.kosapp.Callback.SewaKosCallback
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
@@ -21,6 +22,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -36,16 +38,21 @@ class DetailSewaKosActivity : AppCompatActivity() {
     private lateinit var permintaan: Permintaan
     private var permintaanDitemukan=false
     private var kosSudahDisewa=false
+    private var calendar=Calendar.getInstance()
+    private lateinit var tanggalHari:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityDetailSewaKosBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        tanggalHari=SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(calendar.time)
+
         Helper().setStatusBarColor(this@DetailSewaKosActivity)
 
         dataKosIntent=intent
         kos=dataKosIntent.getParcelableExtra("dataKos")!!
-        setDataKosan()
+        setDataKos()
         
         checkSewaKosCallback(object : SewaKosCallback {
             override fun permintaanDitemukan(found: Boolean) {
@@ -56,6 +63,10 @@ class DetailSewaKosActivity : AppCompatActivity() {
                 kosSudahDisewa=true
             }
 
+        })
+
+
+        setGambarKos(object :SetImageListCallback{
             override fun setImageList(arrayListImage: ArrayList<SlideModel>) {
                 binding.includeLayoutDetail.sliderDetailKos.setImageList(arrayListImage)
             }
@@ -67,6 +78,7 @@ class DetailSewaKosActivity : AppCompatActivity() {
         }
 
         binding.btnpesan.setOnClickListener {
+
 
             if(emailPengguna==kos.emailPemilik)
             {
@@ -102,13 +114,13 @@ class DetailSewaKosActivity : AppCompatActivity() {
 
         permintaan=Permintaan(
             idPermintaan=UUID.randomUUID().toString(),
-            idKos=kos.id,
+            idKos=kos.idKos,
             namaKos=kos.nama,
             dari = emailPengguna,
             kepada = kos.emailPemilik,
-            judul = "Permintaan Sewa Kos",
+            judul = Constant().PERMINTAAN_SEWA,
             isi ="Mengajukan Permintaan Untuk Menyewa Kos",
-            tanggal = Date()
+            tanggal = tanggalHari
         )
 
         database.child(Constant().PERMINTAAN)
@@ -131,15 +143,14 @@ class DetailSewaKosActivity : AppCompatActivity() {
     {
 
         database.child(Constant().PERMINTAAN)
-            .addListenerForSingleValueEvent(object : ValueEventListener{
+            .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
 
                     snapshot.children.forEach {snap->
-                        val snapKosId=snap
-                            .child(emailPengguna.replace(".",","))
-                            .child("idKos").value.toString()
+                        val emailDari=snap.child(Constant().DARI).value.toString()
+                        val idKos=snap.child(Constant().ID_KOS).value.toString()
 
-                        if(kos.id==snapKosId)
+                        if(emailDari==emailPengguna && idKos==kos.idKos)
                         {
                             sewaKosCallback.permintaanDitemukan(true)
                         }
@@ -155,41 +166,48 @@ class DetailSewaKosActivity : AppCompatActivity() {
             })
 
         database.child(Constant().DAFTAR_SEWA_KOS)
-            .child(kos.id)
-            .child(emailPengguna.replace(".",","))
-            .addListenerForSingleValueEvent(object: ValueEventListener{
+            .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.child(Constant().ID_KOS).value.toString()==kos.id)
-                    {
-                        sewaKosCallback.kosSudahDisewa(true)
+                    snapshot.children.forEach { snap->
+
+                        val emailPenyewa=snap.child(Constant().KEY_EMAIL).value.toString()
+                        val idKos=snap.child(Constant().ID_KOS).value.toString()
+
+                        if(emailPenyewa==emailPengguna && idKos==kos.idKos)
+                        {
+                            sewaKosCallback.kosSudahDisewa(true)
+                        }
+
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.d("Database Error", error.message)
+                    Log.d("database error",error.message)
                 }
 
-            } )
-        
-        
+            })
+    }
+
+
+    private fun setGambarKos(setImageListCallback: SetImageListCallback)
+    {
         kos.gambarKos.indices.forEachIndexed { _, i ->
             storage.child(kos.gambarKos[i])
                 .downloadUrl
                 .addOnSuccessListener {uri->
 
                     slideArrayList.add(SlideModel(uri.toString(), ScaleTypes.FIT))
-                    sewaKosCallback.setImageList(slideArrayList)
+                    setImageListCallback.setImageList(slideArrayList)
 
                 }
                 .addOnFailureListener {
                     Toast.makeText(this@DetailSewaKosActivity, it.message, Toast.LENGTH_SHORT).show()
                 }
         }
-
     }
 
 
-    private fun setDataKosan()
+    private fun setDataKos()
     {
         val format: NumberFormat = NumberFormat.getCurrencyInstance()
         format.maximumFractionDigits = 2
