@@ -7,15 +7,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Activity.DetailKosSayaActivity
-import com.example.kosapp.Activity.DetailSewaKosActivity
-import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.MenyewaAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.MenyewaAdapter.*
-import com.example.kosapp.Callback.DaftarMenyewaCallback
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.Model.Sewa
@@ -50,36 +46,21 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        data()
-//        getDataMenyewa(object: DaftarMenyewaCallback{
-//            override fun getDataMenyewa(arrayListMenyewa: ArrayList<Sewa>) {
-//                database.child(Constant().DAFTAR_KOS)
-//                    .addValueEventListener(object: ValueEventListener{
-//                        override fun onDataChange(snapshot: DataSnapshot) {
-//                            snapshot.children.forEach { snap->
-//                                snap.children.forEach {snapValue->
-//                                   if(arrayListMenyewa[snapValue)
-//                                }
-//                            }
-//                        }
-//
-//                        override fun onCancelled(error: DatabaseError) {
-//                            TODO("Not yet implemented")
-//                        }
-//
-//                    })
-//            }
-//
-//        })
-
+        getDataMenyewa()
 
     }
 
-    private fun data()
+    private fun getDataMenyewa()
     {
         database.child(Constant().DAFTAR_SEWA_KOS)
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
+
+                    sewaArrayList.clear()
+                    kosArrayList.clear()
+                    binding.rvmenyewa.adapter=null
+
+
                     snapshot.children.forEach {snap->
 
                         val snapEmail=snap.child(Constant().KEY_EMAIL).value.toString()
@@ -137,95 +118,16 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
 
             })
     }
-//    private fun getDataMenyewa(daftarMenyewaCallback: DaftarMenyewaCallback)
-//    {
-//        database.child(Constant().DAFTAR_SEWA_KOS)
-//            .addValueEventListener(object :ValueEventListener{
-//                override fun onDataChange(snapshot: DataSnapshot) {
-//                    snapshot.children.forEach { snap->
-//                        val snapValue=snap.child(emailPengguna.replace(".",","))
-//                        sewa=Sewa(
-//                                idSewa = snapValue.child(Constant().ID_SEWA).value.toString(),
-//                                email= snapValue.child(Constant().KEY_EMAIL).value.toString(),
-//                                idKos = snapValue.child(Constant().ID_KOS).value.toString(),
-//                                tanggal = snapValue.child(Constant().ID_SEWA).value.toString(),
-//                            )
-//
-//                        sewaArrayList.add(sewa)
-//                        daftarMenyewaCallback.getDataMenyewa(sewaArrayList)
-//                    }
-//                }
-//
-//                override fun onCancelled(error: DatabaseError) {
-//                    TODO("Not yet implemented")
-//                }
-//
-//            })
-//    }
 
-
-//    private fun addData()
-//    {
-//        var kos= Kos(
-//            id="12345",
-//            nama = "Kos Jaya Makmur",
-//            alamat="Jl. Jalan",
-//            sisa=3,
-//            jenis="Laki-Laki",
-//            gambarThumbnail = "hehe",
-//            gambarKos = arrayListOf("hehe","hihihi","huhuhu"),
-//            biaya=300000.00,
-//            lattitude = "",
-//            longitude = "",
-//            jenisBayar = "",
-//            fasilitas="",
-//            deskripsi="",
-//        )
-//
-//        kosArrayList.add(kos)
-//
-//        kos= Kos(
-//            id="21345",
-//            nama="Kos Strong n independent",
-//            jenis = "Perempuan",
-//            alamat = "Jl.kaki",
-//            sisa=3,
-//            gambarThumbnail = "hihi",
-//            gambarKos =  arrayListOf("hehe","hihihi","huhuhu"),
-//            biaya = 200000.00,
-//            lattitude = "",
-//            longitude = "",
-//            jenisBayar = "",
-//            fasilitas="",
-//            deskripsi="",
-//        )
-//
-//        kosArrayList.add(kos)
-//
-//        kos= Kos(
-//            id="321292812",
-//            nama="Kost Mandiri",
-//            alamat = "Jl.Kemana",
-//            sisa=3,
-//            jenis = "Laki-Laki",
-//            gambarThumbnail = "huhahuha",
-//            gambarKos = arrayListOf("hihi","hehe","haha"),
-//            biaya=100000.00,
-//            lattitude = "",
-//            longitude = "",
-//            jenisBayar = "",
-//            fasilitas="",
-//            deskripsi="",
-//        )
-//
-//        kosArrayList.add(kos)
-//    }
 
     override fun OnSelengkapnyaClick(v: View, dataKos: Kos) {
         val intent=Intent(activity, DetailKosSayaActivity::class.java).putExtra("dataKos", dataKos)
         startActivity(intent)
     }
 
+    override fun OnPetunjukClick(v: View, dataKos: Kos) {
+        TODO("Not yet implemented")
+    }
 
 
 }

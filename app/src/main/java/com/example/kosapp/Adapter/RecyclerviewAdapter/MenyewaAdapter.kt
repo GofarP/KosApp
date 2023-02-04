@@ -40,6 +40,10 @@ class MenyewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickMe
                              itemAdapterCallback.OnSelengkapnyaClick(view, dataKos)
                          }
 
+                         binding.btnpetunjuk.setOnClickListener {view->
+                            itemAdapterCallback.OnPetunjukClick(view, dataKos)
+                         }
+
                      }
                  }
 
@@ -65,6 +69,7 @@ class MenyewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickMe
     interface ItemOnCLickMenyewa
     {
         fun OnSelengkapnyaClick(v: View, dataKos: Kos)
+        fun OnPetunjukClick(v:View, dataKos: Kos)
     }
 
 

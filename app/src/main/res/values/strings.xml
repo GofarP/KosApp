@@ -52,5 +52,6 @@
     <string name="text_button_konfirmasi_password">Konfirmasi Password</string>
     <string name="text_btn_selengkapnya">Selengkapnya</string>
     <string name="text_btn_petunjuk">Petunjuk</string>
+    <string name="text_route_jalan">Tunjukkan Route Jalan</string>
 
 </resources>

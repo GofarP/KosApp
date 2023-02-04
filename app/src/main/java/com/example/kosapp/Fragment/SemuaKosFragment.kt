@@ -93,7 +93,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
+                        Log.d("snap",error.message)
                     }
 
                 })

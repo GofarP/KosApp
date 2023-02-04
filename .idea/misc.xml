@@ -9,6 +9,7 @@
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable/button_background.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable/button_background_Ok.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable/button_background_cancel.xml" value="0.1" />
+        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable/button_background_disabled.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable/button_background_edit.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable/button_background_round.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable/button_background_round_white.xml" value="0.154" />
@@ -45,6 +46,7 @@
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_my_kos.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_penyewa.xml" value="0.15" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_profile.xml" value="0.25" />
+        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_route_jalan.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_signin.xml" value="0.22" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_signup.xml" value="0.10346301838392476" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_splash.xml" value="0.20416666666666666" />

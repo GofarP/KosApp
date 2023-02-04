@@ -120,7 +120,7 @@ class DetailSewaKosActivity : AppCompatActivity() {
             kepada = kos.emailPemilik,
             judul = Constant().PERMINTAAN_SEWA,
             isi ="Mengajukan Permintaan Untuk Menyewa Kos",
-            tanggal = tanggalHari
+            tanggal = tanggalHari,
         )
 
         database.child(Constant().PERMINTAAN)

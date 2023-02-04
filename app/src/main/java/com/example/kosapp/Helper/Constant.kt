@@ -53,7 +53,10 @@ class Constant {
     val ID_SEWA="idSewa"
     val PERMINTAAN_SEWA="permintaan sewa"
     val PERMINTAAN_BATAL_SEWA="permintaan batal sewa"
+    val PERMINTAAAN_AKHIRI_SEWA="akhiri sewa"
+
     val TERIMA_SEWA="terima sewa"
+    val AKHIRI_SEWA="akhiri sewa"
     val BATAL_SEWA="batal sewa"
     val TOLAK_SEWA="tolak sewa"
 

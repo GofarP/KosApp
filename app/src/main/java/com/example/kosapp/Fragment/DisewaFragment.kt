@@ -60,8 +60,6 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
                 override fun onDataChange(snapshot: DataSnapshot) {
 
                     kosArrayList.clear()
-                    binding.rvdisewa.adapter=null
-
 
                     snapshot.children.forEach {snap->
 
@@ -91,15 +89,62 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
 
                     }
 
+
+
                     adapter= DisewaAdapter(kosArrayList,this@DisewaFragment)
                     layoutManager=LinearLayoutManager(activity)
                     binding.rvdisewa.layoutManager=layoutManager
                     binding.rvdisewa.adapter=adapter
-                    adapter.notifyDataSetChanged()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
+                }
+
+            })
+    }
+
+
+    private fun deleteKos()
+    {
+        database.child(Constant().DAFTAR_SEWA_KOS)
+            .addValueEventListener(object: ValueEventListener{
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach { snap->
+                        if(snap.child(Constant().ID_KOS).value.toString()==kos.idKos)
+                        {
+                            Toast.makeText(activity, "Kos Sedang DIsewa Tidak Dapat Dihapus", Toast.LENGTH_SHORT).show()
+                        }
+
+                        else{
+                            database.child(Constant().DAFTAR_KOS)
+                                .child(kos.idKos)
+                                .removeValue()
+                                .addOnSuccessListener {
+
+                                    storage.child(kos.gambarThumbnail).delete()
+
+                                    kos.gambarKos.indices.forEach {i ->
+                                        storage.child(kos.gambarKos[i]).delete()
+                                    }
+
+                                    Toast.makeText(activity, "Kos Sukses Dihapus", Toast.LENGTH_SHORT).show()
+
+                                    val indexKos= kosArrayList.indexOf(kos)
+                                    adapter.notifyItemRemoved(indexKos)
+
+
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(activity, "Kos Gagal Dihapus", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("db error", error.message)
                 }
 
             })
@@ -111,31 +156,12 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
     }
 
     override fun OnDeleteClick(v: View, dataKos: Kos) {
-        emailPengguna= auth?.email.toString()
-        database.child("daftarKos")
-            .child(emailPengguna.replace(".",","))
-            .child(dataKos.idKos)
-            .removeValue()
-            .addOnSuccessListener {
-
-                kosArrayList.remove(kos)
-
-                Toast.makeText(activity, "Sukses Menghapus ${dataKos.nama}", Toast.LENGTH_SHORT).show()
-
-                storage.child(dataKos.gambarThumbnail).delete()
-
-                for(i in dataKos.gambarKos.indices)
-                {
-                    storage.child(dataKos.gambarKos[i]).delete()
-                }
-            }
-            .addOnFailureListener {
-                Toast.makeText(activity, it.message.toString(), Toast.LENGTH_SHORT).show()
-            }
+        deleteKos()
     }
 
     override fun onPeminjamClick(v: View, dataKos: Kos) {
-        startActivity(Intent(activity, PenyewaActivity::class.java))
+//        startActivity(Intent(activity, PenyewaActivity::class.java))
+        Toast.makeText(activity, kosArrayList.indexOf(dataKos).toString(), Toast.LENGTH_SHORT).show()
     }
 
 }

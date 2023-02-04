@@ -1,6 +1,7 @@
 package com.example.kosapp.Activity
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +17,9 @@ import com.example.kosapp.Model.Permintaan
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityDetailKosSayaBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -50,6 +54,8 @@ class DetailKosSayaActivity : AppCompatActivity() {
         kos=dataKosIntent.getParcelableExtra("dataKos")!!
 
         tglHariIni=SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(calendar.time)
+
+        cekPermintaanKeluarKos()
 
         setDataKos()
 
@@ -97,6 +103,33 @@ class DetailKosSayaActivity : AppCompatActivity() {
         }
     }
 
+
+    private fun cekPermintaanKeluarKos()
+    {
+        database.child(Constant().PERMINTAAN)
+            .addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach { snap->
+                        val snapIdKos=snap.child(Constant().ID_KOS).value.toString()
+                        val snapEmail=snap.child(Constant().DARI).value.toString()
+
+                        if(snapIdKos==kos.idKos && emailPengguna==snapEmail)
+                        {
+                            binding.btncancel.isEnabled=false
+                            binding.btncancel.text="Permintaan Diproses..."
+                            binding.btncancel.setBackgroundResource(R.drawable.button_background_disabled)
+                        }
+
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+            })
+    }
+
     private fun keluarKos()
     {
         permintaan= Permintaan(
@@ -105,19 +138,26 @@ class DetailKosSayaActivity : AppCompatActivity() {
             namaKos=kos.nama,
             dari = emailPengguna,
             kepada = kos.emailPemilik,
-            judul = Constant().PERMINTAAN_BATAL_SEWA,
-            isi ="Mengajukan Permintaan Untuk Menyewa Kos",
-            tanggal = tglHariIni
+            judul = Constant().PERMINTAAAN_AKHIRI_SEWA,
+            isi ="Mengajukan Permintaan Untuk Mengakhiri Sewa Kos",
+            tanggal = tglHariIni,
         )
 
-//        database.child(Constant().PERMINTAAN)
-//            .push()
-//            .ref.setValue(permintaan)
-//            .addOnSuccessListener {
-//                Toast.makeText(this@DetailKosSayaActivity, "Sukses Mengajukan Permintaan Untuk Keluar Kos", Toast.LENGTH_SHORT).show()
-//            }
-//            .addOnFailureListener {
-//                Toast.makeText(this@DetailKosSayaActivity, "Gagal Mengajukan Permintaan Untuk Keluar Kos", Toast.LENGTH_SHORT).show()
-//            }
+        database.child(Constant().PERMINTAAN)
+            .push()
+            .ref.setValue(permintaan)
+            .addOnSuccessListener {
+
+                binding.btncancel.isEnabled=false
+                binding.btncancel.text="Permintaan Diproses..."
+                binding.btncancel.setBackgroundResource(R.drawable.button_background_disabled)
+                Toast.makeText(this@DetailKosSayaActivity, "Sukses Mengajukan Permintaan Untuk Mengakhiri Sewa Kos", Toast.LENGTH_SHORT).show()
+
+            }
+            .addOnFailureListener {
+                Toast.makeText(this@DetailKosSayaActivity, "Gagal Mengajukan Permintaan Untuk Mengakhiri Sewa Kos", Toast.LENGTH_SHORT).show()
+            }
+
+
     }
 }

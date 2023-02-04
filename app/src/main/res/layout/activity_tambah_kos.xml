@@ -83,6 +83,7 @@
                     android:layout_marginRight="30dp"
                     android:hint="@string/jumlah_kamar_kos"
                     android:padding="10dp"
+                    android:inputType="number"
                     style="@style/EditText.Primary"
                     android:background="@drawable/edittext_outline"
                     />
