@@ -1,6 +1,5 @@
 package com.example.kosapp.Adapter.RecyclerviewAdapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,7 +31,7 @@ class HomeKosAdapter(private val listKos: ArrayList<Kos>,private val  itemOnClic
                 binding.lblfasilitas.text=dataKos.fasilitas
                 binding.lblharga.text="Rp.${dataKos.biaya}"
 
-                store.reference.child(dataKos.gambarThumbnail)
+                store.reference.child(dataKos.thumbnailKos)
                     .downloadUrl
                     .addOnSuccessListener {url->
                         Glide.with(this.context)

@@ -4,9 +4,12 @@ import com.example.kosapp.Model.History
 
 class Constant {
 
-    val KEY_USERNAME="username"
     val KEY_EMAIL="email"
+    val KEY_FOTO="foto"
+    val KEY_ID_PENGGUNA="id"
     val KEY_JENIS_KELAMIN="jenisKelamin"
+    val KEY_NOTELP="noTelp"
+    val KEY_USERNAME="username"
 
 
     val KEY_PRIA="Pria"
@@ -23,7 +26,7 @@ class Constant {
     val BIAYA_KOS="biaya"
     val JENIS_BAYAR_KOS="jenisBayar"
     val GAMBAR_KOS="gambarKos"
-    val GAMBAR_THUMBNAIL_KOS="gambarThumbnail"
+    val GAMBAR_THUMBNAIL_KOS="thumbnailKos"
     val JENIS_KOS="jenis"
     val JUMLAH_KAMAR_KOS="sisa"
     val LATTITUDE_KOS="lattitude"

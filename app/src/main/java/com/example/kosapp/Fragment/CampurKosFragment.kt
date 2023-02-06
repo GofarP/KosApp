@@ -14,7 +14,6 @@ import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter.ItemOnClick
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Model.Kos
-import com.example.kosapp.R
 import com.example.kosapp.databinding.FragmentCampurKosBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -62,7 +61,7 @@ class CampurKosFragment : Fragment(), ItemOnClick {
                     binding.rvkoscampur.adapter=null
 
                     snapshot.children.forEach { snap->
-                        snap.children.forEach { snap->
+
 
                             if(snap.child("jenis").value.toString()!="Campur")
                             {
@@ -75,7 +74,7 @@ class CampurKosFragment : Fragment(), ItemOnClick {
                                 emailPemilik=snap.child(Constant().EMAIL_PEMILIK).value.toString(),
                                 biaya = snap.child(Constant().BIAYA_KOS).value.toString().toDouble(),
                                 gambarKos = snap.child(Constant().GAMBAR_KOS).value as ArrayList<String>,
-                                gambarThumbnail = snap.child(Constant().GAMBAR_THUMBNAIL_KOS).value.toString(),
+                                thumbnailKos = snap.child(Constant().GAMBAR_THUMBNAIL_KOS).value.toString(),
                                 jenis=snap.child(Constant().JENIS_KOS).value.toString(),
                                 jenisBayar = snap.child(Constant().JENIS_BAYAR_KOS).value.toString(),
                                 lattitude = snap.child(Constant().LATTITUDE_KOS).value.toString(),
@@ -87,7 +86,7 @@ class CampurKosFragment : Fragment(), ItemOnClick {
                             )
 
                             kosArrayList.add(kos)
-                        }
+
                     }
 
                     adapter= HomeKosAdapter(kosArrayList,this@CampurKosFragment)

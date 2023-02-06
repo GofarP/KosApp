@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.kosapp.Callback.EditKosCallback
-import com.example.kosapp.Callback.SewaKosCallback
+import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.R
@@ -33,7 +33,6 @@ import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.MapboxMap.OnMapClickListener
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.log
 
 class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
@@ -130,11 +129,16 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     {
 
         //set value on spinner
-        val arrayJenisKos= arrayOf("Pilih Jenis Kos","Pria","Wanita","Campur")
-        val jenisKosAdapter= ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayJenisKos)
-        val arrayJenisBayar= arrayOf("Pilih Jenis Bayar", "Bayar Di Tempat", "Bayar Transfer")
-        val jenisBayarAdapter= ArrayAdapter(this, android.R.layout.simple_spinner_item,arrayJenisBayar)
+        val arrayJenisKos= arrayOf(
+            Constant().JENISKOS_SPINNER_DEFAULT,
+            Constant().KEY_PRIA,
+            Constant().KEY_WANITA,
+            Constant().KEY_CAMPUR)
+        val jenisKosAdapter=ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayJenisKos)
         binding.spnjeniskos.adapter=jenisKosAdapter
+
+        val arrayJenisBayar= arrayOf(Constant().JENISBAYAR_SPINNER_DEFAULT, Constant().KEY_TRANSFER, Constant().KEY_BAYARDITEMPAT)
+        val jenisBayarAdapter=ArrayAdapter(this, android.R.layout.simple_spinner_item,arrayJenisBayar)
         binding.spnjenisbayar.adapter=jenisBayarAdapter
 
 
@@ -151,14 +155,15 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         binding.txtdeskripsi.setText(kos.deskripsi)
         lattitude=kos.lattitude
         longitude=kos.longitude
-        gambarThumbnail=kos.gambarThumbnail
+        gambarThumbnail=kos.thumbnailKos
 
+        Log.d("LatLng", "$lattitude $longitude")
 
         binding.mapviewtambahkos.getMapAsync{mapboxMap->
             map=mapboxMap
             latLng=LatLng()
-            latLng.latitude= kos.lattitude.toDouble()
-            latLng.longitude= kos.longitude.toDouble()
+            latLng.latitude= lattitude.toDouble()
+            latLng.longitude= longitude.toDouble()
             map.addMarker(MarkerOptions().position(latLng))
 
             map.addOnMapClickListener(this)
@@ -172,6 +177,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
         alamat=binding.txtalamatkos.text.trim().toString()
         biaya=binding.txtalamatkos.text.trim().toString()
+        deskripsi=binding.txtdeskripsi.text.trim().toString()
         deskripsi=binding.txtdeskripsi.text.trim().toString()
         fasilitas=binding.txtfasilitas.text.trim().toString()
         kosId=kos.idKos
@@ -252,7 +258,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
             emailPemilik=userEmail.toString(),
             jenisBayar=jenisBayar,
             gambarKos =kos.gambarKos,
-            gambarThumbnail = gambarThumbnail,
+            thumbnailKos = gambarThumbnail,
             jenis=jenis,
             sisa = sisa.toInt(),
             lattitude = lattitude,
@@ -261,14 +267,14 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
             deskripsi=deskripsi,
         )
 
-        database.child("daftarKos")
+        database.child(Constant().DAFTAR_KOS)
             .child(kosId)
             .setValue(kos)
             .addOnSuccessListener {
 
                 if(thumbnailBaru)
                 {
-                    storage.child(kos.gambarThumbnail).delete()
+                    storage.child(gambarThumbnail).delete()
                     storage.child(gambarThumbnail).putFile(uriThumbail!!)
                 }
 
@@ -292,7 +298,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     {result->
         if(result.resultCode== RESULT_OK)
         {
-            gambarThumbnail="thumbnailKos/${kos.idKos}/${UUID.randomUUID()}"
+            gambarThumbnail="${Constant().GAMBAR_THUMBNAIL_KOS}/${kos.idKos}/${UUID.randomUUID()}"
             thumbnailBaru=true
             uriThumbail=result.data?.data
             binding.ivthumbnailkos.setImageURI(uriThumbail)
@@ -376,7 +382,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
                 }
         }
 
-        storage.child(kos.gambarThumbnail)
+        storage.child(kos.thumbnailKos)
             .downloadUrl
             .addOnSuccessListener { uri->
                 editKosCallback.setImageThumbnail(uri.toString())

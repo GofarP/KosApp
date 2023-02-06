@@ -125,7 +125,7 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                     biaya =biaya.toDouble(),
                     jenisBayar=jenisBayar,
                     gambarKos =fasilitasKosList,
-                    gambarThumbnail = gambarThumbnail,
+                    thumbnailKos = gambarThumbnail,
                     jenis=jenisKos,
                     sisa = jumlahKamar.toInt(),
                     lattitude = lattitudeKos.toString(),

@@ -4,8 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.kosapp.Model.Pengguna
 import com.example.kosapp.databinding.LayoutPenyewaBinding
+import com.google.firebase.storage.FirebaseStorage
 
 class PenyewaAdapter(private val arrayListPenyewa:ArrayList<Pengguna>, private val itemOnClick: ItemOnClick)
     : RecyclerView.Adapter<PenyewaAdapter.ViewHolder>()
@@ -16,11 +18,21 @@ class PenyewaAdapter(private val arrayListPenyewa:ArrayList<Pengguna>, private v
     {
             private var bind=layoutPenyewa
 
+            private var storage=FirebaseStorage.getInstance()
+
             fun bind(dataPenyewa:Pengguna, itemOnClick: ItemOnClick)
             {
                 itemView.apply {
                     bind.lblpeminjamusername.text=dataPenyewa.username
                     bind.lblpeminjamemail.text=dataPenyewa.email
+
+                    storage.reference.child(dataPenyewa.foto)
+                        .downloadUrl.addOnSuccessListener { uri->
+                            Glide.with(this)
+                                .load(uri)
+                                .into(bind.ivpenyewa)
+                        }
+
                 }
 
                 bind.btnpenyewadetail.setOnClickListener { view->

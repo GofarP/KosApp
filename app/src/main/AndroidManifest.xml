@@ -17,7 +17,7 @@
         android:theme="@style/Theme.KosApp"
         tools:targetApi="31">
         <activity
-            android:name=".ShowRouteActivity"
+            android:name=".Activity.RouteJalanActivity"
             android:exported="false" />
         <activity
             android:name=".Activity.CommentActivity"

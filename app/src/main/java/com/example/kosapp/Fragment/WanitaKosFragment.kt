@@ -69,7 +69,7 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
                     binding.rvkoswanita.adapter=null
 
                     snapshot.children.forEach { snap->
-                        snap.children.forEach { snap->
+
 
                             if(snap.child("jenis").value.toString() != "Wanita")
                             {
@@ -82,7 +82,7 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
                                 biaya = snap.child(Constant().BIAYA_KOS).value.toString().toDouble(),
                                 emailPemilik=snap.child(Constant().EMAIL_PEMILIK).value.toString(),
                                 gambarKos = snap.child(Constant().GAMBAR_KOS).value as ArrayList<String>,
-                                gambarThumbnail = snap.child(Constant().GAMBAR_THUMBNAIL_KOS).value.toString(),
+                                thumbnailKos = snap.child(Constant().GAMBAR_THUMBNAIL_KOS).value.toString(),
                                 jenis=snap.child(Constant().JENIS_KOS).value.toString(),
                                 jenisBayar = snap.child(Constant().JENIS_BAYAR_KOS).value.toString(),
                                 lattitude = snap.child(Constant().LATTITUDE_KOS).value.toString(),
@@ -94,7 +94,6 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
                             )
 
                             kosArrayList.add(kos)
-                        }
                     }
 
                     adapter= HomeKosAdapter(kosArrayList,this@WanitaKosFragment)

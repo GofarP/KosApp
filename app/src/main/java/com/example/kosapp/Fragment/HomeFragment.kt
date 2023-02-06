@@ -3,15 +3,18 @@ package com.example.kosapp.Fragment
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.example.kosapp.Activity.MenuChatActivity
 import com.example.kosapp.Adapter.PagerAdapter.HomePagerAdapter
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.PreferenceManager
+import com.example.kosapp.Interface.sendMessage
+import com.example.kosapp.R
 import com.example.kosapp.databinding.FragmentHomeBinding
 import com.example.kosapp.databinding.FragmentTestBinding
 import com.google.android.material.tabs.TabLayoutMediator
@@ -23,7 +26,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), sendMessage {
 
     private lateinit var binding:FragmentHomeBinding
     private lateinit var testBinding:FragmentTestBinding
@@ -36,6 +39,7 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         binding= FragmentHomeBinding.inflate(inflater,container,false)
         testBinding=FragmentTestBinding.inflate(inflater, container, false)
         return binding.root
@@ -44,6 +48,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         preferenceManager=PreferenceManager()
         preferenceManager.preferenceManager(view.context)
@@ -58,7 +63,6 @@ class HomeFragment : Fragment() {
         {
             binding.lblnamapengguna.text= "Halo  ${preferenceManager.getString(Constant().KEY_USERNAME)}"
         }
-
 
 
         binding.viewPager.adapter=HomePagerAdapter(requireActivity())
@@ -91,12 +95,12 @@ class HomeFragment : Fragment() {
                     Toast.makeText(activity, "Mencari Kos Campuran...", Toast.LENGTH_SHORT).show()
                 }
                 4->{
-                    val str="Halo From Test Fragment"
-                    testBinding.lbltestfragment.text=str
-                    Toast.makeText(activity, str, Toast.LENGTH_SHORT).show()
+
                 }
             }
         }
+
+
 
         binding.ivmessage.setOnClickListener {
             startActivity(Intent(activity,MenuChatActivity::class.java))
@@ -148,4 +152,10 @@ class HomeFragment : Fragment() {
         return notValid
 
     }
+
+    override fun sendData(input: String?) {
+        val tag="android:switcher"+ R.id.viewPager.toString()+":"+1
+    }
+
+
 }

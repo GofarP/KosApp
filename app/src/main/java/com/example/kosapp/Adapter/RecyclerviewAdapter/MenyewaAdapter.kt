@@ -6,9 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Model.Kos
-import com.example.kosapp.Model.Sewa
 import com.example.kosapp.databinding.LayoutKosMenyewaBinding
 import com.google.firebase.storage.FirebaseStorage
 
@@ -27,7 +25,7 @@ class MenyewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickMe
                          binding.lblnama.text=dataKos.nama
                          binding.lblalamat.text=dataKos.alamat
 
-                         storage.child(dataKos.gambarThumbnail)
+                         storage.child(dataKos.thumbnailKos)
                              .downloadUrl.addOnSuccessListener { url->
                              Glide.with(this.context)
                                  .load(url)

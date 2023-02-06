@@ -2,7 +2,6 @@ package com.example.kosapp.Fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +19,6 @@ import com.example.kosapp.databinding.FragmentPriaKosBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -66,7 +64,7 @@ class PriaKosFragment : Fragment(), ItemOnClick {
     private fun getData()
     {
 
-        database.child("daftarKos")
+        database.child(Constant().DAFTAR_KOS)
             .addValueEventListener(object:ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
 
@@ -74,7 +72,7 @@ class PriaKosFragment : Fragment(), ItemOnClick {
                     binding.rvkospria.adapter=null
 
                     snapshot.children.forEach { snap->
-                        snap.children.forEach { snap->
+
 
                             if(snap.child("jenis").value.toString()!="Pria")
                             {
@@ -87,7 +85,7 @@ class PriaKosFragment : Fragment(), ItemOnClick {
                                 biaya = snap.child(Constant().BIAYA_KOS).value.toString().toDouble(),
                                 emailPemilik=snap.child(Constant().EMAIL_PEMILIK).value.toString(),
                                 gambarKos = snap.child(Constant().GAMBAR_KOS).value as ArrayList<String>,
-                                gambarThumbnail = snap.child(Constant().GAMBAR_THUMBNAIL_KOS).value.toString(),
+                                thumbnailKos = snap.child(Constant().GAMBAR_THUMBNAIL_KOS).value.toString(),
                                 jenis=snap.child(Constant().JENIS_KOS).value.toString(),
                                 jenisBayar = snap.child(Constant().JENIS_BAYAR_KOS).value.toString(),
                                 lattitude = snap.child(Constant().LATTITUDE_KOS).value.toString(),
@@ -100,7 +98,6 @@ class PriaKosFragment : Fragment(), ItemOnClick {
 
                             kosArrayList.add(kos)
                         }
-                    }
 
                     adapter= HomeKosAdapter(kosArrayList,this@PriaKosFragment)
                     layoutManager=LinearLayoutManager(activity)

@@ -1,15 +1,12 @@
 package com.example.kosapp.Adapter.RecyclerviewAdapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.LayoutKosDisewaBinding
-import com.example.kosapp.databinding.LayoutKosMenyewaBinding
 import com.google.firebase.storage.FirebaseStorage
 
 class DisewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickDisewakan: ItemOnClickDisewa)
@@ -43,7 +40,7 @@ class DisewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickDis
                              itemAdapterCallback.onPeminjamClick(view, dataKos)
                          }
 
-                         storage.child(dataKos.gambarThumbnail)
+                         storage.child(dataKos.thumbnailKos)
                              .downloadUrl.addOnSuccessListener { uri->
                                  Glide.with(this.context)
                                      .load(uri)

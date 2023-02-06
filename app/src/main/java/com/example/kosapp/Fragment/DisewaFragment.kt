@@ -74,7 +74,7 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
                             biaya = snap.child(Constant().BIAYA_KOS).value.toString().toDouble(),
                             emailPemilik=snap.child(Constant().EMAIL_PEMILIK).value.toString(),
                             gambarKos = snap.child(Constant().GAMBAR_KOS).value as ArrayList<String>,
-                            gambarThumbnail = snap.child(Constant().GAMBAR_THUMBNAIL_KOS).value.toString(),
+                            thumbnailKos = snap.child(Constant().GAMBAR_THUMBNAIL_KOS).value.toString(),
                             jenis=snap.child(Constant().JENIS_KOS).value.toString(),
                             jenisBayar = snap.child(Constant().JENIS_BAYAR_KOS).value.toString(),
                             lattitude = snap.child(Constant().LATTITUDE_KOS).value.toString(),
@@ -88,8 +88,6 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
                         kosArrayList.add(kos)
 
                     }
-
-
 
                     adapter= DisewaAdapter(kosArrayList,this@DisewaFragment)
                     layoutManager=LinearLayoutManager(activity)
@@ -105,50 +103,75 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
     }
 
 
-    private fun deleteKos()
+    private fun deleteKos(idKos: String)
     {
-        database.child(Constant().DAFTAR_SEWA_KOS)
-            .addValueEventListener(object: ValueEventListener{
-
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    snapshot.children.forEach { snap->
-                        if(snap.child(Constant().ID_KOS).value.toString()==kos.idKos)
-                        {
-                            Toast.makeText(activity, "Kos Sedang DIsewa Tidak Dapat Dihapus", Toast.LENGTH_SHORT).show()
-                        }
-
-                        else{
+        database.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.child(Constant().DAFTAR_SEWA_KOS).exists()) {
+                    snapshot.child(Constant().DAFTAR_SEWA_KOS).children.forEach { snap ->
+                        if (snap.child(Constant().ID_KOS).value.toString() == idKos) {
+                            Toast.makeText(
+                                activity,
+                                "Kos Sedang Disewa Tidak Dapat Dihapus",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
                             database.child(Constant().DAFTAR_KOS)
-                                .child(kos.idKos)
+                                .child(idKos)
                                 .removeValue()
                                 .addOnSuccessListener {
 
-                                    storage.child(kos.gambarThumbnail).delete()
+                                    storage.child(kos.thumbnailKos).delete()
 
-                                    kos.gambarKos.indices.forEach {i ->
+                                    kos.gambarKos.indices.forEach { i ->
                                         storage.child(kos.gambarKos[i]).delete()
                                     }
 
-                                    Toast.makeText(activity, "Kos Sukses Dihapus", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        activity,
+                                        "Kos Sukses Dihapus",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
 
-                                    val indexKos= kosArrayList.indexOf(kos)
+                                    val indexKos = kosArrayList.indexOf(kos)
                                     adapter.notifyItemRemoved(indexKos)
-
 
                                 }
                                 .addOnFailureListener {
-                                    Toast.makeText(activity, "Kos Gagal Dihapus", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        activity,
+                                        "Kos Gagal Dihapus",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                         }
                     }
                 }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.d("db error", error.message)
-                }
+                else
+                {
+                    database.child(Constant().DAFTAR_KOS)
+                        .child(idKos)
+                        .removeValue()
+                        .addOnSuccessListener {
+                            Toast.makeText(activity, "Sukses Menghapus Kos", Toast.LENGTH_SHORT).show()
+                            val indexKos = kosArrayList.indexOf(kos)
+                            adapter.notifyItemRemoved(indexKos)
 
-            })
+                        }.addOnFailureListener {
+                            Toast.makeText(activity, "Gagal Menghapus Kos", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("db error", error.message)
+            }
+
+        })
     }
+
+
 
     override fun OnEditClick(v: View, dataKos: Kos) {
         val intent=Intent(activity, EditKosActivity::class.java).putExtra("dataKos", dataKos)
@@ -156,12 +179,12 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
     }
 
     override fun OnDeleteClick(v: View, dataKos: Kos) {
-        deleteKos()
+        deleteKos(dataKos.idKos)
     }
 
     override fun onPeminjamClick(v: View, dataKos: Kos) {
-//        startActivity(Intent(activity, PenyewaActivity::class.java))
-        Toast.makeText(activity, kosArrayList.indexOf(dataKos).toString(), Toast.LENGTH_SHORT).show()
+        val intent=Intent(activity, PenyewaActivity::class.java).putExtra("dataKos", dataKos)
+        startActivity(intent)
     }
 
 }

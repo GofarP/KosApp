@@ -12,7 +12,7 @@ import kotlinx.android.parcel.Parcelize
       val jenis:String,
       val sisa:Int,
       val alamat:String,
-      val gambarThumbnail:String,
+      val thumbnailKos:String,
       val gambarKos:ArrayList<String>,
       val fasilitas:String,
       val deskripsi:String,

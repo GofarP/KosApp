@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Activity.DetailKosSayaActivity
+import com.example.kosapp.Activity.RouteJalanActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.MenyewaAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.MenyewaAdapter.*
 import com.example.kosapp.Helper.Constant
@@ -82,7 +83,7 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
                                                     biaya = snap.child(Constant().BIAYA_KOS).value.toString().toDouble(),
                                                     emailPemilik=snap.child(Constant().EMAIL_PEMILIK).value.toString(),
                                                     gambarKos = snap.child(Constant().GAMBAR_KOS).value as ArrayList<String>,
-                                                    gambarThumbnail = snap.child(Constant().GAMBAR_THUMBNAIL_KOS).value.toString(),
+                                                    thumbnailKos = snap.child(Constant().GAMBAR_THUMBNAIL_KOS).value.toString(),
                                                     jenis=snap.child(Constant().JENIS_KOS).value.toString(),
                                                     jenisBayar = snap.child(Constant().JENIS_BAYAR_KOS).value.toString(),
                                                     lattitude = snap.child(Constant().LATTITUDE_KOS).value.toString(),
@@ -126,7 +127,11 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
     }
 
     override fun OnPetunjukClick(v: View, dataKos: Kos) {
-        TODO("Not yet implemented")
+       val intent=Intent(activity, RouteJalanActivity::class.java)
+        intent.putExtra("lattitude",dataKos.lattitude)
+        intent.putExtra("longitude",dataKos.longitude)
+        startActivity(intent)
+
     }
 
 

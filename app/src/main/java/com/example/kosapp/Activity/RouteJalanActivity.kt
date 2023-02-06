@@ -1,11 +1,12 @@
 package com.example.kosapp.Activity
 
 import android.location.Location
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityRouteJalanBinding
 import com.mapbox.android.core.location.LocationEngine
 import com.mapbox.android.core.location.LocationEngineListener
@@ -17,48 +18,79 @@ import com.mapbox.api.directions.v5.models.DirectionsResponse
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.annotations.Marker
+import com.mapbox.mapboxsdk.annotations.MarkerOptions
+import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
-import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.CameraMode
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.RenderMode
+import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher
+import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+
 class RouteJalanActivity : AppCompatActivity(),  PermissionsListener, LocationEngineListener {
 
     private lateinit var binding:ActivityRouteJalanBinding
-    private lateinit var mapView:MapView
     private lateinit var map: MapboxMap
     private lateinit var startButton:Button
     private lateinit var permissionsManager: PermissionsManager
     private lateinit var originLocation:Location
     private lateinit var originPosition: Point
     private lateinit var destinationPosition: Point
+    private lateinit var latLng: LatLng
 
     private var locationEngine: LocationEngine?=null
     private var locationLayerPlugin:LocationLayerPlugin?=null
     private var destinationMarker:Marker?=null
     private var navigationMapRoute:NavigationMapRoute?=null
+    private lateinit var lattitude:String
+    private lateinit var longitude:String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding= ActivityRouteJalanBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        Mapbox.getInstance(applicationContext,getString(R.string.access_token))
 
-        binding.mapviewroute.getMapAsync {mapBoxMap->
-            map=mapBoxMap
+        lattitude=intent.getStringExtra("lattitude").toString()
+        longitude=intent.getStringExtra("longitude").toString()
+
+        latLng=LatLng()
+        latLng.latitude= lattitude.toDouble()
+        latLng.longitude= longitude.toDouble()
+
+
+        binding.mapviewroute.getMapAsync { mapBox->
+            map=mapBox
             enableLocation()
-        }
 
+            destinationMarker=map.addMarker(MarkerOptions().position(latLng))
+            destinationPosition=Point.fromLngLat(latLng.longitude, latLng.latitude)
+            originPosition=Point.fromLngLat(originLocation.longitude, originLocation.latitude)
 
+            getRoute(originPosition, destinationPosition)
 
-        binding.btnroute.setOnClickListener {
+            mapBox.cameraPosition = CameraPosition.Builder()
+                .target(latLng)
+                .zoom(15.0)
+                .build()
+
+            binding.btnroute.setOnClickListener {
+                val options= NavigationLauncherOptions.builder()
+                    .origin(originPosition)
+                    .destination(destinationPosition)
+                    .shouldSimulateRoute(false)
+                    .build()
+                NavigationLauncher.startNavigation(this, options)
+            }
 
         }
 
@@ -103,7 +135,7 @@ class RouteJalanActivity : AppCompatActivity(),  PermissionsListener, LocationEn
     @SuppressWarnings("MissingPermission")
     private fun initializeLocationLayer()
     {
-        locationLayerPlugin=LocationLayerPlugin(mapView, map, locationEngine)
+        locationLayerPlugin=LocationLayerPlugin(binding.mapviewroute, map, locationEngine)
         locationLayerPlugin?.setLocationLayerEnabled(true)
         locationLayerPlugin?.cameraMode= CameraMode.TRACKING
         locationLayerPlugin?.renderMode= RenderMode.NORMAL
@@ -118,7 +150,7 @@ class RouteJalanActivity : AppCompatActivity(),  PermissionsListener, LocationEn
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView.onLowMemory()
+        binding.mapviewroute.onLowMemory()
     }
 
 
@@ -129,27 +161,27 @@ class RouteJalanActivity : AppCompatActivity(),  PermissionsListener, LocationEn
         locationEngine?.requestLocationUpdates()
         locationLayerPlugin?.onStart()
 
-        mapView.onStart()
+        binding.mapviewroute.onStart()
     }
 
     override fun onResume() {
         super.onResume()
-        mapView.onResume()
+        binding.mapviewroute.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        mapView.onPause()
+        binding.mapviewroute.onPause()
     }
 
     override fun onStop() {
         super.onStop()
-        mapView.onStop()
+        binding.mapviewroute.onStop()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView.onDestroy()
+        binding.mapviewroute.onDestroy()
     }
 
     @SuppressWarnings("MissingPermission")
@@ -181,17 +213,18 @@ class RouteJalanActivity : AppCompatActivity(),  PermissionsListener, LocationEn
             .origin(origin)
             .destination(destination)
             .build()
-            .getRoute(object :Callback<DirectionsResponse>{
+            .getRoute(object: Callback<DirectionsResponse>{
                 override fun onResponse(
                     call: Call<DirectionsResponse>,
                     response: Response<DirectionsResponse>
                 )
                 {
-                    val body=response.body() ?: return
-
+                    val routeResponse=response?:return
+                    val body=routeResponse.body()?:return
                     if(body.routes().isEmpty())
                     {
-                        Log.d("Route Kosong","Route Kosong/Tidak Ditemukan")
+                        Log.e("MainActivity","No Routes Found")
+                        return
                     }
 
                     if(navigationMapRoute!=null)
@@ -201,7 +234,7 @@ class RouteJalanActivity : AppCompatActivity(),  PermissionsListener, LocationEn
 
                     else
                     {
-                        navigationMapRoute= NavigationMapRoute(null,mapView,map)
+                        navigationMapRoute= NavigationMapRoute(null, binding.mapviewroute, map)
                     }
 
                     navigationMapRoute?.addRoute(body.routes().first())
@@ -212,14 +245,11 @@ class RouteJalanActivity : AppCompatActivity(),  PermissionsListener, LocationEn
                 }
 
                 override fun onFailure(call: Call<DirectionsResponse>, t: Throwable) {
-                    Log.e("Map Error","Error ${t?.message}")
+                    Log.e("MainActivity","Error ${t?.message}")
                 }
 
             })
-
     }
-
-
 
 
 }
