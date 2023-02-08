@@ -68,33 +68,5 @@ class TestActivity : AppCompatActivity(), NegaraAdapter.RecyclerViewClickListene
         }
     }
 
-    private fun sewaKosCallback(sewaKosCallback: SewaKosCallback)
-    {
-        database.child(Constant().USER)
-            .child(userId)
-            .addListenerForSingleValueEvent(object: ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-
-
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                }
-
-            })
-
-        database.child(Constant().USER)
-            .child(userId)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
-
-    }
 
 }

@@ -23,8 +23,8 @@ class PenyewaAdapter(private val arrayListPenyewa:ArrayList<Pengguna>, private v
             fun bind(dataPenyewa:Pengguna, itemOnClick: ItemOnClick)
             {
                 itemView.apply {
-                    bind.lblpeminjamusername.text=dataPenyewa.username
-                    bind.lblpeminjamemail.text=dataPenyewa.email
+                    bind.lblnamapenyewa.text=dataPenyewa.username
+                    bind.lblemailpenyewa.text=dataPenyewa.email
 
                     storage.reference.child(dataPenyewa.foto)
                         .downloadUrl.addOnSuccessListener { uri->

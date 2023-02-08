@@ -68,7 +68,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     private lateinit var sisa:String
     private lateinit var gambarThumbnail:String
 
-    private var thumbnailBaru=false
+    private var thumbnailDiganti=false
     private var gambarKosDiganti=false
 
 
@@ -267,12 +267,12 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
             deskripsi=deskripsi,
         )
 
-        database.child(Constant().DAFTAR_KOS)
+        database.child(Constant().KEY_DAFTAR_KOS)
             .child(kosId)
             .setValue(kos)
             .addOnSuccessListener {
 
-                if(thumbnailBaru)
+                if(thumbnailDiganti)
                 {
                     storage.child(gambarThumbnail).delete()
                     storage.child(gambarThumbnail).putFile(uriThumbail!!)
@@ -298,25 +298,25 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     {result->
         if(result.resultCode== RESULT_OK)
         {
-            gambarThumbnail="${Constant().GAMBAR_THUMBNAIL_KOS}/${kos.idKos}/${UUID.randomUUID()}"
-            thumbnailBaru=true
+            gambarThumbnail="${Constant().KEY_GAMBAR_THUMBNAIL_KOS}/${kos.idKos}/${UUID.randomUUID()}"
+            thumbnailDiganti=true
             uriThumbail=result.data?.data
             binding.ivthumbnailkos.setImageURI(uriThumbail)
         }
     }
 
-//    private var gambarKosPickerResult:ActivityResultLauncher<Intent> = registerForActivityResult(
-//            ActivityResultContracts.StartActivityForResult())
-//    {result->
-//
-//        if(result.resultCode== RESULT_OK)
-//        {
-//            gambarKosDiganti=true
-//            sliderUri=result.data?.data
-//
-//        }
-//
-//    }
+    private var gambarKosPickerResult:ActivityResultLauncher<Intent> = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult())
+    {result->
+
+        if(result.resultCode== RESULT_OK)
+        {
+            gambarKosDiganti=true
+            sliderUri=result.data?.data
+
+        }
+
+    }
 
 
     private var getLatLong=registerForActivityResult(

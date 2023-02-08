@@ -7,7 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kosapp.Activity.HistoryActivity
+import com.example.kosapp.Activity.HistoryKosActivity
+import com.example.kosapp.Activity.TransaksiActivity
 import com.example.kosapp.Activity.KosSayaActivity
 import com.example.kosapp.Activity.TambahKosActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.MyKosAdapter
@@ -50,8 +51,12 @@ class MyKosFragment : Fragment(), ItemOnClick {
                 startActivity(Intent(activity, KosSayaActivity::class.java))
            }
 
-           "History Saya"->{
-               startActivity(Intent(activity, HistoryActivity::class.java))
+           "History Kos Saya"->{
+                startActivity(Intent(activity,HistoryKosActivity::class.java))
+           }
+
+           "Transaksi Saya"->{
+               startActivity(Intent(activity, TransaksiActivity::class.java))
            }
 
        }
@@ -62,7 +67,8 @@ class MyKosFragment : Fragment(), ItemOnClick {
     {
         myKosArrayList.add("Buka Kos-Kosan")
         myKosArrayList.add("Kos-Kosan Saya")
-        myKosArrayList.add("History Saya")
+        myKosArrayList.add("History Kos Saya")
+        myKosArrayList.add("Transaksi Saya")
     }
 
 }

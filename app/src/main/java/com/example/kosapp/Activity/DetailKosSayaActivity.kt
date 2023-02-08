@@ -1,13 +1,10 @@
 package com.example.kosapp.Activity
 
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import com.denzcoskun.imageslider.constants.ScaleTypes
-import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.kosapp.Callback.SetImageListCallback
 import com.example.kosapp.Helper.Constant
@@ -23,7 +20,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import java.lang.Exception
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -106,12 +102,12 @@ class DetailKosSayaActivity : AppCompatActivity() {
 
     private fun cekPermintaanKeluarKos()
     {
-        database.child(Constant().PERMINTAAN)
+        database.child(Constant().KEY_PERMINTAAN)
             .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach { snap->
-                        val snapIdKos=snap.child(Constant().ID_KOS).value.toString()
-                        val snapEmail=snap.child(Constant().DARI).value.toString()
+                        val snapIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()
+                        val snapEmail=snap.child(Constant().KEY_DARI).value.toString()
 
                         if(snapIdKos==kos.idKos && emailPengguna==snapEmail)
                         {
@@ -139,11 +135,11 @@ class DetailKosSayaActivity : AppCompatActivity() {
             dari = emailPengguna,
             kepada = kos.emailPemilik,
             judul = Constant().PERMINTAAAN_AKHIRI_SEWA,
-            isi ="Mengajukan Permintaan Untuk Mengakhiri Sewa Kos",
+            isi ="Mengajukan Permintaan Untuk Mengakhiri Sewa Kos ${kos.nama}",
             tanggal = tglHariIni,
         )
 
-        database.child(Constant().PERMINTAAN)
+        database.child(Constant().KEY_PERMINTAAN)
             .push()
             .ref.setValue(permintaan)
             .addOnSuccessListener {

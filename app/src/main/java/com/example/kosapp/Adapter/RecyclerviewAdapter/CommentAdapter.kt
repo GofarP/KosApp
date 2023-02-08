@@ -3,8 +3,10 @@ package com.example.kosapp.Adapter.RecyclerviewAdapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.kosapp.Model.Comment
 import com.example.kosapp.databinding.LayoutCommentBinding
+import com.google.firebase.storage.FirebaseStorage
 
 class CommentAdapter(private val commentArrayList: ArrayList<Comment>)
     :RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
@@ -15,12 +17,26 @@ class CommentAdapter(private val commentArrayList: ArrayList<Comment>)
         {
 
                 val bind=layoutCommentBinding
+                val storage=FirebaseStorage.getInstance()
 
-                fun bind(comment: Comment)
+            fun bind(comment: Comment)
                 {
-                    bind.lblnamapengguna.text=comment.namaPengguna
-                    bind.lblcomment.text=comment.comment
-                    bind.lbltanggal.text=comment.tanggal.toString()
+
+                    itemView.apply {
+
+                        bind.lblnamapengguna.text=comment.username
+                        bind.lblcomment.text=comment.isiComment
+                        bind.lbltanggal.text=comment.tanggal
+
+                        storage.reference.child(comment.foto).downloadUrl
+                            .addOnSuccessListener { uri->
+                                Glide.with(this)
+                                    .load(uri)
+                                    .into(bind.ivprofile)
+                            }
+
+                    }
+
                 }
 
         }

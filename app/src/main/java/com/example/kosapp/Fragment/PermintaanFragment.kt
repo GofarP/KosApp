@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Adapter.RecyclerviewAdapter.PermintaanAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.PermintaanAdapter.OnClickListener
-import com.example.kosapp.Callback.PermintaanCallback
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Model.History
+import com.example.kosapp.Model.Transaksi
 import com.example.kosapp.Model.Permintaan
 import com.example.kosapp.Model.Sewa
 import com.example.kosapp.databinding.FragmentPermintaanBinding
@@ -26,7 +26,6 @@ import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.log
 
 
 class PermintaanFragment : Fragment(), OnClickListener {
@@ -39,6 +38,7 @@ class PermintaanFragment : Fragment(), OnClickListener {
     private var permintaanArrayList=ArrayList<Permintaan>()
     private lateinit var permintaan: Permintaan
     private lateinit var sewa: Sewa
+    private lateinit var transaksi: Transaksi
     private lateinit var history: History
     private lateinit var format:SimpleDateFormat
     private var calendar=Calendar.getInstance()
@@ -67,7 +67,7 @@ class PermintaanFragment : Fragment(), OnClickListener {
 
     private fun getPermintaan()
     {
-        database.child(Constant().PERMINTAAN)
+        database.child(Constant().KEY_PERMINTAAN)
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
 
@@ -75,19 +75,19 @@ class PermintaanFragment : Fragment(), OnClickListener {
 
                     snapshot.children.forEach { snap->
 
-                            val emailChildKepada=snap.child(Constant().KEPADA).value.toString()
-                            val emailChildDari=snap.child(Constant().DARI).value.toString()
+                            val emailChildKepada=snap.child(Constant().KEY_KEPADA).value.toString()
+                            val emailChildDari=snap.child(Constant().KEY_DARI).value.toString()
 
                             if(emailChildDari == emailPengguna || emailChildKepada==emailPengguna)
                             {
                                 permintaan=Permintaan(
-                                    dari=snap.child(Constant().DARI).value.toString(),
-                                    idKos=snap.child(Constant().ID_KOS).value.toString(),
-                                    idPermintaan = snap.child(Constant().ID_PERMINTAAN).value.toString(),
-                                    isi=snap.child(Constant().ISI).value.toString(),
-                                    judul=snap.child(Constant().JUDUL).value.toString(),
-                                    kepada = snap.child(Constant().KEPADA).value.toString(),
-                                    namaKos = snap.child(Constant().NAMA_KOS).value.toString(),
+                                    dari=snap.child(Constant().KEY_DARI).value.toString(),
+                                    idKos=snap.child(Constant().KEY_ID_KOS).value.toString(),
+                                    idPermintaan = snap.child(Constant().KEY_ID_PERMINTAAN).value.toString(),
+                                    isi=snap.child(Constant().KEY_ISI).value.toString(),
+                                    judul=snap.child(Constant().KEY_JUDUL).value.toString(),
+                                    kepada = snap.child(Constant().KEY_KEPADA).value.toString(),
+                                    namaKos = snap.child(Constant().KEY_NAMA_KOS).value.toString(),
                                     tanggal =  tanggalHariIni,
                                 )
                                 permintaanArrayList.add(permintaan)
@@ -111,11 +111,11 @@ class PermintaanFragment : Fragment(), OnClickListener {
     private fun terimaPermintaanSewaKos(dataPermintaan: Permintaan)
     {
 
-        database.child(Constant().PERMINTAAN)
+        database.child(Constant().KEY_PERMINTAAN)
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach {snap->
-                        if(snap.child(Constant().ID_PERMINTAAN).value.toString()==dataPermintaan.idPermintaan)
+                        if(snap.child(Constant().KEY_ID_PERMINTAAN).value.toString()==dataPermintaan.idPermintaan)
                         {
                             snap.ref.removeValue()
                                 .addOnSuccessListener {
@@ -127,23 +127,46 @@ class PermintaanFragment : Fragment(), OnClickListener {
                                         idKos = dataPermintaan.idKos
                                     )
 
-                                    history=History(
+                                    transaksi=Transaksi(
                                         dari=emailPengguna,
-                                        historyId = UUID.randomUUID().toString(),
+                                        transaksiId = UUID.randomUUID().toString(),
                                         isi="Permintaan Sewa Diterima",
-                                        judul=Constant().PERMINTAAN_SEWA,
+                                        judul=Constant().KEY_PERMINTAAN_SEWA,
                                         kepada=dataPermintaan.dari,
                                         tanggal=tanggalHariIni,
-                                        tipe=Constant().TERIMA_SEWA
+                                        tipe=Constant().KEY_TERIMA_SEWA
                                     )
 
-                                    database.child(Constant().DAFTAR_SEWA_KOS)
+
+
+
+                                    database.child(Constant().KEY_DAFTAR_SEWA_KOS)
                                         .push()
                                         .setValue(sewa)
 
-                                    database.child(Constant().HISTORY)
+                                    database.child(Constant().KEY_TRANSAKSI)
                                         .push()
-                                        .setValue(history)
+                                        .setValue(transaksi)
+
+
+
+                                    database.child(Constant().KEY_DAFTAR_KOS)
+                                        .child(permintaan.idKos)
+                                        .get().addOnSuccessListener { snap->
+                                            history= History(
+                                                idHistory=UUID.randomUUID().toString(),
+                                                idKos = snap.child(Constant().KEY_ID_KOS).value.toString(),
+                                                alamat = snap.child(Constant().KEY_ALAMAT_KOS).value.toString(),
+                                                nama=snap.child(Constant().KEY_NAMA_KOS).value.toString(),
+                                                tanggal = tanggalHariIni,
+                                                thumbnailKos = snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString()
+                                            )
+
+                                            database.child(Constant().KEY_HISTORY_SEWA)
+                                                .child(permintaan.dari.replace(".",","))
+                                                .push()
+                                                .setValue(history)
+                                        }
 
 //                                    database.child(Constant().DAFTAR_KOS)
 //                                        .child(emailPengguna.replace(".",","))
@@ -174,48 +197,48 @@ class PermintaanFragment : Fragment(), OnClickListener {
 
     private fun terimaPermintaanKeluarKos(permintaanId: String)
     {
-        database.child(Constant().PERMINTAAN)
+        database.child(Constant().KEY_PERMINTAAN)
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
 
                     snapshot.children.forEach {snap->
-                        val permintaanIdKos=snap.child(Constant().ID_KOS).value.toString()
-                        val permintaanDari=snap.child(Constant().DARI).value.toString()
+                        val permintaanIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()
+                        val permintaanDari=snap.child(Constant().KEY_DARI).value.toString()
 
-                        if(snap.child(Constant().ID_PERMINTAAN).value.toString()==permintaanId)
+                        if(snap.child(Constant().KEY_ID_PERMINTAAN).value.toString()==permintaanId)
                         {
                             snap.ref.removeValue()
 
-                            history=History(
+                            transaksi=Transaksi(
                                 dari=emailPengguna,
-                                historyId = UUID.randomUUID().toString(),
+                                transaksiId = UUID.randomUUID().toString(),
+                                isi="Permintaan Keluar Kos ${permintaan.namaKos} Diterima",
+                                judul=Constant().PERMINTAAAN_AKHIRI_SEWA,
+                                kepada=permintaan.dari,
+                                tanggal=tanggalHariIni,
+                                tipe=Constant().KEY_AKHIRI_SEWA
+                            )
+
+                            transaksi=Transaksi(
+                                dari=emailPengguna,
+                                transaksiId = UUID.randomUUID().toString(),
                                 isi="Permintaan Keluar Kos Diterima",
                                 judul=Constant().PERMINTAAAN_AKHIRI_SEWA,
                                 kepada=permintaan.dari,
                                 tanggal=tanggalHariIni,
-                                tipe=Constant().AKHIRI_SEWA
+                                tipe=Constant().KEY_AKHIRI_SEWA
                             )
 
-                            history=History(
-                                dari=emailPengguna,
-                                historyId = UUID.randomUUID().toString(),
-                                isi="Permintaan Keluar Kos Diterima",
-                                judul=Constant().PERMINTAAAN_AKHIRI_SEWA,
-                                kepada=permintaan.dari,
-                                tanggal=tanggalHariIni,
-                                tipe=Constant().AKHIRI_SEWA
-                            )
-
-                            database.child(Constant().HISTORY)
+                            database.child(Constant().KEY_TRANSAKSI)
                                 .push()
-                                .setValue(history)
+                                .setValue(transaksi)
 
-                            database.child(Constant().DAFTAR_SEWA_KOS)
+                            database.child(Constant().KEY_DAFTAR_SEWA_KOS)
                                 .addValueEventListener(object:ValueEventListener{
                                     override fun onDataChange(snapshot: DataSnapshot) {
                                         snapshot.children.forEach {snap->
                                             val emailSewa=snap.child(Constant().KEY_EMAIL).value.toString()
-                                            val idKosSewa=snap.child(Constant().ID_KOS).value.toString()
+                                            val idKosSewa=snap.child(Constant().KEY_ID_KOS).value.toString()
 
                                             if(permintaanDari==emailSewa && permintaanIdKos==idKosSewa)
                                             {
@@ -249,27 +272,27 @@ class PermintaanFragment : Fragment(), OnClickListener {
 
     private fun tolakPermintaan(permintaanId:String)
     {
-        database.child(Constant().PERMINTAAN)
+        database.child(Constant().KEY_PERMINTAAN)
             .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach {snap->
-                        if(snap.child(Constant().ID_PERMINTAAN).value.toString()==permintaanId)
+                        if(snap.child(Constant().KEY_ID_PERMINTAAN).value.toString()==permintaanId)
                         {
                            snap.ref.removeValue()
                                .addOnSuccessListener {
 
-                                   val history=History(
-                                       historyId=UUID.randomUUID().toString(),
+                                   val transaksi=Transaksi(
+                                       transaksiId=UUID.randomUUID().toString(),
                                        judul = "Permintaan Sewa Dibatalkan",
                                        isi = "Anda Membatalkan Permintaan Sewa",
-                                       tipe=Constant().BATAL_SEWA,
+                                       tipe=Constant().KEY_BATAL_SEWA,
                                        dari=emailPengguna,
                                        kepada=permintaan.dari,
                                        tanggal=tanggalHariIni
                                    )
-                                   database.child(Constant().HISTORY)
+                                   database.child(Constant().KEY_TRANSAKSI)
                                        .push()
-                                       .setValue(history)
+                                       .setValue(transaksi)
 
                                    Toast.makeText(activity, "Sukses Menolak Permintaan", Toast.LENGTH_SHORT).show()
 
@@ -292,31 +315,32 @@ class PermintaanFragment : Fragment(), OnClickListener {
     }
 
 
+
     private fun batalkanPermintaan(idPermintaan: String)
     {
-        database.child(Constant().PERMINTAAN)
+        database.child(Constant().KEY_PERMINTAAN)
             .addValueEventListener(object :ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
 
                     snapshot.children.forEach { snap->
-                        if(snap.child(Constant().ID_PERMINTAAN).value.toString()==idPermintaan)
+                        if(snap.child(Constant().KEY_ID_PERMINTAAN).value.toString()==idPermintaan)
                         {
                             snap.ref.removeValue()
                                 .addOnSuccessListener {
 
-                                    val history=History(
-                                        historyId=UUID.randomUUID().toString(),
+                                    val transaksi=Transaksi(
+                                        transaksiId=UUID.randomUUID().toString(),
                                         judul = "Permintaan Sewa Dibatalkan",
                                         isi = "Anda Membatalkan Permintaan Sewa Kos ${permintaan.namaKos}",
-                                        tipe=Constant().BATAL_SEWA,
+                                        tipe=Constant().KEY_BATAL_SEWA,
                                         dari=emailPengguna,
                                         kepada=permintaan.dari,
                                         tanggal=tanggalHariIni
                                     )
 
-                                    database.child(Constant().HISTORY)
+                                    database.child(Constant().KEY_TRANSAKSI)
                                         .push()
-                                        .setValue(history)
+                                        .setValue(transaksi)
 
                                     Toast.makeText(activity, "Sukses Membatalkan Permintaan", Toast.LENGTH_SHORT).show()
 
@@ -341,7 +365,7 @@ class PermintaanFragment : Fragment(), OnClickListener {
             terimaPermintaanKeluarKos(dataPermintaan.idPermintaan)
         }
 
-        else if(dataPermintaan.judul==Constant().PERMINTAAN_SEWA)
+        else if(dataPermintaan.judul==Constant().KEY_PERMINTAAN_SEWA)
         {
             terimaPermintaanSewaKos(dataPermintaan)
         }

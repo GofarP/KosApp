@@ -8,11 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.kosapp.Callback.SetImageListCallback
-import com.example.kosapp.Callback.SewaKosCallback
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.Model.Permintaan
+import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityDetailSewaKosBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -52,19 +52,12 @@ class DetailSewaKosActivity : AppCompatActivity() {
 
         dataKosIntent=intent
         kos=dataKosIntent.getParcelableExtra("dataKos")!!
+
+        checkSewaKos()
+
+
         setDataKos()
         
-        checkSewaKosCallback(object : SewaKosCallback {
-            override fun permintaanDitemukan(found: Boolean) {
-                permintaanDitemukan=true
-            }
-
-            override fun kosSudahDisewa(found: Boolean) {
-                kosSudahDisewa=true
-            }
-
-        })
-
 
         setGambarKos(object :SetImageListCallback{
             override fun setImageList(arrayListImage: ArrayList<SlideModel>) {
@@ -74,11 +67,12 @@ class DetailSewaKosActivity : AppCompatActivity() {
         })
 
         binding.btnaddcomment.setOnClickListener {
-            startActivity(Intent(this@DetailSewaKosActivity,CommentActivity::class.java))
+            val intent=Intent(this@DetailSewaKosActivity, CommentActivity::class.java)
+            intent.putExtra("idKos",kos.idKos)
+            startActivity(intent)
         }
 
         binding.btnpesan.setOnClickListener {
-
 
             if(emailPengguna==kos.emailPemilik)
             {
@@ -102,11 +96,6 @@ class DetailSewaKosActivity : AppCompatActivity() {
 
         }
 
-        binding.btnaddcomment.setOnClickListener {
-            startActivity(Intent(this@DetailSewaKosActivity, TestActivity::class.java))
-        }
-
-
     }
 
     private fun sewaKos()
@@ -118,17 +107,22 @@ class DetailSewaKosActivity : AppCompatActivity() {
             namaKos=kos.nama,
             dari = emailPengguna,
             kepada = kos.emailPemilik,
-            judul = Constant().PERMINTAAN_SEWA,
-            isi ="Mengajukan Permintaan Untuk Menyewa Kos",
+            judul = Constant().KEY_PERMINTAAN_SEWA,
+            isi ="Mengajukan Permintaan Untuk Menyewa Kos ${kos.nama}",
             tanggal = tanggalHari,
         )
 
-        database.child(Constant().PERMINTAAN)
+        database.child(Constant().KEY_PERMINTAAN)
             .push()
             .ref.setValue(permintaan)
             .addOnSuccessListener {
 
+                binding.btnpesan.isEnabled=false
+                binding.btnpesan.setBackgroundResource(R.drawable.button_background_disabled)
+                binding.btnpesan.text="Permintaan Diproses"
+
                 Toast.makeText(this@DetailSewaKosActivity, "Sukses Mengajukan Permintaan Untuk Menyewa Kos", Toast.LENGTH_SHORT).show()
+
             }
             .addOnFailureListener {
                 Toast.makeText(this@DetailSewaKosActivity, "Gagal Mengajukan Permintaan Untuk Menyewa Kos", Toast.LENGTH_SHORT).show()
@@ -137,22 +131,22 @@ class DetailSewaKosActivity : AppCompatActivity() {
 
 
 
-
-
-    private fun checkSewaKosCallback(sewaKosCallback: SewaKosCallback)
+    private fun checkSewaKos()
     {
 
-        database.child(Constant().PERMINTAAN)
+        database.child(Constant().KEY_PERMINTAAN)
             .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
 
                     snapshot.children.forEach {snap->
-                        val emailDari=snap.child(Constant().DARI).value.toString()
-                        val idKos=snap.child(Constant().ID_KOS).value.toString()
+                        val emailDari=snap.child(Constant().KEY_DARI).value.toString()
+                        val idKos=snap.child(Constant().KEY_ID_KOS).value.toString()
 
                         if(emailDari==emailPengguna && idKos==kos.idKos)
                         {
-                            sewaKosCallback.permintaanDitemukan(true)
+                            binding.btnpesan.isEnabled=false
+                            binding.btnpesan.setBackgroundResource(R.drawable.button_background_disabled)
+                            binding.btnpesan.text="Permintaan Diproses"
                         }
 
                     }
@@ -165,17 +159,21 @@ class DetailSewaKosActivity : AppCompatActivity() {
 
             })
 
-        database.child(Constant().DAFTAR_SEWA_KOS)
+
+
+        database.child(Constant().KEY_DAFTAR_SEWA_KOS)
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach { snap->
 
                         val emailPenyewa=snap.child(Constant().KEY_EMAIL).value.toString()
-                        val idKos=snap.child(Constant().ID_KOS).value.toString()
+                        val idKos=snap.child(Constant().KEY_ID_KOS).value.toString()
 
                         if(emailPenyewa==emailPengguna && idKos==kos.idKos)
                         {
-                            sewaKosCallback.kosSudahDisewa(true)
+                            binding.btnpesan.isEnabled=false
+                            binding.btnpesan.setBackgroundResource(R.drawable.button_background_disabled)
+                            binding.btnpesan.text="Kos Sudah Disewa"
                         }
 
                     }

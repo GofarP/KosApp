@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Adapter.RecyclerviewAdapter.PenyewaAdapter
@@ -14,7 +15,9 @@ import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.Model.Pengguna
+import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityPenyewaBinding
+import com.example.kosapp.databinding.LayoutDetailPenyewaBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -51,18 +54,18 @@ class PenyewaActivity : AppCompatActivity(), ItemOnClick {
 
     fun getData()
     {
-        database.child(Constant().DAFTAR_SEWA_KOS)
+        database.child(Constant().KEY_DAFTAR_SEWA_KOS)
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     penyewaArrayList.clear()
                     snapshot.children.forEach { snapSewa->
 
-                        val snapSewaIdKos=snapSewa.child(Constant().ID_KOS).value.toString()
+                        val snapSewaIdKos=snapSewa.child(Constant().KEY_ID_KOS).value.toString()
                         val snapSewaEmail=snapSewa.child(Constant().KEY_EMAIL).value.toString()
 
                         if(snapSewaIdKos==kos.idKos)
                         {
-                            database.child(Constant().USER)
+                            database.child(Constant().KEY_USER)
                                 .addValueEventListener(object:ValueEventListener{
                                     override fun onDataChange(snapshot: DataSnapshot) {
                                         snapshot.children.forEach { snapUser->
@@ -148,7 +151,19 @@ class PenyewaActivity : AppCompatActivity(), ItemOnClick {
     }
 
     override fun OnClickDetail(view: View, pengguna: Pengguna) {
-        Toast.makeText(this@PenyewaActivity, pengguna.username, Toast.LENGTH_SHORT).show()
+
+        val dialogView=layoutInflater.inflate(R.layout.layout_detail_penyewa, null)
+        val customDialog=AlertDialog.Builder(this)
+            .setView(dialogView)
+            .show()
+        val customDialogBinding= LayoutDetailPenyewaBinding.inflate(layoutInflater)
+        customDialog.setContentView(customDialogBinding.root)
+
+        customDialogBinding.lbldetailnama.text=pengguna.username
+        customDialogBinding.lbldetailemail.text=pengguna.email
+        customDialogBinding.lblnotelp.text=pengguna.noTelp
+        customDialogBinding.lbljeniskelamin.text=pengguna.jenisKelamin
+
     }
 
     override fun OnClickHapus(view: View, pengguna: Pengguna) {

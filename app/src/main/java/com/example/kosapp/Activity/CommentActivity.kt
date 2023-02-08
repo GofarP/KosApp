@@ -2,13 +2,22 @@ package com.example.kosapp.Activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Adapter.RecyclerviewAdapter.CommentAdapter
-import com.example.kosapp.R
+import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
 import com.example.kosapp.Model.Comment
 import com.example.kosapp.databinding.ActivityCommentBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -17,11 +26,26 @@ class CommentActivity : AppCompatActivity() {
     private lateinit var bind:ActivityCommentBinding
 
     private var commentArrayList=ArrayList<Comment>()
+
     private lateinit var commentAdapter:CommentAdapter
 
     private var calendar=Calendar.getInstance()
 
     private lateinit var tanggalHariIni: String
+
+    private lateinit var idKos: String
+
+    private var database= Firebase.database.reference
+
+    private lateinit var bundle:Bundle
+
+    private lateinit var comment: Comment
+
+    private var emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
+
+    private var idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
+
+    private lateinit var layoutManager:RecyclerView.LayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,12 +56,13 @@ class CommentActivity : AppCompatActivity() {
 
         Helper().setStatusBarColor(this@CommentActivity)
 
-        addData()
+        bundle= intent.extras!!
 
-        commentAdapter= CommentAdapter(commentArrayList)
-        val layoutManager=LinearLayoutManager(this)
-        bind.rvcomment.layoutManager=layoutManager
-        bind.rvcomment.adapter=commentAdapter
+        idKos=bundle.getString("idKos").toString()
+
+        checkHistoryKos(idKos)
+
+        getComment()
 
 
         bind.commentKembali.setOnClickListener {
@@ -45,49 +70,122 @@ class CommentActivity : AppCompatActivity() {
         }
 
         bind.btnsend.setOnClickListener {
-            val komen=bind.txtcomment.text.toString()
 
-            Toast.makeText(this@CommentActivity, komen, Toast.LENGTH_SHORT).show()
+            database.child(Constant().KEY_USER)
+                .child(idPengguna)
+                .get()
+                .addOnSuccessListener {snap->
+                    comment= Comment(
+                        email = emailPengguna,
+                        foto=snap.child(Constant().KEY_FOTO).value.toString(),
+                        idComment = UUID.randomUUID().toString(),
+                        isiComment = bind.txtcomment.text.toString(),
+                        tanggal = tanggalHariIni,
+                        username = snap.child(Constant().KEY_USERNAME).value.toString()
+                    )
+
+                    sendComment(comment,idKos)
+                }
+                .addOnFailureListener {
+                    Toast.makeText(applicationContext, "Gagal Mengirim Komentar", Toast.LENGTH_SHORT).show()
+                }
         }
 
 
-
     }
 
 
-    fun addData()
+    private fun checkHistoryKos(idKos:String)
     {
-        var comment=Comment(
-            idPengguna = UUID.randomUUID().toString(),
-            namaPengguna = "Gopro 123",
-            gambar="",
-            comment = "Kos nya bau kelabang, udah gitu pengap lagi, duh.",
-            tanggal = tanggalHariIni
-        )
+        database.addListenerForSingleValueEvent(object:ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+               if(snapshot.child(Constant().KEY_HISTORY_SEWA).exists())
+               {
+                   var historyDitemukan=false
+                    snapshot.child(Constant().KEY_HISTORY_SEWA)
+                        .child(emailPengguna.replace(".",","))
+                        .children.forEach {snap->
+                            val snapIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()
+                            if(snapIdKos==idKos)
+                            {
+                                Log.d("boolean","found")
+                                historyDitemukan=true
+                            }
+                        }
 
-        commentArrayList.add(comment)
+                    if(!historyDitemukan)
+                    {
+                        bind.btnsend.visibility=View.GONE
+                        bind.txtcomment.visibility=View.GONE
+                    }
 
+               }
+               else
+               {
+                    bind.btnsend.visibility=View.INVISIBLE
+                    bind.txtcomment.visibility=View.INVISIBLE
+               }
+            }
 
-        comment=Comment(
-            idPengguna = UUID.randomUUID().toString(),
-            namaPengguna = "xxPutraxx",
-            gambar="",
-            comment = "Kosnya nyaman banget... et tapi boong",
-            tanggal = tanggalHariIni
-        )
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("db error",error.message)
+            }
 
-        commentArrayList.add(comment)
-
-        comment=Comment(
-            idPengguna = UUID.randomUUID().toString(),
-            namaPengguna = "Perdana aja",
-            gambar="",
-            comment = "Ya lumayanlah, sesuai dengan harga",
-            tanggal = tanggalHariIni
-        )
-
-        commentArrayList.add(comment)
+        })
     }
+
+    private fun getComment()
+    {
+        database.child(Constant().KEY_COMMENT)
+            .child(idKos)
+            .addValueEventListener(object: ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    commentArrayList.clear()
+                    snapshot.children.forEach {snap->
+
+                        comment=Comment(
+                            email=snap.child(Constant().KEY_EMAIL).value.toString(),
+                            foto=snap.child(Constant().KEY_FOTO).value.toString(),
+                            idComment = snap.child(Constant().KEY_ID_COMMENT).value.toString(),
+                            isiComment = snap.child(Constant().KEY_ISI_COMMENT).value.toString(),
+                            tanggal = snap.child(Constant().KEY_TANGGAL).value.toString(),
+                            username = snap.child(Constant().KEY_USERNAME).value.toString()
+                        )
+
+                        commentArrayList.add(comment)
+                    }
+
+                    commentAdapter= CommentAdapter(commentArrayList)
+                    layoutManager=LinearLayoutManager(this@CommentActivity)
+                    bind.rvcomment.layoutManager=layoutManager
+                    bind.rvcomment.adapter=commentAdapter
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("db error", error.message.toString())
+                }
+
+            })
+    }
+
+   private fun sendComment(commentParam: Comment, idKos: String)
+   {
+        comment= Comment(
+            foto = commentParam.foto,
+            idComment = UUID.randomUUID().toString(),
+            email = emailPengguna,
+            isiComment = commentParam.isiComment,
+            tanggal=tanggalHariIni,
+            username = commentParam.username
+        )
+        database.child(Constant().KEY_COMMENT)
+            .child(idKos)
+            .push()
+            .setValue(comment)
+            .addOnSuccessListener {
+                bind.txtcomment.text.clear()
+            }
+   }
 
 
 }

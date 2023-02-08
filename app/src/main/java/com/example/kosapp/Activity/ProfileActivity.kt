@@ -93,7 +93,7 @@ class ProfileActivity : AppCompatActivity() {
             auth.signInWithEmailAndPassword(emailPengguna,password.toString())
                 .addOnSuccessListener {
 
-                    database.child(Constant().USER)
+                    database.child(Constant().KEY_USER)
                         .child(idPengguna)
                         .child(Constant().KEY_USERNAME)
                         .setValue(username)

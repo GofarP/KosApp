@@ -60,13 +60,13 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="12dp"
-            android:layout_marginRight="70dp"
+            android:layout_marginEnd="70dp"
             android:layout_marginBottom="12dp"
             android:background="@drawable/edittext_oval_outline_white"
             android:hint="@string/text_comment"
-            android:textColor="@color/white" />
+            android:textColor="@color/black" />
 
         <ImageButton
             android:id="@+id/btnsend"

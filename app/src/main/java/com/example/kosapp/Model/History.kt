@@ -1,13 +1,10 @@
 package com.example.kosapp.Model
 
-import java.util.*
-
-data class History(
-    val historyId:String,
-    val tipe:String,
-    val tanggal:String,
-    val judul:String,
-    val dari:String,
-    val kepada:String,
-    val isi:String
-)
+data class History (
+        val idHistory:String,
+        val idKos:String,
+        val nama:String,
+        val alamat:String,
+        val thumbnailKos:String,
+        val tanggal:String
+    )

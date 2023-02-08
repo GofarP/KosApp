@@ -135,7 +135,7 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                 )
 
 
-                database.child(Constant().DAFTAR_KOS)
+                database.child(Constant().KEY_DAFTAR_KOS)
                     .child(kosId)
                     .setValue(kos)
                     .addOnSuccessListener {

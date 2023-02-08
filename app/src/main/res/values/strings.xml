@@ -53,5 +53,10 @@
     <string name="text_btn_selengkapnya">Selengkapnya</string>
     <string name="text_btn_petunjuk">Petunjuk</string>
     <string name="text_route_jalan">Tunjukkan Route Jalan</string>
+    <string name="text_detail_penyewa">Detail Penyewa</string>
+    <string name="text_history_tanggal_sewa">Tanggal Sewa</string>
+    <string name="text_dummy_date">12-12-2012</string>
+    <string name="text_nama_kos">Nama Kos</string>
+    <string name="text_alamat">Jl.Hang Lekir</string>
 
 </resources>
