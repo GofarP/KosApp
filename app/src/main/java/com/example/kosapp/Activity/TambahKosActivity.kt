@@ -44,7 +44,7 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
     private var firebaseStorage=FirebaseStorage.getInstance().reference
 
     private val slideImageArrayList=ArrayList<SlideModel>()
-    private var fasilitasKosList=ArrayList<String>()
+    private var gambarKosList=ArrayList<String>()
 
     private lateinit var map:MapboxMap
     private lateinit var latLng: LatLng
@@ -105,8 +105,8 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                 val alamat=binding.txtalamatkos.text.trim().toString()
                 val biaya=binding.txtharga.text.trim().toString()
                 val jenisBayar=binding.spnjenisbayar.selectedItem.toString()
-                val gambarThumbnail="thumbnailKos/$kosId/${UUID.randomUUID()}"
-                val gambarFasilitasKos="fasilitasKos/$kosId/"
+                val gambarThumbnail="${Constant().KEY_GAMBAR_THUMBNAIL_KOS}/$kosId/${UUID.randomUUID()}"
+                val gambarKosUrl="${Constant().KEY_GAMBAR_KOS}/$kosId/"
                 val jenisKos=binding.spnjeniskos.selectedItem.toString()
                 val jumlahKamar=binding.txtjumlahkamarkos.text.trim().toString()
                 val fasilitas=binding.txtfasilitas.text.trim().toString()
@@ -114,7 +114,7 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
 
                 for(i in slideImageArrayList.indices)
                 {
-                    fasilitasKosList.add("$gambarFasilitasKos${UUID.randomUUID()}")
+                    gambarKosList.add("$gambarKosUrl${UUID.randomUUID()}")
                 }
 
                 val kos=Kos(
@@ -124,7 +124,7 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                     alamat = alamat,
                     biaya =biaya.toDouble(),
                     jenisBayar=jenisBayar,
-                    gambarKos =fasilitasKosList,
+                    gambarKos =gambarKosList,
                     thumbnailKos = gambarThumbnail,
                     jenis=jenisKos,
                     sisa = jumlahKamar.toInt(),
@@ -145,7 +145,7 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                         for(i in slideImageArrayList.indices)
                         {
                             sliderUri=Uri.parse(slideImageArrayList[i].imageUrl)
-                            firebaseStorage.child(fasilitasKosList[i]).putFile(sliderUri!!)
+                            firebaseStorage.child(gambarKosList[i]).putFile(sliderUri!!)
                         }
 
                         Toast.makeText(this@TambahKosActivity, "Sukses Menambah Kos Baru", Toast.LENGTH_SHORT).show()
@@ -199,7 +199,7 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
     private var kostImagePickerResult:ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult())
     {
-        result->
+            result->
 
         if(result.resultCode== RESULT_OK)
         {

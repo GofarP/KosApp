@@ -3,6 +3,7 @@ package com.example.kosapp.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.denzcoskun.imageslider.constants.ScaleTypes
@@ -25,10 +26,12 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class DetailSewaKosActivity : AppCompatActivity() {
 
-    private lateinit var binding:ActivityDetailSewaKosBinding
+    private lateinit var binding: ActivityDetailSewaKosBinding
+    private var slideHashMap=HashMap<String,SlideModel>()
     private var slideArrayList=ArrayList<SlideModel>()
     private var storage=FirebaseStorage.getInstance().reference
     private var database=Firebase.database.reference
@@ -51,7 +54,14 @@ class DetailSewaKosActivity : AppCompatActivity() {
         Helper().setStatusBarColor(this@DetailSewaKosActivity)
 
         dataKosIntent=intent
-        kos=dataKosIntent.getParcelableExtra("dataKos")!!
+        kos=dataKosIntent.getParcelableExtra(Constant().KEY_DATA_KOS)!!
+
+        if(emailPengguna==kos.emailPemilik)
+        {
+            binding.btnpesan.visibility=View.INVISIBLE
+            binding.btnchatpemilik.visibility=View.INVISIBLE
+        }
+
 
         checkSewaKos()
 
@@ -60,26 +70,31 @@ class DetailSewaKosActivity : AppCompatActivity() {
         
 
         setGambarKos(object :SetImageListCallback{
-            override fun setImageList(arrayListImage: ArrayList<SlideModel>) {
-                binding.includeLayoutDetail.sliderDetailKos.setImageList(arrayListImage)
+
+            override fun setImageList(listGambarKos: ArrayList<SlideModel>) {
+                binding.includeLayoutDetail.sliderDetailKos.setImageList(listGambarKos)
             }
 
         })
 
+
+
         binding.btnaddcomment.setOnClickListener {
             val intent=Intent(this@DetailSewaKosActivity, CommentActivity::class.java)
-            intent.putExtra("idKos",kos.idKos)
+            intent.putExtra(Constant().KEY_ID_KOS,kos.idKos)
+            intent.putExtra(Constant().KEY_EMAIL_PEMILIK,kos.emailPemilik)
+            startActivity(intent)
+        }
+
+        binding.btnchatpemilik.setOnClickListener {
+            val intent=Intent(this@DetailSewaKosActivity, ChatActiviity::class.java)
+                .putExtra(Constant().KEY_DATA,kos)
             startActivity(intent)
         }
 
         binding.btnpesan.setOnClickListener {
 
-            if(emailPengguna==kos.emailPemilik)
-            {
-                Toast.makeText(this@DetailSewaKosActivity, "Anda Tidak Bisa Menyewa Kos Anda Sendiri", Toast.LENGTH_SHORT).show()
-            }
-
-            else if(permintaanDitemukan)
+            if(permintaanDitemukan)
             {
                 Toast.makeText(this@DetailSewaKosActivity, "Permintaan Anda Sedang Di Proses", Toast.LENGTH_SHORT).show()
             }
@@ -160,7 +175,6 @@ class DetailSewaKosActivity : AppCompatActivity() {
             })
 
 
-
         database.child(Constant().KEY_DAFTAR_SEWA_KOS)
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -187,22 +201,24 @@ class DetailSewaKosActivity : AppCompatActivity() {
     }
 
 
-    private fun setGambarKos(setImageListCallback: SetImageListCallback)
-    {
-        kos.gambarKos.indices.forEachIndexed { _, i ->
-            storage.child(kos.gambarKos[i])
-                .downloadUrl
-                .addOnSuccessListener {uri->
 
-                    slideArrayList.add(SlideModel(uri.toString(), ScaleTypes.FIT))
-                    setImageListCallback.setImageList(slideArrayList)
+        private fun setGambarKos(setImageListCallback: SetImageListCallback)
+        {
+            kos.gambarKos.indices.forEachIndexed { _, i ->
+                storage.child(kos.gambarKos[i])
+                    .downloadUrl
+                    .addOnSuccessListener {uri->
 
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this@DetailSewaKosActivity, it.message, Toast.LENGTH_SHORT).show()
-                }
+                        slideArrayList.add(SlideModel(uri.toString(), ScaleTypes.FIT))
+                        setImageListCallback.setImageList(slideArrayList)
+
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this@DetailSewaKosActivity, it.message, Toast.LENGTH_SHORT).show()
+                    }
+            }
         }
-    }
+
 
 
     private fun setDataKos()
@@ -216,6 +232,8 @@ class DetailSewaKosActivity : AppCompatActivity() {
         binding.includeLayoutDetail.lbljenispembayaran.text=kos.jenisBayar
         binding.includeLayoutDetail.lbljeniskos.text=kos.jenis
         binding.includeLayoutDetail.lbldeskripsikos.text=kos.deskripsi
+
+
 
     }
 

@@ -17,7 +17,8 @@
         android:theme="@style/Theme.KosApp"
         tools:targetApi="31">
         <activity
-            android:name=".HistoryKosActivity"
+            android:name=".Activity.HistoryKosActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="false" />
         <activity
             android:name=".Activity.RouteJalanActivity"
@@ -70,7 +71,9 @@
             android:theme="@style/Theme.Design.Light.NoActionBar" />
         <activity
             android:name=".Activity.ChatActiviity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
         <activity
             android:name=".Activity.MenuChatActivity"
             android:exported="false"

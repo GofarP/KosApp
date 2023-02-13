@@ -23,7 +23,6 @@ class SigninActivity : AppCompatActivity() {
         Helper().setStatusBarColor(this@SigninActivity)
 
 
-
         if(user!=null)
         {
             startActivity(Intent(this@SigninActivity, MainActivity::class.java))

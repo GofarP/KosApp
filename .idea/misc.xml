@@ -4,8 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable-v24/background_oval_input.xml" value="0.139" />
+        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable-v24/background_receive_message.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable/background_content_bottom.xml" value="0.139" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable/background_content_top.xml" value="0.139" />
+        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable/background_received_message.xml" value="0.1" />
+        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable/background_sent_message.xml" value="0.1" />
+        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable/background_sent_message_text.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable/button_background.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable/button_background_Ok.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/drawable/button_background_cancel.xml" value="0.1" />
@@ -67,6 +71,10 @@
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/fragment_test.xml" value="0.18" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/fragment_wanita.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/layout_action_bar.xml" value="0.22" />
+        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/layout_chat_receiver_image.xml" value="0.1" />
+        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/layout_chat_receiver_text.xml" value="0.22" />
+        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/layout_chat_sender_image.xml" value="0.1" />
+        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/layout_chat_sender_text.xml" value="0.25" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/layout_comment.xml" value="0.25" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/layout_confirm_identity.xml" value="0.18" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/layout_detail_kos.xml" value="0.25" />

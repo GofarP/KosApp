@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.example.kosapp.Activity.DetailSewaKosActivity
 import com.example.kosapp.Activity.MenuChatActivity
+import com.example.kosapp.Activity.TestActivity
 import com.example.kosapp.Adapter.PagerAdapter.HomePagerAdapter
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.PreferenceManager
@@ -112,7 +114,7 @@ class HomeFragment : Fragment(), sendMessage {
     {
         val userId=FirebaseAuth.getInstance().currentUser?.uid
 
-        database.child("user")
+        database.child(Constant().KEY_USER)
             .child(userId.toString())
             .addListenerForSingleValueEvent(object:ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -120,7 +122,7 @@ class HomeFragment : Fragment(), sendMessage {
                     {
                         preferenceManager.putString(Constant().KEY_USERNAME,snapshot.child(Constant().KEY_USERNAME).value.toString())
                         preferenceManager.putString(Constant().KEY_EMAIL,snapshot.child(Constant().KEY_EMAIL).value.toString())
-                        preferenceManager.putString(Constant().KEY_JENIS_KELAMIN,snapshot.child("jenisKelamin").value.toString())
+                        preferenceManager.putString(Constant().KEY_JENIS_KELAMIN,snapshot.child(Constant().KEY_JENIS_KELAMIN).value.toString())
 
                         binding.lblnamapengguna.text="Halo ${snapshot.child(Constant().KEY_USERNAME).value.toString()}"
                     }

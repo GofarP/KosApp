@@ -4,15 +4,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.TestActivity">
+    tools:context=".Activity.TestActivity"
+    android:orientation="vertical"
+    >
 
+
+    <com.denzcoskun.imageslider.ImageSlider
+        android:id="@+id/sliderupload"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        app:iss_placeholder="@drawable/placeholder_thumbnail_kos"
+        android:background="@drawable/slideview_border"
+        />
 
     <Button
         android:id="@+id/btntest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:text="Test"
-        android:layout_gravity="center_horizontal"
+        />
+
+    <Button
+        android:id="@+id/btncheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="check"
         />
 
 </LinearLayout>

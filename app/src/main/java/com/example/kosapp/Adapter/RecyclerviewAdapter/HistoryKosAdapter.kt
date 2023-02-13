@@ -1,15 +1,17 @@
 package com.example.kosapp.Adapter.RecyclerviewAdapter
 
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kosapp.Model.History
 import com.example.kosapp.Model.Kos
+import com.example.kosapp.R
 import com.example.kosapp.databinding.LayoutHistoryKosBinding
 import com.google.firebase.storage.FirebaseStorage
 
-class HistoryKosAdapter(val historyKosList:ArrayList<Kos>)
+class HistoryKosAdapter(val historyKosList:ArrayList<History>)
     :RecyclerView.Adapter<HistoryKosAdapter.ViewHolder>() {
 
     class ViewHolder(layoutHistoryKosBinding: LayoutHistoryKosBinding)
@@ -22,14 +24,16 @@ class HistoryKosAdapter(val historyKosList:ArrayList<Kos>)
             var tanggalSewa:String?=null
             val storage=FirebaseStorage.getInstance().reference
 
-            fun bind(dataKos: Kos)
+            fun bind(dataHistory: History)
             {
 
                 itemView.apply {
-                    namaKos=dataKos.nama
-                    alamatKos=dataKos.alamat
 
-                    storage.downloadUrl.addOnSuccessListener { uri->
+                    namaKos=dataHistory.nama
+                    alamatKos=dataHistory.alamat
+                    tanggalSewa=dataHistory.tanggal
+
+                    storage.child(dataHistory.thumbnailKos).downloadUrl.addOnSuccessListener { uri->
                         Glide.with(context)
                             .load(uri)
                             .into(binding.ivkos)
@@ -42,14 +46,15 @@ class HistoryKosAdapter(val historyKosList:ArrayList<Kos>)
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        TODO("Not yet implemented")
+      val binding=LayoutHistoryKosBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        TODO("Not yet implemented")
+       holder.bind(historyKosList[position])
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+       return historyKosList.size
     }
 }

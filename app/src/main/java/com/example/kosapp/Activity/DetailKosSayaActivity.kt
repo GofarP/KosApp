@@ -3,6 +3,8 @@ package com.example.kosapp.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.transition.Slide
+import android.util.Log
 import android.widget.Toast
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
@@ -24,6 +26,7 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class DetailKosSayaActivity : AppCompatActivity() {
 
@@ -56,9 +59,11 @@ class DetailKosSayaActivity : AppCompatActivity() {
         setDataKos()
 
         setGambarKos(object:SetImageListCallback{
-            override fun setImageList(arrayListImage: ArrayList<SlideModel>) {
-                binding.includeLayoutDetail.sliderDetailKos.setImageList(arrayListImage)
+
+            override fun setImageList(listGambarKos: ArrayList<SlideModel>) {
+                binding.includeLayoutDetail.sliderDetailKos.setImageList(listGambarKos)
             }
+
 
         })
 
@@ -84,11 +89,11 @@ class DetailKosSayaActivity : AppCompatActivity() {
 
     private fun setGambarKos(setImageListCallback: SetImageListCallback)
     {
+
         kos.gambarKos.indices.forEachIndexed { _, i ->
             storage.child(kos.gambarKos[i])
                 .downloadUrl
                 .addOnSuccessListener {uri->
-
                     slideArrayList.add(SlideModel(uri.toString(), ScaleTypes.FIT))
                     setImageListCallback.setImageList(slideArrayList)
 
@@ -97,6 +102,7 @@ class DetailKosSayaActivity : AppCompatActivity() {
                     Toast.makeText(this@DetailKosSayaActivity, it.message, Toast.LENGTH_SHORT).show()
                 }
         }
+
     }
 
 
@@ -120,7 +126,7 @@ class DetailKosSayaActivity : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                   Log.d("db error",error.message)
                 }
 
             })

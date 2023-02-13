@@ -8,6 +8,7 @@ class Constant {
     val KEY_JENIS_KELAMIN="jenisKelamin"
     val KEY_NOTELP="noTelp"
     val KEY_USERNAME="username"
+    val KEY_PROFILE_PICTURE="profilPicture"
 
 
     val KEY_PRIA="Pria"
@@ -17,6 +18,7 @@ class Constant {
     val KEY_TRANSFER="Bayar Transfer"
     val KEY_BAYARDITEMPAT="Bayar DItempat"
 
+    val KEY_DATA_KOS="dataKos"
     val KEY_ID_KOS="idKos"
     val KEY_NAMA_KOS="nama"
     val KEY_EMAIL_PEMILIK="emailPemilik"
@@ -38,7 +40,6 @@ class Constant {
     val KEY_DAFTAR_SEWA_KOS="daftarSewa"
     val KEY_DAFTAR_KOS="daftarKos"
     val KEY_USER="user"
-
 
 
     val KEY_PERMINTAAN="permintaan"
@@ -68,11 +69,28 @@ class Constant {
     val KEY_ISI_COMMENT="isiComment"
 
 
-
-
     val KEY_HISTORY_SEWA="history"
     val KEY_HISTORY_ID_HISTORY="idHistory"
 
+
+    val KEY_MENU_CHAT="menuChat"
+    val KEY_ID_MENU_CHAT="idMenuChat"
+    val KEY_CHAT="chat"
+    val KEY_PESAN="pesan"
+    val KEY_USER_PENGIRIM="usernamePengirim"
+    val KEY_USER_PENERIMA="usernamePenerima"
+    val KEY_EMAIL_PENGIRIM="emailPengirim"
+    val KEY_EMAIL_PENERIMA="emailPenerima"
+    val KEY_FOTO_PENGIRIM="fotoPengirim"
+    val KEY_FOTO_PENERIMA="fotoPenerima"
+    val KEY_PESAN_TERAKHIR="pesanTerakhir"
+
+
+    val KEY_CHAT_IMAGE="chatImage"
+    val KEY_IMAGE="image"
+    val KEY_TEXT="text"
+
+    val KEY_DATA="data"
 
 
 

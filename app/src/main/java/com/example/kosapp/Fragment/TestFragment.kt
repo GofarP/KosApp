@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityRouteJalanBinding
 import com.example.kosapp.databinding.FragmentTestBinding
@@ -28,6 +29,9 @@ class TestFragment : Fragment() {
 
     }
 
-
+    fun setEverything()
+    {
+        Toast.makeText(activity, "Clicked", Toast.LENGTH_SHORT).show()
+    }
 
 }

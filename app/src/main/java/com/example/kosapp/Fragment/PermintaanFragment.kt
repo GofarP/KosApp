@@ -20,6 +20,7 @@ import com.example.kosapp.databinding.FragmentPermintaanBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -137,9 +138,6 @@ class PermintaanFragment : Fragment(), OnClickListener {
                                         tipe=Constant().KEY_TERIMA_SEWA
                                     )
 
-
-
-
                                     database.child(Constant().KEY_DAFTAR_SEWA_KOS)
                                         .push()
                                         .setValue(sewa)
@@ -147,7 +145,6 @@ class PermintaanFragment : Fragment(), OnClickListener {
                                     database.child(Constant().KEY_TRANSAKSI)
                                         .push()
                                         .setValue(transaksi)
-
 
 
                                     database.child(Constant().KEY_DAFTAR_KOS)
@@ -168,11 +165,11 @@ class PermintaanFragment : Fragment(), OnClickListener {
                                                 .setValue(history)
                                         }
 
-//                                    database.child(Constant().DAFTAR_KOS)
-//                                        .child(emailPengguna.replace(".",","))
-//                                        .child(Constant().JUMLAH_KAMAR_KOS)
-//                                        .setValue(ServerValue.increment(-1))
-//
+                                    database.child(Constant().KEY_DAFTAR_KOS)
+                                        .child(permintaan.idKos)
+                                        .child(Constant().KEY_JUMLAH_KAMAR_KOS)
+                                        .setValue(ServerValue.increment(-1))
+
 
                                     Toast.makeText(activity, "Sukses Menerima Permintaan", Toast.LENGTH_SHORT).show()
 

@@ -6,7 +6,6 @@
     android:orientation="vertical"
     tools:context=".Fragment.MyKosFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
         android:id="@+id/linearLayoutTop"
         android:layout_width="match_parent"
@@ -20,9 +19,9 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginTop="10dp"
-            android:text="My Kos"
+            android:text="@string/text_my_kos"
             android:textColor="@color/white"
-            android:textSize="25dp"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
     </RelativeLayout>

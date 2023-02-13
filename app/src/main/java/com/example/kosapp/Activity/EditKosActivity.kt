@@ -8,9 +8,12 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.denzcoskun.imageslider.constants.ScaleTypes
+import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.kosapp.Callback.EditKosCallback
 import com.example.kosapp.Helper.Constant
@@ -20,6 +23,9 @@ import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityEditKosBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -46,12 +52,17 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     private var database= Firebase.database.reference
     private var userEmail=FirebaseAuth.getInstance().currentUser?.email
 
-    private var slideArrayList=ArrayList<SlideModel>()
+    private var slideImageArrayList=ArrayList<SlideModel>()
+
+    private var gambarKosDihapusList=ArrayList<String>()
+    private var gambarKosBaruList=ArrayList<String>()
+    private var gambarKosLamaList=ArrayList<String>()
 
     private lateinit var kos:Kos
 
     private var uriThumbail: Uri? = null
     private var sliderUri:Uri?=null
+    private var sliderUriList=ArrayList<String>()
 
     private lateinit var dataKosIntent:Intent
 
@@ -61,7 +72,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     private lateinit var biaya:String
     private lateinit var deskripsi:String
     private lateinit var fasilitas:String
-    private lateinit var kosId:String
+    private lateinit var idKos:String
     private var jenis:Int?=null
     private var jenisBayar:Int?=null
     private lateinit var nama:String
@@ -69,7 +80,6 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     private lateinit var gambarThumbnail:String
 
     private var thumbnailDiganti=false
-    private var gambarKosDiganti=false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,10 +96,14 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
         setDataEditKos()
 
+
+
         editKosCallback(object :EditKosCallback{
-            override fun setImageList(arrayListImage: ArrayList<SlideModel>) {
-                binding.sliderupload.setImageList(arrayListImage)
+
+            override fun setImageList(arrayListImageList: ArrayList<SlideModel>) {
+                binding.sliderupload.setImageList(arrayListImageList)
             }
+
 
             override fun setImageThumbnail(uri: String) {
                 Glide.with(this@EditKosActivity)
@@ -101,6 +115,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
 
         binding.btnedit.setOnClickListener {
+
             if(!gagalValidasi())
             {
                 editDataKos()
@@ -119,6 +134,16 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
                 .maxResultSize(1080, 1080)
                 .createIntent { intent->
                     kosThumbailPickerResult.launch(intent)
+                }
+        }
+
+        binding.btnaddslideimage.setOnClickListener {
+            ImagePicker.with(this@EditKosActivity)
+                .crop()
+                .compress(1024)
+                .maxResultSize(1080, 1080)
+                .createIntent { intent->
+                    gambarKosPickerResult.launch(intent)
                 }
         }
 
@@ -141,6 +166,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         val jenisBayarAdapter=ArrayAdapter(this, android.R.layout.simple_spinner_item,arrayJenisBayar)
         binding.spnjenisbayar.adapter=jenisBayarAdapter
 
+        gambarKosLamaList=kos.gambarKos
 
         val jenisKosPosition=jenisKosAdapter.getPosition(kos.jenis)
         val jenisBayarPosition=jenisBayarAdapter.getPosition(kos.jenisBayar)
@@ -156,8 +182,8 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         lattitude=kos.lattitude
         longitude=kos.longitude
         gambarThumbnail=kos.thumbnailKos
+        idKos=kos.idKos
 
-        Log.d("LatLng", "$lattitude $longitude")
 
         binding.mapviewtambahkos.getMapAsync{mapboxMap->
             map=mapboxMap
@@ -180,7 +206,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         deskripsi=binding.txtdeskripsi.text.trim().toString()
         deskripsi=binding.txtdeskripsi.text.trim().toString()
         fasilitas=binding.txtfasilitas.text.trim().toString()
-        kosId=kos.idKos
+        idKos=kos.idKos
         jenis=binding.spnjeniskos.selectedItemPosition
         jenisBayar=binding.spnjenisbayar.selectedItemPosition
         nama=binding.txtnamakos.text.trim().toString()
@@ -243,7 +269,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         biaya=binding.txtharga.text.trim().toString()
         deskripsi=binding.txtdeskripsi.text.trim().toString()
         fasilitas=binding.txtfasilitas.text.trim().toString()
-        kosId=kos.idKos
+        idKos=kos.idKos
         val jenis=binding.spnjeniskos.selectedItem.toString()
         val jenisBayar=binding.spnjenisbayar.selectedItem.toString()
         nama=binding.txtnamakos.text.trim().toString()
@@ -251,7 +277,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
 
         kos=Kos(
-            idKos=kosId,
+            idKos=idKos,
             nama=nama,
             alamat = alamat,
             biaya =biaya.toDouble(),
@@ -268,7 +294,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         )
 
         database.child(Constant().KEY_DAFTAR_KOS)
-            .child(kosId)
+            .child(idKos)
             .setValue(kos)
             .addOnSuccessListener {
 
@@ -278,10 +304,43 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
                     storage.child(gambarThumbnail).putFile(uriThumbail!!)
                 }
 
-                if(gambarKosDiganti)
+                if(gambarKosDihapusList.size>0)
+                {
+                    database.child(Constant().KEY_DAFTAR_KOS)
+                        .child(kos.idKos)
+                        .child(Constant().KEY_GAMBAR_KOS)
+                        .addListenerForSingleValueEvent(object: ValueEventListener{
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                snapshot.children.forEachIndexed {index, snap->
+                                    Log.d("snap","$index ${snap.value.toString()}")
+                                }
+
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Log.d("snap",error.message)
+                            }
+
+                        })
+                }
+
+                if(gambarKosBaruList.size>0)
                 {
 
+                    gambarKosBaruList.forEachIndexed {index,_->
+                        storage.child(gambarKosBaruList[index])
+                            .putFile(sliderUriList[index].toUri())
+                    }
+
+                    gambarKosBaruList.addAll(gambarKosLamaList)
+
+                    database.child(Constant().KEY_DAFTAR_KOS)
+                        .child(kos.idKos)
+                        .child(Constant().KEY_GAMBAR_KOS)
+                        .setValue(gambarKosBaruList)
+
                 }
+
 
                 Toast.makeText(this@EditKosActivity, "Sukses Mengubah Data Kos", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this@EditKosActivity, KosSayaActivity::class.java))
@@ -292,6 +351,35 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
 
     }
+
+//    private fun dialogHapus(position: String)
+//    {
+//        val dialogBuilder= AlertDialog.Builder(this)
+//        dialogBuilder.setTitle("Hapus Gambar?")
+//        dialogBuilder.setMessage("Hapus Gambar Ini Dari Daftar Gambar?")
+//        dialogBuilder.setPositiveButton("Hapus"){_,_->
+//
+//            if(slideHashMap.size==1)
+//            {
+//                slideHashMap[UUID.randomUUID().toString()]=
+//                    SlideModel(R.drawable.placeholder_add_kos_slide,ScaleTypes.FIT)
+//            }
+//
+//            else
+//            {
+//                slideArrayList.removeAt(position)
+//                //gambarKosDihapusList.add(kos.gambarKos[position])
+//            }
+//
+//            binding.sliderupload.setImageList(slideHashMap.values.toList())
+//        }
+//
+//        dialogBuilder.setNegativeButton("Batalkan"){_,_->
+//
+//        }
+//
+//        dialogBuilder.show()
+//    }
 
     private var kosThumbailPickerResult:ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult())
@@ -306,14 +394,29 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     }
 
     private var gambarKosPickerResult:ActivityResultLauncher<Intent> = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult())
-    {result->
+            ActivityResultContracts.StartActivityForResult()) {result->
 
         if(result.resultCode== RESULT_OK)
         {
-            gambarKosDiganti=true
+            val gambarKosUrl="${Constant().KEY_GAMBAR_KOS}/$idKos/${UUID.randomUUID()}"
+
             sliderUri=result.data?.data
 
+            sliderUriList.add(sliderUri.toString())
+
+            Log.d("uri",sliderUriList.size.toString())
+
+            slideImageArrayList.add(SlideModel(sliderUri.toString(),ScaleTypes.FIT))
+
+            gambarKosBaruList.add(gambarKosUrl)
+
+            binding.sliderupload.setImageList(slideImageArrayList)
+
+            binding.sliderupload.setItemClickListener(object:ItemClickListener{
+                override fun onItemSelected(position: Int) {
+                    //dialogHapus(position.toString())
+                }
+            })
         }
 
     }
@@ -373,21 +476,22 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
     private fun editKosCallback(editKosCallback: EditKosCallback)
     {
+
         kos.gambarKos.indices.forEachIndexed { _, i ->
             storage.child(kos.gambarKos[i])
                 .downloadUrl
                 .addOnSuccessListener { uri->
-                    slideArrayList.add(SlideModel(uri.toString(),ScaleTypes.FIT))
-                    editKosCallback.setImageList(slideArrayList)
+                    slideImageArrayList.add(SlideModel(uri.toString(),ScaleTypes.FIT))
+                    editKosCallback.setImageList(slideImageArrayList)
                 }
         }
+
 
         storage.child(kos.thumbnailKos)
             .downloadUrl
             .addOnSuccessListener { uri->
                 editKosCallback.setImageThumbnail(uri.toString())
             }
-
     }
 
     override fun onStart() {

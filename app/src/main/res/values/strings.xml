@@ -58,5 +58,8 @@
     <string name="text_dummy_date">12-12-2012</string>
     <string name="text_nama_kos">Nama Kos</string>
     <string name="text_alamat">Jl.Hang Lekir</string>
+    <string name="text_history_sewa_kos">History Sewa Kos</string>
+    <string name="text_my_kos">My Kos</string>
+    <string name="text_nama_pengguna">Nama Pengguna</string>
 
 </resources>

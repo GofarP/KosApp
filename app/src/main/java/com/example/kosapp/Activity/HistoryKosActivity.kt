@@ -2,9 +2,12 @@ package com.example.kosapp.Activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HistoryKosAdapter
 import com.example.kosapp.Helper.Constant
+import com.example.kosapp.Helper.Helper
 import com.example.kosapp.Model.History
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.R
@@ -26,13 +29,16 @@ class HistoryKosActivity : AppCompatActivity() {
 
     private val emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
     private val database=FirebaseDatabase.getInstance().reference
-    private var historyKosArrayList=ArrayList<Kos>()
+    private var historyKosArrayList=ArrayList<History>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivityHistoryKosBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        Helper().setStatusBarColor(this@HistoryKosActivity)
+        getData()
     }
 
     private fun getData()
@@ -51,13 +57,18 @@ class HistoryKosActivity : AppCompatActivity() {
                             nama=snapshotHistory.child(Constant().KEY_NAMA_KOS).value.toString(),
                             thumbnailKos = snapshotHistory.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString(),
                         )
+                        historyKosArrayList.add(history)
                     }
+
+                    layoutManager=LinearLayoutManager(this@HistoryKosActivity)
+                    adapter=HistoryKosAdapter(historyKosArrayList)
+                    binding.rvhistorykos.layoutManager=layoutManager
+                    binding.rvhistorykos.adapter=adapter
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                    Log.d("error",error.message)
                 }
-
             })
     }
 

@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Activity.DetailSewaKosActivity
+import com.example.kosapp.Activity.TestActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter.ItemOnClick
 import com.example.kosapp.Helper.Constant
@@ -115,7 +116,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
 
         else
         {
-            val intent=Intent(activity, DetailSewaKosActivity::class.java).putExtra("dataKos", dataKos)
+            val intent=Intent(activity, DetailSewaKosActivity::class.java).putExtra(Constant().KEY_DATA_KOS, dataKos)
             startActivity(intent)
         }
 

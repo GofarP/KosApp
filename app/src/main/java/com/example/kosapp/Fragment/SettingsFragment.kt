@@ -1,6 +1,8 @@
 package com.example.kosapp.Fragment
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,14 +10,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.kosapp.Adapter.RecyclerviewAdapter.SettingsAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.SettingsAdapter.ItemOnClick
 import com.example.kosapp.Activity.ProfileActivity
 import com.example.kosapp.Activity.SigninActivity
+import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.PreferenceManager
 import com.example.kosapp.databinding.FragmentSettingsBinding
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -24,6 +30,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class SettingsFragment : Fragment(), ItemOnClick {
@@ -35,6 +43,10 @@ class SettingsFragment : Fragment(), ItemOnClick {
     private var storage=FirebaseStorage.getInstance().reference
     private var database=Firebase.database.reference
     private lateinit var preferenceManager:PreferenceManager
+    private  var uri:Uri?=null
+    private var imagePath:String=""
+    private var newImagePath:String=""
+    private var idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,7 +66,49 @@ class SettingsFragment : Fragment(), ItemOnClick {
         preferenceManager= PreferenceManager()
         preferenceManager.preferenceManager(view.context)
 
+        binding.ivsettings.setOnClickListener {
+            ImagePicker.with(this)
+                .crop()
+                .compress(1024)
+                .maxResultSize(1080, 1080)
+                .createIntent { intent->
+                    profileImagePickerResult.launch(intent)
+                }
+        }
 
+    }
+
+    private var profileImagePickerResult:ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult())
+    {result->
+        if(result.resultCode==RESULT_OK)
+        {
+            uri=result.data?.data
+            storage.child(imagePath).delete()
+
+            newImagePath="${Constant().KEY_PROFILE_PICTURE}/${idPengguna}/${UUID.randomUUID()}"
+
+            database.child(Constant().KEY_USER)
+                .child(idPengguna)
+                .child(Constant().KEY_FOTO)
+                .setValue(newImagePath)
+                .addOnSuccessListener {
+                    Toast.makeText(activity, "Sukses Mengganti Foto Profil", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(activity, "Gagal Mengganti Foto Profil", Toast.LENGTH_SHORT).show()
+                }
+
+            storage.child(newImagePath).putFile(uri!!)
+
+            binding.ivsettings.setImageURI(uri)
+
+        }
+
+        else if(result.resultCode== ImagePicker.RESULT_ERROR)
+        {
+            Toast.makeText(activity, ImagePicker.getError(result.data), Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun addSettings()
@@ -64,22 +118,21 @@ class SettingsFragment : Fragment(), ItemOnClick {
         adapter= SettingsAdapter(settingList,this)
         binding.rvsettings.layoutManager=LinearLayoutManager(activity)
         binding.rvsettings.adapter=adapter
-
     }
 
     private fun  getDataProfile()
     {
         val userId=auth?.uid
 
-        database.child("user")
-            .orderByChild("id")
+        database.child(Constant().KEY_USER)
+            .orderByChild(Constant().KEY_ID_PENGGUNA)
             .equalTo(userId)
             .addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 snapshot.children.forEach {snap->
-                    var imagePath=snap.child("foto").value.toString()
-                    binding.lblemail.text=snap.child("email").value.toString()
-                    binding.lblusername.text=snap.child("username").value.toString()
+                    imagePath=snap.child(Constant().KEY_FOTO).value.toString()
+                    binding.lblemail.text=snap.child(Constant().KEY_EMAIL).value.toString()
+                    binding.lblusername.text=snap.child(Constant().KEY_USERNAME).value.toString()
 
                     storage.child(imagePath)
                         .downloadUrl
@@ -90,7 +143,7 @@ class SettingsFragment : Fragment(), ItemOnClick {
 
                         }
                         .addOnFailureListener {error->
-                            Toast.makeText(activity, userId.toString(), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(activity, error.toString(), Toast.LENGTH_SHORT).show()
                         }
 
                 }
@@ -115,8 +168,8 @@ class SettingsFragment : Fragment(), ItemOnClick {
                 FirebaseAuth.getInstance().signOut()
                 preferenceManager.clear()
                 Toast.makeText(activity, "Sukses Logout", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(activity,SigninActivity::class.java))
                 activity?.finish()
+                startActivity(Intent(activity,SigninActivity::class.java))
             }
         }
     }

@@ -35,6 +35,8 @@ class CommentActivity : AppCompatActivity() {
 
     private lateinit var idKos: String
 
+    private lateinit var emailPemilik: String
+
     private var database= Firebase.database.reference
 
     private lateinit var bundle:Bundle
@@ -59,6 +61,7 @@ class CommentActivity : AppCompatActivity() {
         bundle= intent.extras!!
 
         idKos=bundle.getString("idKos").toString()
+        emailPemilik=bundle.getString("emailPemilik").toString()
 
         checkHistoryKos(idKos)
 
@@ -113,17 +116,25 @@ class CommentActivity : AppCompatActivity() {
                             }
                         }
 
-                    if(!historyDitemukan)
+                    if(!historyDitemukan || emailPemilik != emailPengguna)
                     {
-                        bind.btnsend.visibility=View.GONE
-                        bind.txtcomment.visibility=View.GONE
+                        bind.btnsend.visibility=View.INVISIBLE
+                        bind.txtcomment.visibility=View.INVISIBLE
                     }
 
                }
+
+               else if(emailPengguna==emailPemilik)
+               {
+                   bind.btnsend.visibility=View.VISIBLE
+                   bind.txtcomment.visibility=View.VISIBLE
+               }
+
                else
                {
                     bind.btnsend.visibility=View.INVISIBLE
                     bind.txtcomment.visibility=View.INVISIBLE
+                   Log.d("sama","beda")
                }
             }
 

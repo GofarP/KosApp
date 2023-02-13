@@ -2,6 +2,7 @@ package com.example.kosapp.Activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Adapter.RecyclerviewAdapter.TransaksiAdapter
@@ -82,12 +83,11 @@ class TransaksiActivity : AppCompatActivity() {
                         binding.rvhistory.layoutManager=layoutManager
                         binding.rvhistory.adapter=adapter
 
-
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                    Log.d("db error",error.message)
                 }
 
             })

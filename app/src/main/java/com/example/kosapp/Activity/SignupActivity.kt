@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.kosapp.Helper.Constant
+import com.example.kosapp.Helper.Helper
 import com.example.kosapp.Model.Pengguna
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivitySignupBinding
@@ -40,10 +41,7 @@ class SignupActivity : AppCompatActivity() {
         binding=ActivitySignupBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var window=this@SignupActivity.window
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.statusBarColor = ContextCompat.getColor(this@SignupActivity, R.color.main_color)
+        Helper().setStatusBarColor(this@SignupActivity)
 
         setSpinner()
 
@@ -152,13 +150,12 @@ class SignupActivity : AppCompatActivity() {
         val noTelp=binding.txtnoTelp.text.toString()
         val jenisKelamin=binding.spinnerjk.selectedItem.toString()
         val password=binding.txtpassword.text.toString()
-        val formatter=SimpleDateFormat("dd-Mm-yyyy hh:mm:ss")
-        val imgName="profileImages/${formatter.format(Date())}${Random().nextInt(1000)}"
 
 
         auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener {task->
 
             val id=task.result.user?.uid
+            val imgName="${Constant().KEY_PROFILE_PICTURE}/${id}${UUID.randomUUID()}"
 
             pengguna=Pengguna(
                 id=id.toString(),
@@ -169,7 +166,7 @@ class SignupActivity : AppCompatActivity() {
                 foto=imgName
             )
 
-            database.child("user")
+            database.child(Constant().KEY_USER)
                 .child(id.toString())
                 .setValue(pengguna)
                 .addOnSuccessListener {

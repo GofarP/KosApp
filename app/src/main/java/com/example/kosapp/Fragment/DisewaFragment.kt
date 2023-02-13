@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Activity.EditKosActivity
 import com.example.kosapp.Activity.PenyewaActivity
+import com.example.kosapp.Activity.TestActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.DisewaAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.DisewaAdapter.ItemOnClickDisewa
 import com.example.kosapp.Helper.Constant
@@ -127,6 +128,7 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
                                         storage.child(kos.gambarKos[i]).delete()
                                     }
 
+
                                     Toast.makeText(
                                         activity,
                                         "Kos Sukses Dihapus",
@@ -154,9 +156,27 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
                         .child(idKos)
                         .removeValue()
                         .addOnSuccessListener {
-                            Toast.makeText(activity, "Sukses Menghapus Kos", Toast.LENGTH_SHORT).show()
+
+                            storage.child(kos.thumbnailKos).delete()
+                                .addOnSuccessListener {
+                                    Log.d("thumbnail kos","Sukses Menghapus Thumbnail KOs")
+                                }
+                                .addOnFailureListener {
+                                    Log.d("thumbnail kos",it.message.toString())
+                                }
+
+                            kos.gambarKos.indices.forEach { i ->
+                                storage.child(kos.gambarKos[i]).delete().addOnSuccessListener {
+                                    Log.d("gambar kos","Sukses Menghapus Gambar KOs")
+                                }.addOnFailureListener {
+                                    Log.d("thumbnail kos",it.message.toString())
+                                }
+                            }
+
                             val indexKos = kosArrayList.indexOf(kos)
                             adapter.notifyItemRemoved(indexKos)
+
+                            Toast.makeText(activity, "Sukses Menghapus Kos", Toast.LENGTH_SHORT).show()
 
                         }.addOnFailureListener {
                             Toast.makeText(activity, "Gagal Menghapus Kos", Toast.LENGTH_SHORT).show()
