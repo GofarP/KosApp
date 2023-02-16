@@ -99,4 +99,56 @@ class TestActivity : AppCompatActivity() {
 //    }
 
 
+
+
+    //        checkMenuChatData(object :ChatCallback{
+//            override fun checkMenuChatData(dataMenuChatDitemukan: Boolean) {
+//                if(dataMenuChatDitemukan)
+//                {
+//                    menuChatDataDitemukan=true
+//
+//                    if(emailSaatIni==arrayListMenuChat[0].emailPengirim)
+//                    {
+//                        binding.lblusername.text=arrayListMenuChat[0].usernamePenerima
+//
+//                        emailPenerima=arrayListMenuChat[0].emailPenerima
+//
+//                        storage.child(arrayListMenuChat[0].fotoPenerima).downloadUrl
+//                            .addOnSuccessListener {uri->
+//                                Glide.with(this@ChatActiviity)
+//                                    .load(uri)
+//                                    .into(binding.ivfotoprofil)
+//                            }
+//
+//                    }
+//
+//                    else
+//                    {
+//                        binding.lblusername.text=arrayListMenuChat[0].usernamePengirim
+//
+//                        emailPenerima=arrayListMenuChat[0].emailPengirim
+//
+//                        storage.child(arrayListMenuChat[0].fotoPengirim).downloadUrl
+//                            .addOnSuccessListener {uri->
+//                                Glide.with(this@ChatActiviity)
+//                                    .load(uri)
+//                                    .into(binding.ivfotoprofil)
+//                            }
+//
+//                    }
+//
+//                    getChatData()
+//
+//                }
+//
+//                else
+//                {
+//                    getProfilePengguna()
+//                }
+//
+//            }
+//
+//        })
+
+
 }

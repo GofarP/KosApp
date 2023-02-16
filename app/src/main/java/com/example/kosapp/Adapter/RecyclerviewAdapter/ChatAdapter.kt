@@ -13,7 +13,7 @@ import com.example.kosapp.databinding.LayoutChatSenderImageBinding
 import com.example.kosapp.databinding.LayoutChatSenderTextBinding
 import com.google.firebase.storage.FirebaseStorage
 
-class ChatAdapter(private val arrayListChat:ArrayList<Chat>, private val emailPengirim:String)
+class ChatAdapter(private val arrayListChat:ArrayList<Chat>, private val emailSaatIni:String)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
         private val VIEW_TYPE_SENT=1
@@ -137,10 +137,7 @@ class ChatAdapter(private val arrayListChat:ArrayList<Chat>, private val emailPe
                val binding=LayoutChatReceiverImageBinding.inflate(LayoutInflater.from(parent.context),parent,false)
                ReceiveImageViewHolder(binding)
            }
-
        }
-
-
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -169,25 +166,26 @@ class ChatAdapter(private val arrayListChat:ArrayList<Chat>, private val emailPe
 
         val chatData=arrayListChat[position]
 
-        if(chatData.emailpengirim==emailPengirim)
+        if(chatData.emailPengirim==emailSaatIni)
         {
             viewType=VIEW_TYPE_SENT
         }
 
-        else if(chatData.emailpengirim!=emailPengirim)
+        else if(chatData.emailPengirim!=emailSaatIni)
         {
             viewType=VIEW_TYPE_RECEIVE
         }
 
-        else if (chatData.emailpengirim==emailPengirim && chatData.tipe==Constant().KEY_IMAGE)
+        else if (chatData.emailPengirim==emailSaatIni && chatData.tipe==Constant().KEY_IMAGE)
         {
             viewType=VIEW_TYPE_SENT_IMAGE
         }
 
-        else if(chatData.emailpengirim!=emailPengirim && chatData.tipe==Constant().KEY_IMAGE)
+        else if(chatData.emailPengirim!=emailSaatIni && chatData.tipe==Constant().KEY_IMAGE)
         {
             viewType=VIEW_TYPE_RECEIVE_IMAGE
         }
+
 
         return viewType
     }

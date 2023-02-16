@@ -75,9 +75,9 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
-            android:padding="10sp"
             android:background="@drawable/edittext_oval_outline_white"
-            android:hint="Ketikan Pesan Anda..." />
+            android:hint="Ketikan Pesan Anda..."
+            android:padding="10sp" />
 
 
         <ImageButton

@@ -57,6 +57,7 @@
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_splash.xml" value="0.20416666666666666" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_tambah_kos.xml" value="0.15245737211634905" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_test.xml" value="0.1675929884566054" />
+        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/activity_transaksi.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/fragment_all_kos.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/fragment_blank.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/fragment_campur_kos.xml" value="0.1" />
@@ -87,6 +88,7 @@
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/layout_kos_disewa.xml" value="0.25" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/layout_kos_menyewa.xml" value="0.22" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/layout_kos_test.xml" value="0.1675929884566054" />
+        <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/layout_menu_chat.xml" value="0.22" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/layout_mykos.xml" value="0.1" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/layout_peminjam.xml" value="0.22" />
         <entry key="..\:/apaaja/androidsauce/KosApp/app/src/main/res/layout/layout_penyewa.xml" value="0.18" />

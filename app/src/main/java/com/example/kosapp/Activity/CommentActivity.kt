@@ -43,7 +43,7 @@ class CommentActivity : AppCompatActivity() {
 
     private lateinit var comment: Comment
 
-    private var emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
+    private var emailSaatIni=FirebaseAuth.getInstance().currentUser?.email.toString()
 
     private var idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
 
@@ -60,8 +60,8 @@ class CommentActivity : AppCompatActivity() {
 
         bundle= intent.extras!!
 
-        idKos=bundle.getString("idKos").toString()
-        emailPemilik=bundle.getString("emailPemilik").toString()
+        idKos=bundle.getString(Constant().KEY_ID_KOS).toString()
+        emailPemilik=bundle.getString(Constant().KEY_EMAIL_PEMILIK).toString()
 
         checkHistoryKos(idKos)
 
@@ -79,7 +79,7 @@ class CommentActivity : AppCompatActivity() {
                 .get()
                 .addOnSuccessListener {snap->
                     comment= Comment(
-                        email = emailPengguna,
+                        email = emailSaatIni,
                         foto=snap.child(Constant().KEY_FOTO).value.toString(),
                         idComment = UUID.randomUUID().toString(),
                         isiComment = bind.txtcomment.text.toString(),
@@ -98,44 +98,53 @@ class CommentActivity : AppCompatActivity() {
     }
 
 
+    private fun data()
+    {
+        comment= Comment(
+            email=emailSaatIni,
+            foto = "",
+            idComment = UUID.randomUUID().toString(),
+            isiComment = "Ini Sebuah Comment",
+            tanggal=tanggalHariIni,
+            username = "Putra"
+        )
+
+        commentArrayList.add(comment)
+
+        layoutManager=LinearLayoutManager(this)
+        commentAdapter= CommentAdapter(commentArrayList)
+        bind.rvcomment.layoutManager=layoutManager
+        bind.rvcomment.adapter=commentAdapter
+    }
+
     private fun checkHistoryKos(idKos:String)
     {
         database.addListenerForSingleValueEvent(object:ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                if(snapshot.child(Constant().KEY_HISTORY_SEWA).exists())
                {
+
                    var historyDitemukan=false
                     snapshot.child(Constant().KEY_HISTORY_SEWA)
-                        .child(emailPengguna.replace(".",","))
+                        .child(emailSaatIni.replace(".",","))
                         .children.forEach {snap->
                             val snapIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()
                             if(snapIdKos==idKos)
                             {
-                                Log.d("boolean","found")
                                 historyDitemukan=true
+                                bind.btnsend.visibility=View.VISIBLE
+                                bind.txtcomment.visibility=View.VISIBLE
                             }
                         }
 
-                    if(!historyDitemukan || emailPemilik != emailPengguna)
+                    if(historyDitemukan || emailPemilik == emailSaatIni)
                     {
-                        bind.btnsend.visibility=View.INVISIBLE
-                        bind.txtcomment.visibility=View.INVISIBLE
+                        bind.btnsend.visibility=View.VISIBLE
+                        bind.txtcomment.visibility=View.VISIBLE
                     }
 
                }
 
-               else if(emailPengguna==emailPemilik)
-               {
-                   bind.btnsend.visibility=View.VISIBLE
-                   bind.txtcomment.visibility=View.VISIBLE
-               }
-
-               else
-               {
-                    bind.btnsend.visibility=View.INVISIBLE
-                    bind.txtcomment.visibility=View.INVISIBLE
-                   Log.d("sama","beda")
-               }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -184,7 +193,7 @@ class CommentActivity : AppCompatActivity() {
         comment= Comment(
             foto = commentParam.foto,
             idComment = UUID.randomUUID().toString(),
-            email = emailPengguna,
+            email = emailSaatIni,
             isiComment = commentParam.isiComment,
             tanggal=tanggalHariIni,
             username = commentParam.username

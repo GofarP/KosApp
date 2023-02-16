@@ -21,8 +21,8 @@
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
             android:layout_marginStart="17sp"
-            android:background="@drawable/background_content_bottom"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            app:riv_corner_radius="100sp" />
 
         <TextView
             android:id="@+id/lblnamapengguna"
@@ -46,6 +46,12 @@
         android:layout_marginTop="25dp"
         android:background="@drawable/background_content_bottom"
         >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvmenuchat"
+            android:layout_marginTop="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     </FrameLayout>
 
