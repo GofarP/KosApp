@@ -3,7 +3,6 @@ package com.example.kosapp.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.transition.Slide
 import android.util.Log
 import android.widget.Toast
 import com.denzcoskun.imageslider.constants.ScaleTypes
@@ -26,7 +25,6 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class DetailKosSayaActivity : AppCompatActivity() {
 
@@ -37,7 +35,7 @@ class DetailKosSayaActivity : AppCompatActivity() {
     private lateinit var permintaan:Permintaan
     private lateinit var kos: Kos
     private lateinit var dataKosIntent: Intent
-    private var emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
+    private var emailSaatIni=FirebaseAuth.getInstance().currentUser?.email.toString()
     private var calendar=Calendar.getInstance()
     private lateinit var tglHariIni:String
 
@@ -69,6 +67,12 @@ class DetailKosSayaActivity : AppCompatActivity() {
 
         binding.btncancel.setOnClickListener {
             keluarKos()
+        }
+
+        binding.btnchatpemilik.setOnClickListener {
+            val intent=Intent(this@DetailKosSayaActivity, ChatActiviity::class.java)
+            intent.putExtra(Constant().KEY_EMAIL_PENGIRIM,emailSaatIni)
+            intent.putExtra(Constant().KEY_EMAIL_PENGIRIM,kos.emailPemilik)
         }
 
     }
@@ -115,7 +119,7 @@ class DetailKosSayaActivity : AppCompatActivity() {
                         val snapIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()
                         val snapEmail=snap.child(Constant().KEY_DARI).value.toString()
 
-                        if(snapIdKos==kos.idKos && emailPengguna==snapEmail)
+                        if(snapIdKos==kos.idKos && emailSaatIni==snapEmail)
                         {
                             binding.btncancel.isEnabled=false
                             binding.btncancel.text="Permintaan Diproses..."
@@ -138,7 +142,7 @@ class DetailKosSayaActivity : AppCompatActivity() {
             idPermintaan= UUID.randomUUID().toString(),
             idKos=kos.idKos,
             namaKos=kos.nama,
-            dari = emailPengguna,
+            dari = emailSaatIni,
             kepada = kos.emailPemilik,
             judul = Constant().PERMINTAAAN_AKHIRI_SEWA,
             isi ="Mengajukan Permintaan Untuk Mengakhiri Sewa Kos ${kos.nama}",

@@ -34,6 +34,9 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private var database=Firebase.database.reference
     private lateinit var preferenceManager: PreferenceManager
+    private lateinit var jenisKos:String
+    private lateinit var namaKos:String
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +49,7 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getData()
+        getDataKosWanita()
 
         preferenceManager= PreferenceManager()
         preferenceManager.preferenceManager(view.context)
@@ -58,10 +61,10 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
     }
 
 
-    private fun getData()
+    fun getDataKosWanita()
     {
 
-        database.child("daftarKos")
+        database.child(Constant().KEY_DAFTAR_KOS)
             .addValueEventListener(object:ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
 
@@ -70,12 +73,63 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
 
                     snapshot.children.forEach { snap->
 
+                            jenisKos=snap.child(Constant().KEY_JENIS_KOS).value.toString()
 
-                            if(snap.child("jenis").value.toString() != "Wanita")
+                            if( jenisKos == Constant().KEY_WANITA)
                             {
-                                return@forEach
-                            }
+                                kos=Kos(
+                                    idKos=snap.child(Constant().KEY_ID_KOS).value.toString(),
+                                    alamat = snap.child(Constant().KEY_ALAMAT_KOS).value.toString(),
+                                    biaya = snap.child(Constant().KEY_BIAYA_KOS).value.toString().toDouble(),
+                                    emailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString(),
+                                    gambarKos = snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>,
+                                    thumbnailKos = snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString(),
+                                    jenis=snap.child(Constant().KEY_JENIS_KOS).value.toString(),
+                                    jenisBayar = snap.child(Constant().KEY_JENIS_BAYAR_KOS).value.toString(),
+                                    lattitude = snap.child(Constant().KEY_LATTITUDE_KOS).value.toString(),
+                                    longitude = snap.child(Constant().KEY_LONGITUDE_KOS).value.toString(),
+                                    nama = snap.child(Constant().KEY_NAMA_KOS).value.toString(),
+                                    sisa = snap.child(Constant().KEY_JUMLAH_KAMAR_KOS).value.toString().toInt(),
+                                    fasilitas=snap.child(Constant().KEY_FASILITAS).value.toString(),
+                                    deskripsi=snap.child(Constant().KEY_DESKRIPSI).value.toString(),
+                                )
 
+                                kosArrayList.add(kos)
+
+                            }
+                    }
+
+                    adapter= HomeKosAdapter(kosArrayList,this@WanitaKosFragment)
+                    layoutManager=LinearLayoutManager(activity)
+                    binding.rvkoswanita.layoutManager=layoutManager
+                    binding.rvkoswanita.adapter=adapter
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
+                }
+
+            })
+    }
+
+
+    fun cariDataKosWanita(cari:String)
+    {
+        database.child(Constant().KEY_DAFTAR_KOS)
+            .addValueEventListener(object:ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+                    kosArrayList.clear()
+                    binding.rvkoswanita.adapter=null
+
+                    snapshot.children.forEach { snap->
+
+                        jenisKos=snap.child(Constant().KEY_JENIS_KOS).value.toString()
+                        namaKos=snap.child(Constant().KEY_NAMA_KOS).value.toString()
+
+                        if(jenisKos == Constant().KEY_WANITA && cari.contains(namaKos,true))
+                        {
                             kos=Kos(
                                 idKos=snap.child(Constant().KEY_ID_KOS).value.toString(),
                                 alamat = snap.child(Constant().KEY_ALAMAT_KOS).value.toString(),
@@ -94,6 +148,8 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
                             )
 
                             kosArrayList.add(kos)
+
+                        }
                     }
 
                     adapter= HomeKosAdapter(kosArrayList,this@WanitaKosFragment)

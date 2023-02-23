@@ -1,24 +1,25 @@
 package com.example.kosapp.Fragment
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import com.example.kosapp.Activity.DetailSewaKosActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Activity.MenuChatActivity
-import com.example.kosapp.Activity.TestActivity
 import com.example.kosapp.Adapter.PagerAdapter.HomePagerAdapter
+import com.example.kosapp.Adapter.RecyclerviewAdapter.SettingsAdapter
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.PreferenceManager
 import com.example.kosapp.Interface.sendMessage
-import com.example.kosapp.R
 import com.example.kosapp.databinding.FragmentHomeBinding
 import com.example.kosapp.databinding.FragmentTestBinding
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -28,7 +29,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
-class HomeFragment : Fragment(), sendMessage {
+class HomeFragment : Fragment() {
 
     private lateinit var binding:FragmentHomeBinding
     private lateinit var testBinding:FragmentTestBinding
@@ -51,7 +52,6 @@ class HomeFragment : Fragment(), sendMessage {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         preferenceManager=PreferenceManager()
         preferenceManager.preferenceManager(view.context)
 
@@ -66,7 +66,6 @@ class HomeFragment : Fragment(), sendMessage {
             binding.lblnamapengguna.text= "Halo  ${preferenceManager.getString(Constant().KEY_USERNAME)}"
         }
 
-
         binding.viewPager.adapter=HomePagerAdapter(requireActivity())
         TabLayoutMediator(binding.tabLayout,binding.viewPager){tab, index->
             tab.text=when(index){
@@ -74,35 +73,85 @@ class HomeFragment : Fragment(), sendMessage {
                 1->{"Pria"}
                 2->{"Wanita"}
                 3->{"Campur"}
-                4->{"Test"}
-
-
                 else->{throw Resources.NotFoundException("Posisi Tidak DItemukan")}
             }
+
+
         }.attach()
 
-        binding.textinputlayout.setEndIconOnClickListener {
-            when(binding.tabLayout.selectedTabPosition)
-            {
-                0-> {
-                    Toast.makeText(activity, "Mencari Semua Kos", Toast.LENGTH_SHORT).show()
-                }
-                1->{
-                    Toast.makeText(activity, "Mencari Kos Pria.", Toast.LENGTH_SHORT).show()
-                }
-                2->{
-                    Toast.makeText(activity, "Mencari Kos Wanita...", Toast.LENGTH_SHORT).show()
-                }
-                3->{
-                    Toast.makeText(activity, "Mencari Kos Campuran...", Toast.LENGTH_SHORT).show()
-                }
-                4->{
 
+        binding.tabLayout.addOnTabSelectedListener(object:TabLayout.OnTabSelectedListener{
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                binding.viewPager.currentItem= tab?.position!!
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
+
+        })
+
+
+        binding.textinputlayout.setEndIconOnClickListener {
+
+            when(val frag=activity?.supportFragmentManager?.findFragmentByTag("f${binding.viewPager.currentItem}"))
+            {
+                 is SemuaKosFragment->{
+
+                     if(binding.txtsearchkos.text.isNullOrEmpty())
+                     {
+                         frag.getSemuaDataKos()
+                     }
+
+                     else
+                     {
+                         frag.cariSemuaDataKos(binding.txtsearchkos.text.toString())
+                     }
+                 }
+
+                is PriaKosFragment->{
+                    if(binding.txtsearchkos.text.isNullOrEmpty())
+                    {
+                        frag.getDataKosPria()
+                    }
+
+                    else
+                    {
+                        frag.cariDataKosPria(binding.txtsearchkos.text.toString())
+                    }
                 }
+
+                is WanitaKosFragment->{
+                    if(binding.txtsearchkos.text.isNullOrEmpty())
+                    {
+                        frag.getDataKosWanita()
+                    }
+
+                    else
+                    {
+                        frag.cariDataKosWanita(binding.txtsearchkos.text.toString())
+                    }
+                }
+
+                is CampurKosFragment->{
+                    if(binding.txtsearchkos.text.isNullOrEmpty())
+                    {
+                        frag.getDataKosCampuran()
+                    }
+
+                    else
+                    {
+                        frag.cariDataKosCampuran(binding.txtsearchkos.text.toString())
+                    }
+                }
+
+
             }
         }
-
-
 
         binding.ivmessage.setOnClickListener {
             startActivity(Intent(activity,MenuChatActivity::class.java))
@@ -110,7 +159,7 @@ class HomeFragment : Fragment(), sendMessage {
 
     }
 
-    fun getUser()
+    private fun getUser()
     {
         val userId=FirebaseAuth.getInstance().currentUser?.uid
 
@@ -154,10 +203,5 @@ class HomeFragment : Fragment(), sendMessage {
         return notValid
 
     }
-
-    override fun sendData(input: String?) {
-        val tag="android:switcher"+ R.id.viewPager.toString()+":"+1
-    }
-
 
 }

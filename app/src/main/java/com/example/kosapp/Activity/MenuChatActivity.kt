@@ -140,7 +140,8 @@ class MenuChatActivity : AppCompatActivity(),MenuChatAdapter.ItemOnClickMenuChat
 
     override fun onClick(v: View, menuChat: MenuChat) {
         val intent=Intent(this@MenuChatActivity, ChatActiviity::class.java)
-            .putExtra(Constant().KEY_DATA,menuChat.emailPenerima)
+            .putExtra(Constant().KEY_EMAIL_PENGIRIM,menuChat.emailPengirim)
+            .putExtra(Constant().KEY_EMAIL_PENERIMA,menuChat.emailPenerima)
         startActivity(intent)
     }
 }

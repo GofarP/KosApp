@@ -19,6 +19,7 @@ import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityTambahKosBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -97,7 +98,6 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
         binding.btntambah.setOnClickListener {
             if(!gagalValidasi())
             {
-                val userEmail=auth.currentUser?.email
 
 
                 val kosId=UUID.randomUUID().toString()
@@ -114,7 +114,7 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
 
                 for(i in slideImageArrayList.indices)
                 {
-                    gambarKosList.add("$gambarKosUrl${UUID.randomUUID()}")
+                    gambarKosList.add("$gambarKosUrl$i${UUID.randomUUID()}")
                 }
 
                 val kos=Kos(
@@ -384,6 +384,13 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
 
             binding.sliderupload.setImageList(slideImageArrayList)
 
+            binding.sliderupload.setItemClickListener(object : ItemClickListener{
+                override fun onItemSelected(position: Int) {
+                    dialogHapus(position)
+                }
+
+            })
+
         }
 
         dialogBuilder.setNegativeButton("Batalkan"){_, _ ->
@@ -392,9 +399,6 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
 
         dialogBuilder.show()
     }
-
-
-
 
 
     private fun clear()

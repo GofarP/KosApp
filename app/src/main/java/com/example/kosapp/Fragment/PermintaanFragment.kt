@@ -230,6 +230,11 @@ class PermintaanFragment : Fragment(), OnClickListener {
                                 .push()
                                 .setValue(transaksi)
 
+                            database.child(Constant().KEY_DAFTAR_KOS)
+                                .child(permintaan.idKos)
+                                .child(Constant().KEY_JUMLAH_KAMAR_KOS)
+                                .setValue(ServerValue.increment(1))
+
                             database.child(Constant().KEY_DAFTAR_SEWA_KOS)
                                 .addValueEventListener(object:ValueEventListener{
                                     override fun onDataChange(snapshot: DataSnapshot) {

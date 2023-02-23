@@ -9,6 +9,7 @@ import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.LayoutHomeKosBinding
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import java.text.NumberFormat
 
 class HomeKosAdapter(private val listKos: ArrayList<Kos>,private val  itemOnClick:ItemOnClick)
     : RecyclerView.Adapter<HomeKosAdapter.ViewHolder>()
@@ -19,17 +20,20 @@ class HomeKosAdapter(private val listKos: ArrayList<Kos>,private val  itemOnClic
     {
         private val binding=layoutHomeKosBinding
         private val store= Firebase.storage
+        val format: NumberFormat = NumberFormat.getCurrencyInstance()
 
         fun bind(dataKos: Kos, itemAdapterCallback: ItemOnClick) {
 
             itemView.apply {
+
+                format.maximumFractionDigits = 2
 
                 binding.lbljeniskos.text=dataKos.jenis
                 binding.lblsisa.text= "Sisa:${dataKos.sisa}"
                 binding.lblnama.text=dataKos.nama
                 binding.lblalamat.text=dataKos.alamat
                 binding.lblfasilitas.text=dataKos.fasilitas
-                binding.lblharga.text="Rp.${dataKos.biaya}"
+                binding.lblharga.text=format.format(dataKos.biaya)
 
                 store.reference.child(dataKos.thumbnailKos)
                     .downloadUrl

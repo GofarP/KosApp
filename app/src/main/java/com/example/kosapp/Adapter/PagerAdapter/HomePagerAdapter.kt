@@ -9,7 +9,7 @@ class HomePagerAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter
 
 
     override fun getItemCount(): Int {
-        return 5
+        return 4
     }
 
     override fun createFragment(position: Int): Fragment {
@@ -20,7 +20,6 @@ class HomePagerAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter
             1->fragment=PriaKosFragment()
             2->fragment=WanitaKosFragment()
             3->fragment=CampurKosFragment()
-            4->fragment=TestFragment()
         }
 
         return fragment as Fragment

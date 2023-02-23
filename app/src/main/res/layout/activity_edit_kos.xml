@@ -178,6 +178,8 @@
                         android:layout_alignParentEnd="true"
                         android:background="@drawable/button_background_round"
                         />
+
+
                 </com.denzcoskun.imageslider.ImageSlider>
 
 

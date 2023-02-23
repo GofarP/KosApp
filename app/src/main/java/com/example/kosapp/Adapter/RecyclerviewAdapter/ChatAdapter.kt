@@ -166,12 +166,12 @@ class ChatAdapter(private val arrayListChat:ArrayList<Chat>, private val emailSa
 
         val chatData=arrayListChat[position]
 
-        if(chatData.emailPengirim==emailSaatIni)
+        if(chatData.emailPengirim==emailSaatIni && chatData.tipe==Constant().KEY_TEXT)
         {
             viewType=VIEW_TYPE_SENT
         }
 
-        else if(chatData.emailPengirim!=emailSaatIni)
+        else if(chatData.emailPengirim!=emailSaatIni && chatData.tipe==Constant().KEY_TEXT)
         {
             viewType=VIEW_TYPE_RECEIVE
         }

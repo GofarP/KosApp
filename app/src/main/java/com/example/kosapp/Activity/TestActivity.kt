@@ -1,17 +1,28 @@
 package com.example.kosapp.Activity
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import com.denzcoskun.imageslider.constants.ActionTypes
 import com.denzcoskun.imageslider.constants.ScaleTypes
+import com.denzcoskun.imageslider.interfaces.ItemClickListener
+import com.denzcoskun.imageslider.interfaces.TouchListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.kosapp.Adapter.RecyclerviewAdapter.NegaraAdapter
 import com.example.kosapp.Callback.EditKosCallback
+import com.example.kosapp.Callback.TestCallback
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Model.Kos
+import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityTestBinding
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -30,6 +41,8 @@ class TestActivity : AppCompatActivity() {
     private var storage=Firebase.storage.reference
     private lateinit var testIntent: Intent
     private lateinit var kos:Kos
+    private lateinit var sliderUri:Uri
+    private var dihapus=false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,118 +50,90 @@ class TestActivity : AppCompatActivity() {
         binding=ActivityTestBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        testIntent=intent
-        kos=testIntent.getParcelableExtra("dataKos")!!
+        sliderArrayList.add(SlideModel(R.drawable.placeholder_add_kos_slide,  ScaleTypes.FIT))
+        binding.sliderupload.setImageList(sliderArrayList)
 
-//        anu(object : EditKosCallback{
-//            override fun setImageList(gambarkosMap: HashMap<String, SlideModel>) {
-//                TODO("Not yet implemented")
-//            }
-//
-//
-//            override fun setImageThumbnail(uri: String) {
-//                TODO("Not yet implemented")
-//            }
-//
-//        })
+
+
 
         binding.btntest.setOnClickListener {
-            storage.child(kos.thumbnailKos).delete()
+            ImagePicker.with(this@TestActivity)
+                .crop()
+                .compress(1024)
+                .maxResultSize(1080, 1080)
+                .createIntent {intent->
+                    kostImagePickerResult.launch(intent)
+                }
         }
+    }
 
-//        binding.btncheck.setOnClickListener {
-//            database.child(Constant().KEY_DAFTAR_KOS)
-//                .child(kos.idKos)
-//                .child(Constant().KEY_GAMBAR_KOS)
-//                .addListenerForSingleValueEvent(object : ValueEventListener{
-//                    override fun onDataChange(snapshot: DataSnapshot) {
-//                       snapshot.children.forEachIndexed {i,snap->
-//                           val urlGambarKos=snap.value.toString()
-//                           if(kos.gambarKos[i] ==urlGambarKos)
-//                           {
-//                                Log.d("snap","sama")
-//                           }
-//
-//                           else
-//                           {
-//                               Log.d("snap","Beda")
-//                           }
-//                       }
-//                    }
-//
-//                    override fun onCancelled(error: DatabaseError) {
-//                        TODO("Not yet implemented")
-//                    }
-//
-//                })
-//        }
+    private var kostImagePickerResult: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult())
+    { result ->
 
+        if (result.resultCode == RESULT_OK) {
+            sliderUri = result.data?.data!!
+
+
+            if (sliderArrayList[0].imagePath == R.drawable.placeholder_add_kos_slide) {
+                sliderArrayList.removeAt(0)
+            }
+
+
+            sliderArrayList.add(SlideModel(sliderUri.toString(), scaleType = ScaleTypes.FIT))
+
+            binding.sliderupload.setImageList(sliderArrayList)
+
+            binding.sliderupload.setItemClickListener(object: ItemClickListener {
+                override fun onItemSelected(position: Int) {
+                    dialogHapus(position)
+                }
+
+            })
+
+
+
+        } else {
+            Toast.makeText(this@TestActivity, "Gagal Mengambil Gambar", Toast.LENGTH_SHORT).show()
+        }
 
     }
 
+    private fun dialogHapus(posisi:Int)
+    {
+        val dialogBuilder= AlertDialog.Builder(this)
+        dialogBuilder.setTitle("Hapus Gammbar?")
+        dialogBuilder.setMessage("Hapus Gambar Ini Dari Daftar Gambar?")
+        dialogBuilder.setPositiveButton("Hapus"){_, _->
 
-//    private fun anu(editkosCallback:EditKosCallback)
-//    {
-//        kos.gambarKos.forEachIndexed { i, _ ->
-//           storage.child(kos.gambarKos[i])
-//               .downloadUrl.addOnSuccessListener {uri->
-//                   sliderArrayList.add(SlideModel(uri.toString(),ScaleTypes.FIT))
-//                   editkosCallback.setImageList(sliderArrayList)
-//               }
-//        }
-//    }
+            sliderArrayList.removeAt(posisi)
+
+            if(sliderArrayList.isEmpty())
+            {
+                sliderArrayList.add(SlideModel(R.drawable.placeholder_add_kos_slide,ScaleTypes.FIT))
+            }
+
+            binding.sliderupload.setImageList(sliderArrayList)
+
+            binding.sliderupload.setItemClickListener(object:ItemClickListener{
+                override fun onItemSelected(position: Int) {
+                    dialogHapus(position)
+                }
+
+            })
+
+        }
+
+        dialogBuilder.setNegativeButton("Batalkan"){_, _ ->
+
+        }
+
+        dialogBuilder.show()
+    }
 
 
 
 
-    //        checkMenuChatData(object :ChatCallback{
-//            override fun checkMenuChatData(dataMenuChatDitemukan: Boolean) {
-//                if(dataMenuChatDitemukan)
-//                {
-//                    menuChatDataDitemukan=true
-//
-//                    if(emailSaatIni==arrayListMenuChat[0].emailPengirim)
-//                    {
-//                        binding.lblusername.text=arrayListMenuChat[0].usernamePenerima
-//
-//                        emailPenerima=arrayListMenuChat[0].emailPenerima
-//
-//                        storage.child(arrayListMenuChat[0].fotoPenerima).downloadUrl
-//                            .addOnSuccessListener {uri->
-//                                Glide.with(this@ChatActiviity)
-//                                    .load(uri)
-//                                    .into(binding.ivfotoprofil)
-//                            }
-//
-//                    }
-//
-//                    else
-//                    {
-//                        binding.lblusername.text=arrayListMenuChat[0].usernamePengirim
-//
-//                        emailPenerima=arrayListMenuChat[0].emailPengirim
-//
-//                        storage.child(arrayListMenuChat[0].fotoPengirim).downloadUrl
-//                            .addOnSuccessListener {uri->
-//                                Glide.with(this@ChatActiviity)
-//                                    .load(uri)
-//                                    .into(binding.ivfotoprofil)
-//                            }
-//
-//                    }
-//
-//                    getChatData()
-//
-//                }
-//
-//                else
-//                {
-//                    getProfilePengguna()
-//                }
-//
-//            }
-//
-//        })
 
 
 }

@@ -16,8 +16,11 @@ import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.kosapp.Callback.EditKosCallback
+import com.example.kosapp.Callback.SetImageListCallback
+import com.example.kosapp.Callback.SlideClickCallback
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
+import com.example.kosapp.Model.GambarKos
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityEditKosBinding
@@ -37,6 +40,7 @@ import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.MapboxMap.OnMapClickListener
+import kotlinx.coroutines.tasks.await
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -57,8 +61,10 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     private var gambarKosDihapusList=ArrayList<String>()
     private var gambarKosBaruList=ArrayList<String>()
     private var gambarKosLamaList=ArrayList<String>()
+    private var gambarKosArrayList=ArrayList<GambarKos>()
 
     private lateinit var kos:Kos
+    private lateinit var gambarKos:GambarKos
 
     private var uriThumbail: Uri? = null
     private var sliderUri:Uri?=null
@@ -92,16 +98,27 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         Helper().setStatusBarColor(this@EditKosActivity)
 
         dataKosIntent=intent
-        kos=dataKosIntent.getParcelableExtra("dataKos")!!
+        kos=dataKosIntent.getParcelableExtra(Constant().KEY_DATA_KOS)!!
 
         setDataEditKos()
 
 
-
         editKosCallback(object :EditKosCallback{
 
-            override fun setImageList(arrayListImageList: ArrayList<SlideModel>) {
-                binding.sliderupload.setImageList(arrayListImageList)
+            override fun setImageList(arrayListImageList: ArrayList<GambarKos>) {
+                Log.d("string",arrayListImageList.toString())
+                arrayListImageList.forEach {urlGambarKos->
+                    slideImageArrayList.add(SlideModel(urlGambarKos.url, scaleType = ScaleTypes.FIT))
+                }
+
+                binding.sliderupload.setImageList(slideImageArrayList)
+                binding.sliderupload.setItemClickListener(object: ItemClickListener{
+                    override fun onItemSelected(position: Int) {
+                        dialogHapus(position)
+                    }
+
+                })
+
             }
 
 
@@ -114,16 +131,18 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         })
 
 
-        binding.btnedit.setOnClickListener {
 
-            if(!gagalValidasi())
-            {
-                editDataKos()
-            }
-            else
-            {
-                gagalValidasi()
-            }
+
+        binding.btnedit.setOnClickListener {
+            checkDeletedImage()
+//            if(!gagalValidasi())
+//            {
+//                checkDeletedImage()
+//            }
+//            else
+//            {
+//                gagalValidasi()
+//            }
 
         }
 
@@ -146,11 +165,10 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
                     gambarKosPickerResult.launch(intent)
                 }
         }
-
     }
 
 
-    fun setDataEditKos()
+    private fun setDataEditKos()
     {
 
         //set value on spinner
@@ -263,6 +281,39 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         return gagal
     }
 
+    private fun checkDeletedImage()
+    {
+                if(gambarKosDihapusList.size>0)
+                {
+                    database.child(Constant().KEY_DAFTAR_KOS)
+                        .child(kos.idKos)
+                        .child(Constant().KEY_GAMBAR_KOS)
+                        .addListenerForSingleValueEvent(object: ValueEventListener{
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                snapshot.children.forEach { snap->
+                                    if(snap.value.toString() in gambarKosDihapusList)
+                                    {
+                                        Log.d("deleted",snap.value.toString())
+                                    }
+
+                                }
+
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Log.d("snap",error.message)
+                            }
+
+                        })
+                }
+
+                 else
+                {
+                    Log.d("snap","Tiada Yang Dihapus")
+                }
+    }
+
+
     fun editDataKos()
     {
         alamat=binding.txtalamatkos.text.trim().toString()
@@ -312,7 +363,11 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
                         .addListenerForSingleValueEvent(object: ValueEventListener{
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 snapshot.children.forEachIndexed {index, snap->
-                                    Log.d("snap","$index ${snap.value.toString()}")
+                                    if(snap.value.toString() in gambarKosDihapusList)
+                                    {
+                                        storage.child(snap.value.toString()).delete()
+                                        gambarKosLamaList.remove(snap.value.toString())
+                                    }
                                 }
 
                             }
@@ -326,7 +381,6 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
                 if(gambarKosBaruList.size>0)
                 {
-
                     gambarKosBaruList.forEachIndexed {index,_->
                         storage.child(gambarKosBaruList[index])
                             .putFile(sliderUriList[index].toUri())
@@ -340,46 +394,51 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
                         .setValue(gambarKosBaruList)
 
                 }
-
-
                 Toast.makeText(this@EditKosActivity, "Sukses Mengubah Data Kos", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this@EditKosActivity, KosSayaActivity::class.java))
             }
             .addOnFailureListener {
                 Toast.makeText(this@EditKosActivity, "Gagal Mengubah Data Kos", Toast.LENGTH_SHORT).show()
             }
-
-
     }
 
-//    private fun dialogHapus(position: String)
-//    {
-//        val dialogBuilder= AlertDialog.Builder(this)
-//        dialogBuilder.setTitle("Hapus Gambar?")
-//        dialogBuilder.setMessage("Hapus Gambar Ini Dari Daftar Gambar?")
-//        dialogBuilder.setPositiveButton("Hapus"){_,_->
-//
-//            if(slideHashMap.size==1)
-//            {
-//                slideHashMap[UUID.randomUUID().toString()]=
-//                    SlideModel(R.drawable.placeholder_add_kos_slide,ScaleTypes.FIT)
-//            }
-//
-//            else
-//            {
-//                slideArrayList.removeAt(position)
-//                //gambarKosDihapusList.add(kos.gambarKos[position])
-//            }
-//
-//            binding.sliderupload.setImageList(slideHashMap.values.toList())
-//        }
-//
-//        dialogBuilder.setNegativeButton("Batalkan"){_,_->
-//
-//        }
-//
-//        dialogBuilder.show()
-//    }
+    private fun dialogHapus(position: Int)
+    {
+        Toast.makeText(this@EditKosActivity, gambarKosArrayList[position].name, Toast.LENGTH_SHORT).show()
+        val dialogBuilder= AlertDialog.Builder(this)
+        dialogBuilder.setTitle("Hapus Gambar?")
+        dialogBuilder.setMessage("Hapus Gambar Ini Dari Daftar Gambar?")
+        dialogBuilder.setPositiveButton("Hapus"){_,_->
+
+            if(slideImageArrayList.size==1)
+            {
+                Toast.makeText(applicationContext, "Sisakan Setidaknya Satu Gambar Kos", Toast.LENGTH_SHORT).show()
+            }
+
+            else
+            {
+                gambarKosDihapusList.add(gambarKosArrayList[position].name)
+                slideImageArrayList.removeAt(position)
+                gambarKosArrayList.removeAt(position)
+                binding.sliderupload.setImageList(slideImageArrayList)
+            }
+
+
+            binding.sliderupload.setItemClickListener(object:ItemClickListener{
+                override fun onItemSelected(position: Int) {
+                    dialogHapus(position)
+                }
+
+            })
+
+        }
+
+        dialogBuilder.setNegativeButton("Batalkan"){_,_->
+
+        }
+
+        dialogBuilder.show()
+    }
 
     private var kosThumbailPickerResult:ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult())
@@ -404,19 +463,8 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
             sliderUriList.add(sliderUri.toString())
 
-            Log.d("uri",sliderUriList.size.toString())
-
-            slideImageArrayList.add(SlideModel(sliderUri.toString(),ScaleTypes.FIT))
-
             gambarKosBaruList.add(gambarKosUrl)
 
-            binding.sliderupload.setImageList(slideImageArrayList)
-
-            binding.sliderupload.setItemClickListener(object:ItemClickListener{
-                override fun onItemSelected(position: Int) {
-                    //dialogHapus(position.toString())
-                }
-            })
         }
 
     }
@@ -439,7 +487,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
             Toast.makeText(this@EditKosActivity, "Data Kosong", Toast.LENGTH_SHORT).show()
         }
 
-        if(!intent?.hasExtra("lattitudeKos")!! && !intent.hasExtra("longitudeKos"))
+        if(!intent?.hasExtra(Constant().KEY_LATTITUDE_KOS)!! && !intent.hasExtra(Constant().KEY_LONGITUDE_KOS))
         {
             Toast.makeText(this@EditKosActivity, "Gagal Mengambil Lokasi Kos", Toast.LENGTH_SHORT).show()
             return@registerForActivityResult
@@ -447,8 +495,8 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
         //Valid Result Returned
         val latLng=LatLng()
-        latLng.latitude=intent.getStringExtra("lattitudeKos")!!.toDouble()
-        latLng.longitude=intent.getStringExtra("longitudeKos")!!.toDouble()
+        latLng.latitude=intent.getStringExtra(Constant().KEY_LATTITUDE_KOS)!!.toDouble()
+        latLng.longitude=intent.getStringExtra(Constant().KEY_LONGITUDE_KOS)!!.toDouble()
 
         lattitude=latLng.latitude.toString()
         longitude=latLng.longitude.toString()
@@ -476,16 +524,23 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
     private fun editKosCallback(editKosCallback: EditKosCallback)
     {
-
-        kos.gambarKos.indices.forEachIndexed { _, i ->
-            storage.child(kos.gambarKos[i])
+        for (item in kos.gambarKos)
+        {
+            storage.child(item)
                 .downloadUrl
-                .addOnSuccessListener { uri->
-                    slideImageArrayList.add(SlideModel(uri.toString(),ScaleTypes.FIT))
-                    editKosCallback.setImageList(slideImageArrayList)
+                .addOnSuccessListener {url->
+
+                    gambarKos=GambarKos(url.toString(),item)
+                    gambarKosArrayList.add(gambarKos)
+
+                    if(gambarKosArrayList.size==kos.gambarKos.size)
+                    {
+                        editKosCallback.setImageList(gambarKosArrayList)
+                    }
+
+
                 }
         }
-
 
         storage.child(kos.thumbnailKos)
             .downloadUrl
@@ -493,6 +548,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
                 editKosCallback.setImageThumbnail(uri.toString())
             }
     }
+
 
     override fun onStart() {
         super.onStart()
@@ -518,6 +574,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         super.onDestroy()
         binding.mapviewtambahkos.onDestroy()
     }
+
 
 
 }

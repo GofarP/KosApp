@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Activity.DetailSewaKosActivity
-import com.example.kosapp.Activity.TestActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter.ItemOnClick
 import com.example.kosapp.Helper.Constant
@@ -32,10 +31,10 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
     private  var kosArrayList=ArrayList<Kos>()
     private var homeKosAdapter:HomeKosAdapter?=null
     private var database=Firebase.database.reference
-    private var auth=FirebaseAuth.getInstance().currentUser
     private lateinit var kos:Kos
     private lateinit var  layoutManager: RecyclerView.LayoutManager
     private lateinit var preferenceManager: PreferenceManager
+    private lateinit var namaKos:String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,16 +48,15 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        getDataKos()
+        getSemuaDataKos()
 
         preferenceManager= PreferenceManager()
         preferenceManager.preferenceManager(view.context)
 
-
     }
 
 
-        private fun getDataKos()
+      fun getSemuaDataKos()
         {
             database.child(Constant().KEY_DAFTAR_KOS)
                 .addValueEventListener(object :ValueEventListener{
@@ -93,11 +91,59 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        Log.d("snap",error.message)
+                        Log.d("dberror",error.message)
                     }
 
                 })
         }
+
+
+     fun cariSemuaDataKos(cari:String)
+    {
+        database.child(Constant().KEY_DAFTAR_KOS)
+            .addValueEventListener(object: ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    kosArrayList.clear()
+                    binding.rvkossemua.adapter=null
+
+                    snapshot.children.forEach {snap->
+                        namaKos=snap.child(Constant().KEY_NAMA_KOS).value.toString()
+
+                        if(namaKos.contains(cari,true))
+                       {
+                           kos=Kos(
+                               idKos=snap.child(Constant().KEY_ID_KOS).value.toString(),
+                               alamat = snap.child(Constant().KEY_ALAMAT_KOS).value.toString(),
+                               biaya = snap.child(Constant().KEY_BIAYA_KOS).value.toString().toDouble(),
+                               emailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString(),
+                               gambarKos = snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>,
+                               thumbnailKos = snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString(),
+                               jenis=snap.child(Constant().KEY_JENIS_KOS).value.toString(),
+                               jenisBayar = snap.child(Constant().KEY_JENIS_BAYAR_KOS).value.toString(),
+                               lattitude = snap.child(Constant().KEY_LATTITUDE_KOS).value.toString(),
+                               longitude = snap.child(Constant().KEY_LONGITUDE_KOS).value.toString(),
+                               nama = snap.child(Constant().KEY_NAMA_KOS).value.toString(),
+                               sisa = snap.child(Constant().KEY_JUMLAH_KAMAR_KOS).value.toString().toInt(),
+                               fasilitas=snap.child(Constant().KEY_FASILITAS).value.toString(),
+                               deskripsi=snap.child(Constant().KEY_DESKRIPSI).value.toString(),
+                           )
+                           kosArrayList.add(kos)
+                       }
+
+                        homeKosAdapter= HomeKosAdapter(kosArrayList,this@SemuaKosFragment)
+                        layoutManager=LinearLayoutManager(activity)
+                        binding.rvkossemua.layoutManager=layoutManager
+                        binding.rvkossemua.adapter=homeKosAdapter
+
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("db error", error.message)
+                }
+
+            })
+    }
 
 
     override fun onClick(v: View, dataKos: Kos) {
@@ -121,5 +167,8 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
         }
 
     }
+
+
+
 
 }

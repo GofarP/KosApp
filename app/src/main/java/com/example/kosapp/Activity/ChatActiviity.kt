@@ -1,9 +1,11 @@
 package com.example.kosapp.Activity
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,23 +37,25 @@ class ChatActiviity : AppCompatActivity() {
     private val emailSaatIni=FirebaseAuth.getInstance().currentUser?.email.toString()
     private val storage=FirebaseStorage.getInstance().reference
     private var menuChatDataDitemukan=false
-    private var randomKey= UUID.randomUUID().toString()
     private var arrayListPemilik=ArrayList<Pengguna>()
     private var arrayListPenyewa=ArrayList<Pengguna>()
     private var arrayListMenuChat=ArrayList<MenuChat>()
     private  var arrayListAccount=ArrayList<String>()
     private var arrayListChat=ArrayList<Chat>()
     private var calendar=Calendar.getInstance()
-
+    private var uri:Uri?=null
+    private var menuChatId=UUID.randomUUID().toString()
 
     private lateinit var binding:ActivityChatBinding
     private lateinit var emailPenerima:String
+    private lateinit var emailPengirim:String
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var adapter:ChatAdapter
     private lateinit var chat:Chat
     private lateinit var menuChat:MenuChat
     private lateinit var chatIntent: Intent
     private lateinit var tanggalHariIni: String
+    private lateinit var namaChatImage:String
 
 
 
@@ -62,23 +66,39 @@ class ChatActiviity : AppCompatActivity() {
 
         Helper().setStatusBarColor(this@ChatActiviity)
 
+
         tanggalHariIni=SimpleDateFormat("dd-MM-yyyy HH:mm:ss",Locale.getDefault()).format(calendar.time)
 
         chatIntent=intent
-        arrayListAccount.add("putra@mail.com")
-        arrayListAccount.add("ranii@mail.com")
 
+        emailPenerima= chatIntent.getStringExtra(Constant().KEY_EMAIL_PENERIMA).toString()
+        emailPengirim=chatIntent.getStringExtra(Constant().KEY_EMAIL_PENGIRIM).toString()
+
+
+        if(emailSaatIni==emailPenerima)
+        {
+            emailPenerima=chatIntent.getStringExtra(Constant().KEY_EMAIL_PENGIRIM).toString()
+            emailPengirim=chatIntent.getStringExtra(Constant().KEY_EMAIL_PENERIMA).toString()
+        }
+
+
+        Log.d("email","Pengirim: $emailPengirim, Penerima:$emailPenerima")
+
+        arrayListAccount.add(emailPenerima)
+        arrayListAccount.add(emailPengirim)
 
 
         checkMenuChatData(object :ChatCallback{
             override fun checkMenuChatData(dataMenuChatDitemukan: Boolean) {
+
                 menuChatDataDitemukan=dataMenuChatDitemukan
 
-                if(dataMenuChatDitemukan)
+                getChatData()
+
+                if(menuChatDataDitemukan)
                 {
-                    if(emailSaatIni==arrayListMenuChat[0].emailPenerima)
+                    if(emailSaatIni==emailPenerima)
                     {
-                        emailPenerima=arrayListMenuChat[0].emailPengirim
                         binding.lblusername.text=arrayListMenuChat[0].usernamePengirim
 
                         storage.child(arrayListMenuChat[0].fotoPengirim).downloadUrl
@@ -90,7 +110,6 @@ class ChatActiviity : AppCompatActivity() {
 
                     else
                     {
-                        emailPenerima=arrayListMenuChat[0].emailPenerima
                         binding.lblusername.text=arrayListMenuChat[0].usernamePenerima
 
                         storage.child(arrayListMenuChat[0].fotoPenerima).downloadUrl
@@ -99,8 +118,6 @@ class ChatActiviity : AppCompatActivity() {
                                     .load(uri).into(binding.ivfotoprofil)
                             }
                     }
-
-                    getChatData()
 
                 }
 
@@ -115,10 +132,17 @@ class ChatActiviity : AppCompatActivity() {
 
 
 
-
         binding.btnsendmessage.setOnClickListener {
-            sendMessageText()
-//            Log.d("val",arrayListPemilik.size.toString())
+
+            if(binding.txtchat.text.isNullOrEmpty())
+            {
+                Toast.makeText(this@ChatActiviity, "Silahkan Ketik CHat Yang Mau Dikirim", Toast.LENGTH_SHORT).show()
+            }
+
+            else
+            {
+                sendMessageText()
+            }
         }
 
 
@@ -130,6 +154,7 @@ class ChatActiviity : AppCompatActivity() {
                 .createIntent {intent->
                     intentAmbilImageChat.launch(intent)
                 }
+
         }
 
     }
@@ -137,18 +162,12 @@ class ChatActiviity : AppCompatActivity() {
 
     private fun sendMessageText()
     {
+
         if(!menuChatDataDitemukan)
         {
-            chat=Chat(
-                emailPengirim = emailSaatIni,
-                emailPenerima = emailPenerima,
-                pesan=binding.txtchat.text.toString(),
-                tanggal =tanggalHariIni,
-                tipe = Constant().KEY_TEXT
-            )
 
             menuChat=MenuChat(
-                idMenuChat=randomKey,
+                idMenuChat=menuChatId,
                 emailPenerima = arrayListPemilik[0].email,
                 emailPengirim = arrayListPenyewa[0].email,
                 fotoPenerima = arrayListPemilik[0].foto,
@@ -159,20 +178,12 @@ class ChatActiviity : AppCompatActivity() {
             )
 
             database.child(Constant().KEY_MENU_CHAT)
-                .child(randomKey)
+                .child(menuChatId)
                 .setValue(menuChat)
         }
 
         else
         {
-            chat=Chat(
-                emailPengirim = emailSaatIni,
-                emailPenerima = emailPenerima,
-                pesan=binding.txtchat.text.toString(),
-                tanggal =tanggalHariIni,
-                tipe = Constant().KEY_TEXT
-            )
-
             database.child(Constant().KEY_MENU_CHAT)
                 .child(arrayListMenuChat[0].idMenuChat)
                 .child(Constant().KEY_PESAN_TERAKHIR)
@@ -180,50 +191,79 @@ class ChatActiviity : AppCompatActivity() {
         }
 
 
+        chat=Chat(
+            emailPengirim = emailSaatIni,
+            emailPenerima = emailPenerima,
+            pesan=binding.txtchat.text.toString(),
+            tanggal =tanggalHariIni,
+            tipe = Constant().KEY_TEXT
+        )
+
         database.child(Constant().KEY_CHAT)
             .push()
             .setValue(chat)
 
         binding.txtchat.text.clear()
-    }
-
-    private fun sendMessageImage()
-    {
-        if(!menuChatDataDitemukan)
-        {
-            menuChat=MenuChat(
-                idMenuChat=UUID.randomUUID().toString(),
-                emailPenerima = arrayListPemilik[0].email,
-                emailPengirim = arrayListPenyewa[0].email,
-                fotoPenerima = arrayListPemilik[0].foto,
-                fotoPengirim = arrayListPenyewa[0].foto,
-                pesanTerakhir = "Gambar Diterima",
-                usernamePenerima = arrayListPemilik[0].username,
-                usernamePengirim = arrayListPemilik[0].username
-            )
-
-            database.child(Constant().KEY_MENU_CHAT)
-                .push()
-                .setValue(menuChat)
-        }
-
-
-
-
 
     }
+
 
     private var intentAmbilImageChat: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult())
     {result->
         if(result.resultCode== RESULT_OK)
         {
+            uri= result.data?.data!!
 
+            if(!menuChatDataDitemukan)
+            {
+                menuChat=MenuChat(
+                    idMenuChat=menuChatId,
+                    emailPenerima = arrayListPemilik[0].email,
+                    emailPengirim = arrayListPenyewa[0].email,
+                    fotoPenerima = arrayListPemilik[0].foto,
+                    fotoPengirim = arrayListPenyewa[0].foto,
+                    pesanTerakhir = "Gambar Diterima",
+                    usernamePenerima = arrayListPemilik[0].username,
+                    usernamePengirim = arrayListPenyewa[0].username
+                )
+
+                database.child(Constant().KEY_MENU_CHAT)
+                    .child(menuChatId)
+                    .setValue(menuChat)
+            }
+
+
+            else
+            {
+                database.child(Constant().KEY_MENU_CHAT)
+                    .child(arrayListMenuChat[0].idMenuChat)
+                    .child(Constant().KEY_PESAN_TERAKHIR)
+                    .setValue("Pesan gambar")
+            }
+
+            namaChatImage="${Constant().KEY_CHAT_IMAGE}/$menuChatId/${UUID.randomUUID()}"
+
+            chat=Chat(
+                emailPengirim=emailPengirim,
+                emailPenerima=emailPenerima,
+                pesan=namaChatImage,
+                tanggal=tanggalHariIni,
+                tipe=Constant().KEY_IMAGE
+            )
+
+            storage.child(namaChatImage).putFile(uri!!)
+                .addOnSuccessListener {
+                    database.child(Constant().KEY_CHAT)
+                        .push()
+                        .setValue(chat)
+                }
         }
     }
 
     private fun checkMenuChatData(chatCallback: ChatCallback)
     {
+        chatCallback.checkMenuChatData(false)
         database.child(Constant().KEY_MENU_CHAT)
             .addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -239,7 +279,7 @@ class ChatActiviity : AppCompatActivity() {
                                 val snapUsernamePenerima=snap.child(Constant().KEY_USER_PENERIMA).value.toString()
                                 val snapUsernamePengirim=snap.child(Constant().KEY_USER_PENGIRIM).value.toString()
 
-                                if(snapEmailPenerima in arrayListAccount || snapEmailPengirim in arrayListAccount)
+                                if(snapEmailPenerima in arrayListAccount && snapEmailPengirim in arrayListAccount)
                                 {
                                     menuChat= MenuChat(
                                         idMenuChat =snapIdMenuChat,
@@ -254,16 +294,11 @@ class ChatActiviity : AppCompatActivity() {
                                     arrayListMenuChat.add(menuChat)
 
                                     chatCallback.checkMenuChatData(true)
-
                                 }
 
                             }
                       }
 
-                    else
-                    {
-                        chatCallback.checkMenuChatData(false)
-                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -275,8 +310,6 @@ class ChatActiviity : AppCompatActivity() {
 
     private fun getProfilePengguna()
     {
-
-        emailPenerima=chatIntent.getStringExtra(Constant().KEY_DATA).toString()
 
         database.child(Constant().KEY_USER)
             .addListenerForSingleValueEvent(object: ValueEventListener{
@@ -292,6 +325,8 @@ class ChatActiviity : AppCompatActivity() {
 
                         if(snapEmail==emailPenerima)
                         {
+                            Log.d("email penerima ditemukan","$emailPenerima $snapEmail")
+
                             binding.lblusername.text=snapUsername
 
                             val pemilik=Pengguna(
@@ -311,10 +346,12 @@ class ChatActiviity : AppCompatActivity() {
                                 }
 
                             arrayListPemilik.add(pemilik)
+
                         }
 
-                        else if(snapEmail==emailSaatIni)
+                        else if(snapEmail==emailPengirim)
                         {
+                            Log.d("email penerima ditemukan","$emailPengirim $snapEmail")
 
                             val penyewa=Pengguna(
                                 id=snapId,
@@ -328,15 +365,18 @@ class ChatActiviity : AppCompatActivity() {
                             arrayListPenyewa.add(penyewa)
                         }
                     }
+
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.d("error",error.message)
+                    Log.d("db error",error.message)
                 }
 
             })
 
     }
+
+
 
 
     private fun getChatData()

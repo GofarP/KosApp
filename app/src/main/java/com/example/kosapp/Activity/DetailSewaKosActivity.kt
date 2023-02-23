@@ -88,7 +88,8 @@ class DetailSewaKosActivity : AppCompatActivity() {
 
         binding.btnchatpemilik.setOnClickListener {
             val intent=Intent(this@DetailSewaKosActivity, ChatActiviity::class.java)
-                .putExtra(Constant().KEY_DATA,kos.emailPemilik)
+                .putExtra(Constant().KEY_EMAIL_PENGIRIM,emailPengguna)
+                .putExtra(Constant().KEY_EMAIL_PENERIMA,kos.emailPemilik)
             startActivity(intent)
         }
 

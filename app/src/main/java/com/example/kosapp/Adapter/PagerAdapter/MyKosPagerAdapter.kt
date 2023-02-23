@@ -8,20 +8,14 @@ import com.example.kosapp.Fragment.MenyewaFragment
 import com.example.kosapp.Fragment.PermintaanFragment
 
 class MyKosPagerAdapter(fragmentActivity: FragmentActivity):FragmentStateAdapter(fragmentActivity)  {
-    override fun getItemCount(): Int {
-        return 3
-    }
 
-    override fun createFragment(position: Int): Fragment {
-        var fragment:Fragment?=null
-        when(position)
-        {
-            0->fragment=MenyewaFragment()
-            1->fragment=DisewaFragment()
-            2->fragment= PermintaanFragment()
-        }
+    var fragmentList= listOf(MenyewaFragment(),
+        DisewaFragment(),
+        PermintaanFragment()
+    )
 
-        return fragment as Fragment
-    }
+    override fun getItemCount(): Int=fragmentList.size
+
+    override fun createFragment(position: Int)=fragmentList[position]
 
 }
