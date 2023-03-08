@@ -134,15 +134,15 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
 
         binding.btnedit.setOnClickListener {
-            checkDeletedImage()
-//            if(!gagalValidasi())
-//            {
-//                checkDeletedImage()
-//            }
-//            else
-//            {
-//                gagalValidasi()
-//            }
+//            checkDeletedImage()
+            if(!gagalValidasi())
+            {
+                editDataKos()
+            }
+            else
+            {
+                gagalValidasi()
+            }
 
         }
 
@@ -281,38 +281,6 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         return gagal
     }
 
-    private fun checkDeletedImage()
-    {
-                if(gambarKosDihapusList.size>0)
-                {
-                    database.child(Constant().KEY_DAFTAR_KOS)
-                        .child(kos.idKos)
-                        .child(Constant().KEY_GAMBAR_KOS)
-                        .addListenerForSingleValueEvent(object: ValueEventListener{
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                snapshot.children.forEach { snap->
-                                    if(snap.value.toString() in gambarKosDihapusList)
-                                    {
-                                        Log.d("deleted",snap.value.toString())
-                                    }
-
-                                }
-
-                            }
-
-                            override fun onCancelled(error: DatabaseError) {
-                                Log.d("snap",error.message)
-                            }
-
-                        })
-                }
-
-                 else
-                {
-                    Log.d("snap","Tiada Yang Dihapus")
-                }
-    }
-
 
     fun editDataKos()
     {
@@ -366,17 +334,25 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
                                     if(snap.value.toString() in gambarKosDihapusList)
                                     {
                                         storage.child(snap.value.toString()).delete()
+                                        snap.ref.removeValue()
                                         gambarKosLamaList.remove(snap.value.toString())
                                     }
                                 }
 
+
+                                database.child(Constant().KEY_DAFTAR_KOS)
+                                    .child(kos.idKos)
+                                    .child(Constant().KEY_GAMBAR_KOS)
+                                    .setValue(gambarKosLamaList)
                             }
 
                             override fun onCancelled(error: DatabaseError) {
-                                Log.d("snap",error.message)
+                                Log.d("DB Error",error.message)
                             }
 
                         })
+
+
                 }
 
                 if(gambarKosBaruList.size>0)
