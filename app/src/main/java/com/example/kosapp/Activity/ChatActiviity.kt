@@ -335,7 +335,7 @@ class ChatActiviity : AppCompatActivity() {
                                 foto=snapFoto,
                                 jenisKelamin = snapJenisKelamin,
                                 noTelp = snapNoTelp,
-                                username = snapUsername
+                                username = snapUsername,
                             )
 
                             storage.child(snapFoto).downloadUrl
@@ -359,7 +359,7 @@ class ChatActiviity : AppCompatActivity() {
                                 foto=snapFoto,
                                 jenisKelamin = snapJenisKelamin,
                                 noTelp = snapNoTelp,
-                                username = snapUsername
+                                username = snapUsername,
                             )
 
                             arrayListPenyewa.add(penyewa)

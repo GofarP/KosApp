@@ -24,14 +24,15 @@
     <string name="pilih_lokasi">Pilih Lokasi</string>
 
     <!-- Instruksi ambil lokasi-->
-    <string name="pengambilan_lokasi">
+    <string name="txt_pengambilan_lokasi">
         Untuk Memilih Lokasi Kosan anda di peta, silahkan sentuh peta di map yang mau anda
         tandai sebagai lokasi kosan anda. Jika sudah selanjutnya tekan tombol pilih lokasi.
         Titik berwarna biru/abu-abu merupakan lokasi pengguna saat ini
     </string>
 
-    <string name="batalkan">Batalkan</string>
-    <string name="detail_kos_dummy">Kos nyaman yang terleta di jl.kaki. \n
+    <string name="txt_batalkan">Batalkan</string>
+
+    <string name="txt_detail_kos_dummy">Kos nyaman yang terleta di jl.kaki. \n
         Kos ini memiliki peraturan sebagai berikut: \n
         1. Jam malam sampai jam 10. \n
         2. Tidak Boleh membawa lawan jenis\n
@@ -39,8 +40,10 @@
         4. Jangan Lupa Kunci Pintu Kalau Malam\n
         5. Jangan Jorok
     </string>
-    <string name="jumlah_kamar_kos">Jumlah Kamar Kos</string>
-    <string name="request_dummy_receiver">Anu Meminta Untuk Masuk Ke kOs Sini... Aoakah Anda MAu Terima?</string>
+
+    <string name="txt_jumlah_kamar_kos">Jumlah Kamar Kos</string>
+
+    <string name="txt_request_receiver_dummy">Anu Meminta Untuk Masuk Ke kOs Sini… Aoakah Anda MAu Terima?</string>
     <string name="text_konfirmasi_sewa">Terima Kasih, Sekarang Tunggu Pemilik Kos Untuk Mengonfirmasi Permintaan Sewa Anda</string>
     <string name="text_comment">Komentar Anda</string>
     <string name="hint_ganti_username">Masukkan Username Baru Anda</string>
@@ -61,5 +64,32 @@
     <string name="text_history_sewa_kos">History Sewa Kos</string>
     <string name="text_my_kos">My Kos</string>
     <string name="text_nama_pengguna">Nama Pengguna</string>
+    <string name="text_dummy_user_welcome">Hallo, {Nama Pengguna}</string>
+    <string name="text_dummy_verifikasi">Verifikasi</string>
+    <string name="text_verifikasi_akun">Verifikasi Akun</string>
+    <string name="txt_status">Status...</string>
+    <string name="txt_isi_permintaan">Isi Permintaan</string>
+    <string name="txt_detail_akun">Detail Akun</string>
+    <string name="txt_nama_pengguna">Nama Pengguna:</string>
+    <string name="txt_email_pengguna">Email Pengguna:</string>
+    <string name="txt_jenis_kelamin">Jenis Kelamin:</string>
+    <string name="txt_no_telpon">No Telpon:</string>
+    <string name="txt_blank">...</string>
+    <string name="txt_id_pengguna">Id Pengguna</string>
+    <string name="txt_id_verifikasi">Id Verifikasi:</string>
+    <string name="txt_email">Email Pengguna:</string>
+    <string name="txt_foto_verifikasi">Foto Verifikasi:</string>
+    <string name="txt_status_akun">Status Akun:</string>
+    <string name="txt_nama_kos">Nama Kos</string>
+    <string name="txt_alamat_os">Alamat Kos</string>
+    <string name="txt_harga_kos">Harga Kos</string>
+    <string name="txt_jenis_kos">Jenis Kos</string>
+    <string name="txt_email_pemilik_kos">Email Pemilik Kos:</string>
+    <string name="txt_deskripsi_kos">Deskripsi Kos</string>
+    <string name="txt_fasilitas_kos">Fasilitas Kos:</string>
+    <string name="txt_thumbnail_kos">Thumbnail Kos</string>
+    <string name="txt_gambar_kos">Gambar Kos</string>
+    <string name="txt_detail_kos">Detail Kos</string>
+
 
 </resources>

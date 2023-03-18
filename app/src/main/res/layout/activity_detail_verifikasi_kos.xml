@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.DetailVerifikasiKosActivity"
+    >
+    
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/main_color"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_detail_kos"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:layout_marginTop="15sp"
+                android:layout_marginBottom="15sp"
+                />
+
+        </RelativeLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20sp"
+            android:layout_marginEnd="20sp"
+            android:layout_marginTop="40sp"
+            app:cardCornerRadius="20sp"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20sp"
+                        android:text="@string/txt_nama_kos"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="10sp"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/lblnamakos"
+                        android:layout_width="200sp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="20sp"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginEnd="20sp"
+                        android:gravity="end"
+                        android:singleLine="false"
+                        android:text="@string/txt_blank"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20sp"
+                        android:text="@string/txt_alamat_os"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10sp"
+                        />
+
+                    <TextView
+                        android:id="@+id/lblalamatkos"
+                        android:layout_width="200sp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="20sp"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginEnd="20sp"
+                        android:gravity="end"
+                        android:singleLine="false"
+                        android:text="@string/txt_blank"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20sp"
+                        android:text="@string/txt_email_pemilik_kos"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="10sp"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/lblemailpemilik"
+                        android:layout_width="150sp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="20sp"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginEnd="20sp"
+                        android:gravity="end"
+                        android:singleLine="false"
+                        android:text="@string/txt_blank"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20sp"
+                        android:text="@string/txt_harga_kos"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="10sp"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/lblhargakos"
+                        android:layout_width="200sp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="20sp"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginEnd="20sp"
+                        android:gravity="end"
+                        android:singleLine="false"
+                        android:text="@string/txt_blank"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20sp"
+                        android:layout_marginTop="10sp"
+                        android:text="@string/txt_jenis_kos"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/lbljeniskos"
+                        android:layout_width="200sp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="20sp"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginEnd="20sp"
+                        android:gravity="end"
+                        android:singleLine="false"
+                        android:text="@string/txt_blank"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20sp"
+                        android:text="@string/txt_deskripsi_kos"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="10sp"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/lbldeskripsikos"
+                        android:layout_width="200sp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="20sp"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginEnd="20sp"
+                        android:gravity="end"
+                        android:singleLine="false"
+                        android:text="@string/txt_blank"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                         />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20sp"
+                        android:text="@string/txt_fasilitas_kos"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="10sp"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/lblfasilitaskos"
+                        android:layout_width="200sp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="20sp"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginEnd="20sp"
+                        android:gravity="end"
+                        android:singleLine="false"
+                        android:text="@string/txt_blank"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20sp"
+                        android:text="@string/txt_thumbnail_kos"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/ivdetailthumbnail"
+                        android:layout_width="100sp"
+                        android:layout_height="100sp"
+                        android:layout_marginStart="20sp"
+                        android:layout_marginTop="30sp"
+                        android:layout_marginEnd="20sp"
+                        android:layout_centerHorizontal="true"
+                        />
+
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20sp"
+                        android:text="@string/txt_gambar_kos"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <com.denzcoskun.imageslider.ImageSlider
+                        android:id="@+id/sliderdetailkos"
+                        android:layout_width="match_parent"
+                        android:layout_height="150sp"
+                        android:layout_marginStart="20sp"
+                        android:layout_marginEnd="20sp"
+                        android:layout_marginTop="20sp"
+                        />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+</ScrollView>

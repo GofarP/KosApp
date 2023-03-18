@@ -57,46 +57,7 @@ class TestFragment : Fragment(),HomeKosAdapter.ItemOnClick {
         TODO("Not yet implemented")
     }
 
-    fun showText()
-    {
-        database.child(Constant().KEY_DAFTAR_KOS)
-            .addValueEventListener(object: ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    kosArrayList.clear()
 
-                    snapshot.children.forEach { snap->
-                        kos=Kos(
-                            idKos=snap.child(Constant().KEY_ID_KOS).value.toString(),
-                            alamat = snap.child(Constant().KEY_ALAMAT_KOS).value.toString(),
-                            biaya = snap.child(Constant().KEY_BIAYA_KOS).value.toString().toDouble(),
-                            emailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString(),
-                            gambarKos = snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>,
-                            thumbnailKos = snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString(),
-                            jenis=snap.child(Constant().KEY_JENIS_KOS).value.toString(),
-                            jenisBayar = snap.child(Constant().KEY_JENIS_BAYAR_KOS).value.toString(),
-                            lattitude = snap.child(Constant().KEY_LATTITUDE_KOS).value.toString(),
-                            longitude = snap.child(Constant().KEY_LONGITUDE_KOS).value.toString(),
-                            nama = snap.child(Constant().KEY_NAMA_KOS).value.toString(),
-                            sisa = snap.child(Constant().KEY_JUMLAH_KAMAR_KOS).value.toString().toInt(),
-                            fasilitas=snap.child(Constant().KEY_FASILITAS).value.toString(),
-                            deskripsi=snap.child(Constant().KEY_DESKRIPSI).value.toString(),
-                        )
-                        kosArrayList.add(kos)
-
-                    }
-
-                    homeKosAdapter= HomeKosAdapter(kosArrayList,this@TestFragment)
-                    binding.rvtest.layoutManager=LinearLayoutManager(activity)
-                    binding.rvtest.adapter=homeKosAdapter
-
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
-    }
 
 
 

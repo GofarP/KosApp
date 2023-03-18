@@ -159,7 +159,7 @@ class PermintaanFragment : Fragment(), OnClickListener {
                                                 thumbnailKos = snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString()
                                             )
 
-                                            database.child(Constant().KEY_HISTORY_SEWA)
+                                            database.child(Constant().KEY_HISTORY)
                                                 .child(permintaan.dari.replace(".",","))
                                                 .push()
                                                 .setValue(history)

@@ -14,12 +14,13 @@ import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
+import com.example.kosapp.Helper.PreferenceManager
 import com.example.kosapp.Model.Kos
+import com.example.kosapp.Model.PermintaanVerifikasi
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityTambahKosBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -30,29 +31,34 @@ import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.maps.MapboxMap
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
 
-    private lateinit var binding:ActivityTambahKosBinding
 
     private var uriThumbnail: Uri?=null
     private var sliderUri:Uri?=null
     private var database=Firebase.database.reference
-    private var auth=FirebaseAuth.getInstance()
     private var firebaseStorage=FirebaseStorage.getInstance().reference
-
+    private var userEmail=FirebaseAuth.getInstance().currentUser?.email.toString()
+    private var userId=FirebaseAuth.getInstance().currentUser?.uid.toString()
     private val slideImageArrayList=ArrayList<SlideModel>()
     private var gambarKosList=ArrayList<String>()
-
-    private lateinit var map:MapboxMap
-    private lateinit var latLng: LatLng
     private var marker:Marker?=null
     private var lattitudeKos=0.0
     private var longitudeKos=0.0
+    private var calendar=Calendar.getInstance()
 
+
+    private lateinit var binding:ActivityTambahKosBinding
+    private lateinit var map:MapboxMap
+    private lateinit var latLng: LatLng
+    private lateinit var permintaanVerifikasi: PermintaanVerifikasi
+    private lateinit var tanggalHariIni:String
+    private lateinit var preferenceManager: PreferenceManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding=ActivityTambahKosBinding.inflate(layoutInflater)
@@ -60,9 +66,15 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
         setContentView(binding.root)
 
         Helper().setStatusBarColor(this@TambahKosActivity)
+
+        preferenceManager=PreferenceManager()
+        preferenceManager.preferenceManager(this@TambahKosActivity)
+
         Mapbox.getInstance(applicationContext,getString(R.string.access_token))
 
         setSpinner()
+
+        tanggalHariIni= SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(calendar.time)
 
         slideImageArrayList.add(SlideModel(R.drawable.placeholder_add_kos_slide,  ScaleTypes.FIT))
         binding.sliderupload.setImageList(slideImageArrayList)
@@ -99,7 +111,6 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
             if(!gagalValidasi())
             {
 
-
                 val kosId=UUID.randomUUID().toString()
                 val namaKos=binding.txtnamakos.text.trim().toString()
                 val alamat=binding.txtalamatkos.text.trim().toString()
@@ -120,7 +131,7 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                 val kos=Kos(
                     idKos=kosId,
                     nama=namaKos,
-                    emailPemilik=auth.currentUser?.email.toString(),
+                    emailPemilik=userEmail,
                     alamat = alamat,
                     biaya =biaya.toDouble(),
                     jenisBayar=jenisBayar,
@@ -132,8 +143,22 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                     longitude =  longitudeKos.toString(),
                     fasilitas=fasilitas,
                     deskripsi=deskripsi,
+                    status=Constant().KEY_PENGAJUAN_VERIFIKASI
                 )
 
+                permintaanVerifikasi=PermintaanVerifikasi(
+                    email=userEmail,
+                    id=kosId,
+                    idPermintaan = UUID.randomUUID().toString(),
+                    username=preferenceManager.getString(Constant().KEY_USERNAME).toString(),
+                    isi="$userEmail ingin melakukan verifikasi kos",
+                    judul=Constant().KEY_PERMINTAAN_VERIFIKASI_KOS,
+                    tanggal=tanggalHariIni
+                )
+
+                database.child(Constant().KEY_PERMINTAAN)
+                    .child(kosId)
+                    .setValue(permintaanVerifikasi)
 
                 database.child(Constant().KEY_DAFTAR_KOS)
                     .child(kosId)
@@ -148,7 +173,9 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                             firebaseStorage.child(gambarKosList[i]).putFile(sliderUri!!)
                         }
 
-                        Toast.makeText(this@TambahKosActivity, "Sukses Menambah Kos Baru", Toast.LENGTH_SHORT).show()
+
+
+                        Toast.makeText(this@TambahKosActivity, "Sukses Menambah Kos Baru, Sekarang Tunggu Verifikasi Kos Anda Dari Admin", Toast.LENGTH_SHORT).show()
                         clear()
                     }
                     .addOnFailureListener {

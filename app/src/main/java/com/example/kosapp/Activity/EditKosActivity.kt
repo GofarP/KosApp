@@ -310,6 +310,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
             longitude =  longitude,
             fasilitas=fasilitas,
             deskripsi=deskripsi,
+            status=Constant().KEY_PENGAJUAN_VERIFIKASI
         )
 
         database.child(Constant().KEY_DAFTAR_KOS)

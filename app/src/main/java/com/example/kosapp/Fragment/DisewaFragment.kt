@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Activity.EditKosActivity
 import com.example.kosapp.Activity.PenyewaActivity
-import com.example.kosapp.Activity.TestActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.DisewaAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.DisewaAdapter.ItemOnClickDisewa
 import com.example.kosapp.Helper.Constant
@@ -84,6 +83,7 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
                             sisa = snap.child(Constant().KEY_JUMLAH_KAMAR_KOS).value.toString().toInt(),
                             fasilitas=snap.child(Constant().KEY_FASILITAS).value.toString(),
                             deskripsi=snap.child(Constant().KEY_DESKRIPSI).value.toString(),
+                            status=snap.child(Constant().KEY_STATUS_VERIFIKASI_AKUN).value.toString()
                         )
 
                         kosArrayList.add(kos)

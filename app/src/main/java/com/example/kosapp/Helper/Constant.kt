@@ -9,6 +9,9 @@ class Constant {
     val KEY_NOTELP="noTelp"
     val KEY_USERNAME="username"
     val KEY_PROFILE_PICTURE="profilPicture"
+    val KEY_ROLE="role"
+    val KEY_ROLE_ADMIN="admin"
+    val KEY_ROLE_USER="user"
 
 
     val KEY_PRIA="Pria"
@@ -69,7 +72,7 @@ class Constant {
     val KEY_ISI_COMMENT="isiComment"
 
 
-    val KEY_HISTORY_SEWA="history"
+    val KEY_HISTORY="history"
     val KEY_HISTORY_ID_HISTORY="idHistory"
 
 
@@ -90,7 +93,18 @@ class Constant {
     val KEY_IMAGE="image"
     val KEY_TEXT="text"
 
-    val KEY_DATA="data"
+    val KEY_VERIFIKASI="verifikasi"
+    val KEY_PERMINTAAN_VERIFIKASI="permintaan"
+    val KEY_PERMINTAAN_VERIFIKASI_KOS="permintaan verifikasi kos"
+    val KEY_PERMINTAAN_VERIFIKASI_AKUN="permintaan verifikasi akun"
+    val KEY_STATUS_VERIFIKASI_AKUN="status"
+    val KEY_STATUS_VERIFIKASI_KOS="status"
+
+
+    val KEY_TERVERIFIKASI="Terverifikasi"
+    val KEY_BELUM_VERIFIKASI="Belum Verifikasi"
+    val KEY_PENGAJUAN_VERIFIKASI="Pengajuan"
+
 
 
 

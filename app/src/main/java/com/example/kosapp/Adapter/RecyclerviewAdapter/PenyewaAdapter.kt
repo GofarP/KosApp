@@ -38,9 +38,7 @@ class PenyewaAdapter(private val arrayListPenyewa:ArrayList<Pengguna>, private v
                 bind.btnpenyewadetail.setOnClickListener { view->
                     itemOnClick.OnClickDetail(view, dataPenyewa)
                 }
-                bind.btnpenyewahapus.setOnClickListener { view->
-                    itemOnClick.OnClickHapus(view, dataPenyewa)
-                }
+
             }
 
 
@@ -62,6 +60,5 @@ class PenyewaAdapter(private val arrayListPenyewa:ArrayList<Pengguna>, private v
     interface ItemOnClick
     {
         fun OnClickDetail(view: View, pengguna: Pengguna)
-        fun OnClickHapus(view: View, pengguna: Pengguna)
     }
 }

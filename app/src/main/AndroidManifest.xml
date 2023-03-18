@@ -17,9 +17,25 @@
         android:theme="@style/Theme.KosApp"
         tools:targetApi="31">
         <activity
-            android:name=".Activity.HistoryKosActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:name=".Activity.DetailVerifikasiKosActivity"
             android:exported="false" />
+        <activity
+            android:name=".Activity.DetailVerifikasiAkunActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+        <activity
+            android:name=".Activity.VerifikasiActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".Activity.AdminActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+        <activity
+            android:name=".Activity.HistoryKosActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".Activity.RouteJalanActivity"
             android:exported="false" />
@@ -72,8 +88,7 @@
         <activity
             android:name=".Activity.ChatActiviity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".Activity.MenuChatActivity"
             android:exported="false"

@@ -91,6 +91,7 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
                                                     sisa = snap.child(Constant().KEY_JUMLAH_KAMAR_KOS).value.toString().toInt(),
                                                     fasilitas=snap.child(Constant().KEY_FASILITAS).value.toString(),
                                                     deskripsi=snap.child(Constant().KEY_DESKRIPSI).value.toString(),
+                                                    status=snap.child(Constant().KEY_STATUS_VERIFIKASI_AKUN).value.toString()
                                                 )
                                                 kosArrayList.add(kos)
                                             }

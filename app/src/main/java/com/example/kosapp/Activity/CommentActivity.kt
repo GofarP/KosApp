@@ -121,11 +121,11 @@ class CommentActivity : AppCompatActivity() {
     {
         database.addListenerForSingleValueEvent(object:ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-               if(snapshot.child(Constant().KEY_HISTORY_SEWA).exists())
+               if(snapshot.child(Constant().KEY_HISTORY).exists())
                {
 
                    var historyDitemukan=false
-                    snapshot.child(Constant().KEY_HISTORY_SEWA)
+                    snapshot.child(Constant().KEY_HISTORY)
                         .child(emailSaatIni.replace(".",","))
                         .children.forEach {snap->
                             val snapIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()

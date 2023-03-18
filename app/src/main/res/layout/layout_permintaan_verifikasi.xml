@@ -1,0 +1,98 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10sp"
+        android:layout_margin="10sp"
+
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:id="@+id/lbljudulpermintaan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_permintaan_judul"
+                android:layout_marginStart="20sp"
+                android:layout_marginTop="20sp"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/lblisipermintaan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_isi_permintaan"
+                android:layout_marginStart="20sp"
+                android:layout_marginTop="15sp"
+                android:textSize="17sp"
+                />
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                >
+
+                <ImageButton
+                    android:id="@+id/btndetailverifikasi"
+                    style="@style/Button.Round_Detail"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentStart="true"
+                    android:src="@drawable/ic_eye" />
+
+                <ImageButton
+                    android:id="@+id/btnterimaverifikasi"
+                    style="@style/Button.Round_Success"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_check" />
+
+                <ImageButton
+                    android:id="@+id/btntolakverifikasi"
+                    style="@style/Button.Round_Delete"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_cancel" />
+
+            </RelativeLayout>
+
+
+            <TextView
+                android:id="@+id/lbltanggal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="20dp"
+                android:text="@string/text_permintaan_tanggal"
+                android:textColor="@color/black"
+                android:layout_marginBottom="20sp"
+                android:textSize="17sp" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

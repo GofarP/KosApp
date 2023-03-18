@@ -19,6 +19,7 @@ import com.example.kosapp.Adapter.RecyclerviewAdapter.SettingsAdapter.ItemOnClic
 import com.example.kosapp.Activity.ProfileActivity
 import com.example.kosapp.Activity.SigninActivity
 import com.example.kosapp.Activity.TestActivity
+import com.example.kosapp.Activity.VerifikasiActivity
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.PreferenceManager
 import com.example.kosapp.databinding.FragmentSettingsBinding
@@ -116,7 +117,7 @@ class SettingsFragment : Fragment(), ItemOnClick {
     {
         settingList.add("Profile")
         settingList.add("Logout")
-        settingList.add("Test")
+        settingList.add("Verifikasi")
         adapter= SettingsAdapter(settingList,this)
         binding.rvsettings.layoutManager=LinearLayoutManager(activity)
         binding.rvsettings.adapter=adapter
@@ -166,6 +167,10 @@ class SettingsFragment : Fragment(), ItemOnClick {
                 startActivity(Intent(activity, ProfileActivity::class.java))
             }
 
+            "Verifikasi"->{
+                startActivity(Intent(activity, VerifikasiActivity::class.java))
+            }
+
             "Logout"->{
                 FirebaseAuth.getInstance().signOut()
                 preferenceManager.clear()
@@ -173,9 +178,9 @@ class SettingsFragment : Fragment(), ItemOnClick {
                 activity?.finish()
                 startActivity(Intent(activity,SigninActivity::class.java))
             }
-            "Test"->{
-                startActivity(Intent(activity,TestActivity::class.java))
-            }
+
+
+
         }
     }
 

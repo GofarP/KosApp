@@ -15,8 +15,6 @@ class DisewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickDis
         private val TYPE_DISEWA=1
         private val TYPE_MENYEWA=2
 
-
-
         class ViewHolderDisewa(layoutDisewaBinding: LayoutKosDisewaBinding)
             :RecyclerView.ViewHolder(layoutDisewaBinding.root) {
                 private val binding=layoutDisewaBinding
@@ -81,4 +79,5 @@ class DisewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickDis
     {
         fun OnSelengkapnyaClick(v: View, dataKos: Kos)
     }
+
 }

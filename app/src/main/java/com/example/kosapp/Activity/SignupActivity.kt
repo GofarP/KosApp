@@ -3,35 +3,34 @@ package com.example.kosapp.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
+import com.example.kosapp.Helper.PreferenceManager
 import com.example.kosapp.Model.Pengguna
+import com.example.kosapp.Model.Verifikasi
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivitySignupBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.UploadTask
-import java.text.SimpleDateFormat
 import java.util.*
 
 
 class SignupActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignupBinding
+    private lateinit var preferenceManager: PreferenceManager
 
     private var uri: Uri?=null
     private lateinit var pengguna:Pengguna
+    private lateinit var verifikasi:Verifikasi
     private  var storage = FirebaseStorage.getInstance()
     private var auth=FirebaseAuth.getInstance()
     val database=Firebase.database.reference
@@ -42,6 +41,9 @@ class SignupActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         Helper().setStatusBarColor(this@SignupActivity)
+
+        preferenceManager= PreferenceManager()
+        preferenceManager.preferenceManager(this@SignupActivity)
 
         setSpinner()
 
@@ -154,20 +156,31 @@ class SignupActivity : AppCompatActivity() {
 
         auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener {task->
 
-            val id=task.result.user?.uid
-            val imgName="${Constant().KEY_PROFILE_PICTURE}/${id}${UUID.randomUUID()}"
+            val idPengguna=task.result.user?.uid
+            val emailPengguna=task.result.user?.email
+            val imgName="${Constant().KEY_PROFILE_PICTURE}/${idPengguna}${UUID.randomUUID()}"
 
             pengguna=Pengguna(
-                id=id.toString(),
+                id=idPengguna.toString(),
                 username = username,
                 email = email,
                 noTelp = noTelp,
                 jenisKelamin=jenisKelamin,
-                foto=imgName
+                foto=imgName,
+                role=Constant().KEY_ROLE_USER
+            )
+
+            verifikasi= Verifikasi(
+                idVerifikasi=UUID.randomUUID().toString(),
+                idPengguna = idPengguna.toString(),
+                email =emailPengguna.toString(),
+                username=username,
+                foto = "",
+                status = Constant().KEY_BELUM_VERIFIKASI
             )
 
             database.child(Constant().KEY_USER)
-                .child(id.toString())
+                .child(idPengguna.toString())
                 .setValue(pengguna)
                 .addOnSuccessListener {
                     if(uri==null)
@@ -178,7 +191,13 @@ class SignupActivity : AppCompatActivity() {
                         )
                     }
 
+                    database.child(Constant().KEY_VERIFIKASI)
+                        .child(idPengguna.toString())
+                        .setValue(verifikasi)
+
                     storage.reference.child(imgName).putFile(uri!!)
+
+                    preferenceManager.putString(Constant().KEY_ROLE,Constant().KEY_ROLE_USER)
 
                     Toast.makeText(this@SignupActivity, "Sukses Membuat Akun", Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this@SignupActivity, SigninActivity::class.java))
@@ -186,7 +205,6 @@ class SignupActivity : AppCompatActivity() {
                 .addOnFailureListener {exception->
                     Toast.makeText(this@SignupActivity, exception.message, Toast.LENGTH_SHORT).show()
                 }
-
         }
 
     }

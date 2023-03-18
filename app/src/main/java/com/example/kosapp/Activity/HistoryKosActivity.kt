@@ -9,8 +9,6 @@ import com.example.kosapp.Adapter.RecyclerviewAdapter.HistoryKosAdapter
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
 import com.example.kosapp.Model.History
-import com.example.kosapp.Model.Kos
-import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityHistoryKosBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -43,7 +41,7 @@ class HistoryKosActivity : AppCompatActivity() {
 
     private fun getData()
     {
-        database.child(Constant().KEY_HISTORY_SEWA)
+        database.child(Constant().KEY_HISTORY)
             .child(emailPengguna.replace(".",","))
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {

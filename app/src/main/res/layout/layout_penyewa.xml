@@ -73,20 +73,8 @@
                 android:layout_height="40dp"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/ic_eye"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="35dp"
                 android:layout_gravity="end"
-                />
-
-            <ImageButton
-                android:id="@+id/btnpenyewahapus"
-                style="@style/Button.Round_Delete"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_delete"
-                android:layout_gravity="end"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
                 />
 
         </LinearLayout>

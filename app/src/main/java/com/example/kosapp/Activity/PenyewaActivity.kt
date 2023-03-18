@@ -164,10 +164,8 @@ class PenyewaActivity : AppCompatActivity(), ItemOnClick {
         customDialogBinding.lblnotelp.text=pengguna.noTelp
         customDialogBinding.lbljeniskelamin.text=pengguna.jenisKelamin
 
+
     }
 
-    override fun OnClickHapus(view: View, pengguna: Pengguna) {
-        Toast.makeText(this@PenyewaActivity, "Menghapus ${pengguna.username}", Toast.LENGTH_SHORT).show()
-    }
 
 }

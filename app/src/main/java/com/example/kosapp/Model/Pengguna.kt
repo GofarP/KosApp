@@ -7,4 +7,5 @@ data class Pengguna(
     var noTelp:String,
     var jenisKelamin:String,
     var foto:String,
+    var role:String="",
 )

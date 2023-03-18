@@ -1,6 +1,5 @@
 package com.example.kosapp.Fragment
 
-import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
@@ -9,16 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Activity.MenuChatActivity
 import com.example.kosapp.Adapter.PagerAdapter.HomePagerAdapter
-import com.example.kosapp.Adapter.RecyclerviewAdapter.SettingsAdapter
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.PreferenceManager
-import com.example.kosapp.Interface.sendMessage
+import com.example.kosapp.R
 import com.example.kosapp.databinding.FragmentHomeBinding
-import com.example.kosapp.databinding.FragmentTestBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
@@ -32,9 +29,8 @@ import com.google.firebase.ktx.Firebase
 class HomeFragment : Fragment() {
 
     private lateinit var binding:FragmentHomeBinding
-    private lateinit var testBinding:FragmentTestBinding
     private lateinit var preferenceManager: PreferenceManager
-
+    val userId=FirebaseAuth.getInstance().currentUser?.uid
 
     private var database=Firebase.database.reference
 
@@ -44,7 +40,6 @@ class HomeFragment : Fragment() {
     ): View? {
 
         binding= FragmentHomeBinding.inflate(inflater,container,false)
-        testBinding=FragmentTestBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -55,16 +50,11 @@ class HomeFragment : Fragment() {
         preferenceManager=PreferenceManager()
         preferenceManager.preferenceManager(view.context)
 
+        //ambil data user
+        getUser()
 
-        if(preferenceManagerNotValid())
-        {
-            getUser()
-        }
-
-        else
-        {
-            binding.lblnamapengguna.text= "Halo  ${preferenceManager.getString(Constant().KEY_USERNAME)}"
-        }
+        //check Verifikasi Akun
+        checkVerifikasi()
 
         binding.viewPager.adapter=HomePagerAdapter(requireActivity())
         TabLayoutMediator(binding.tabLayout,binding.viewPager){tab, index->
@@ -161,7 +151,6 @@ class HomeFragment : Fragment() {
 
     private fun getUser()
     {
-        val userId=FirebaseAuth.getInstance().currentUser?.uid
 
         database.child(Constant().KEY_USER)
             .child(userId.toString())
@@ -169,12 +158,18 @@ class HomeFragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if(snapshot.exists())
                     {
-                        preferenceManager.putString(Constant().KEY_USERNAME,snapshot.child(Constant().KEY_USERNAME).value.toString())
-                        preferenceManager.putString(Constant().KEY_EMAIL,snapshot.child(Constant().KEY_EMAIL).value.toString())
-                        preferenceManager.putString(Constant().KEY_JENIS_KELAMIN,snapshot.child(Constant().KEY_JENIS_KELAMIN).value.toString())
+                        val snapUsername=snapshot.child(Constant().KEY_USERNAME).value.toString()
+                        val snapEmail=snapshot.child(Constant().KEY_EMAIL).value.toString()
+                        val snapJenisKelamin=snapshot.child(Constant().KEY_JENIS_KELAMIN).value.toString()
 
-                        binding.lblnamapengguna.text="Halo ${snapshot.child(Constant().KEY_USERNAME).value.toString()}"
+                        preferenceManager.putString(Constant().KEY_USERNAME,snapUsername)
+                        preferenceManager.putString(Constant().KEY_EMAIL,snapEmail)
+                        preferenceManager.putString(Constant().KEY_JENIS_KELAMIN,snapJenisKelamin)
+
+                        binding.lblnamapengguna.text="Halo $snapUsername"
+
                     }
+
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -185,23 +180,43 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun preferenceManagerNotValid():Boolean
+    private fun checkVerifikasi()
     {
-        var notValid=false
+        database.child(Constant().KEY_VERIFIKASI)
+            .child(userId.toString())
+            .addListenerForSingleValueEvent(object:ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
 
-        val preferenceManagerList= arrayListOf(
-            preferenceManager.getString(Constant().KEY_USERNAME),
-            preferenceManager.getString(Constant().KEY_EMAIL),
-            preferenceManager.getString(Constant().KEY_JENIS_KELAMIN)
-        )
+                    val snapVerifikasi=snapshot.child(Constant().KEY_STATUS_VERIFIKASI_AKUN).value.toString()
 
-        for(i in preferenceManagerList.indices)
-        {
-            if (preferenceManagerList[0].isNullOrEmpty()) return true
-        }
+                    preferenceManager.putString(Constant().KEY_STATUS_VERIFIKASI_AKUN,snapVerifikasi)
 
-        return notValid
+                    Log.d("snap",snapshot.value.toString())
 
+                    when (snapVerifikasi) {
+                        Constant().KEY_TERVERIFIKASI -> {
+                            binding.lblverifikasi.text="Akun Sudah Di Verifikasi"
+                            binding.lblverifikasi.setTextColor(ContextCompat.getColor(context!!, R.color.green_ok))
+                        }
+                        Constant().KEY_PENGAJUAN_VERIFIKASI -> {
+                            binding.lblverifikasi.text="Akun Anda Masih Dalam Tahap Pengajuan Verifikasi. \n Harap Ditunggu"
+                            binding.lblverifikasi.setTextColor(ContextCompat.getColor(context!!, R.color.green_ok))
+                        }
+                        Constant().KEY_BELUM_VERIFIKASI -> {
+                            binding.lblverifikasi.text="Akun Anda Belum Diverifikasi. \nSilahkan Verifikasi Lewat Menu Pengaturan"
+                            binding.lblverifikasi.setTextColor(ContextCompat.getColor(context!!, R.color.red_cancel))
+                        }
+                    }
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                  Log.d("snap",error.message)
+                }
+
+            })
     }
+
+
 
 }

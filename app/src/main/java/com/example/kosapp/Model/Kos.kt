@@ -19,5 +19,6 @@ import kotlinx.android.parcel.Parcelize
       val biaya:Double,
       val jenisBayar:String,
       val lattitude:String,
-      val longitude:String
+      val longitude:String,
+      val status:String
       ):Parcelable
