@@ -63,7 +63,6 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                         kosArrayList.clear()
                         binding.rvkossemua.adapter=null
 
-
                         snapshot.children.forEach { snap->
 
                             val snapIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()
@@ -71,7 +70,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                             val snapBiaya=snap.child(Constant().KEY_BIAYA_KOS).value.toString()
                             val snapEmailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString()
                             val snapGambarKos=snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>
-                            val snapThumbnailKos=snap.child(Constant().KEY_GAMBAR_KOS).value.toString()
+                            val snapThumbnailKos=snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString()
                             val snapJenis=snap.child(Constant().KEY_JENIS_KOS).value.toString()
                             val snapJenisBayar=snap.child(Constant().KEY_JENIS_KELAMIN).value.toString()
                             val snapLattitude=snap.child(Constant().KEY_LATTITUDE_KOS).value.toString()
@@ -139,7 +138,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                         val snapBiaya=snap.child(Constant().KEY_BIAYA_KOS).value.toString()
                         val snapEmailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString()
                         val snapGambarKos=snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>
-                        val snapThumbnailKos=snap.child(Constant().KEY_GAMBAR_KOS).value.toString()
+                        val snapThumbnailKos=snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString()
                         val snapJenis=snap.child(Constant().KEY_JENIS_KOS).value.toString()
                         val snapJenisBayar=snap.child(Constant().KEY_JENIS_KELAMIN).value.toString()
                         val snapLattitude=snap.child(Constant().KEY_LATTITUDE_KOS).value.toString()

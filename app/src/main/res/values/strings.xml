@@ -90,6 +90,7 @@
     <string name="txt_thumbnail_kos">Thumbnail Kos</string>
     <string name="txt_gambar_kos">Gambar Kos</string>
     <string name="txt_detail_kos">Detail Kos</string>
+    <string name="txt_jenis_pembayaran">Jenis Pembayaran:</string>
 
 
 </resources>

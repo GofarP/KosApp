@@ -176,7 +176,30 @@ class VerifikasiFragment : Fragment(), OnItemClickListener {
 
     private fun terimaVerifikasiKos(permintaanVerifikasi: PermintaanVerifikasi)
     {
+        transaksi= Transaksi(
+            transaksiId = UUID.randomUUID().toString(),
+            dari=Constant().KEY_ROLE_ADMIN,
+            isi="Permintaan Verifikasi Diterima",
+            judul="Verifikasi Kos",
+            kepada = permintaanVerifikasi.email,
+            tanggal = tanggalHariIni,
+            tipe = Constant().KEY_VERIFIKASI
+        )
 
+        database.child(Constant().KEY_PERMINTAAN_VERIFIKASI)
+            .child(permintaanVerifikasi.id)
+            .removeValue()
+
+        database.child(Constant().KEY_DAFTAR_KOS)
+            .child(permintaanVerifikasi.id)
+            .child(Constant().KEY_STATUS_VERIFIKASI_AKUN)
+            .setValue(Constant().KEY_TERVERIFIKASI)
+
+        database.child(Constant().KEY_TRANSAKSI)
+            .push()
+            .setValue(transaksi)
+
+        Toast.makeText(activity, "Sukses menerima Verifikasi Kos", Toast.LENGTH_SHORT).show()
     }
 
     private fun tolakVerifikasiKos(permintaanVerifikasi: PermintaanVerifikasi)

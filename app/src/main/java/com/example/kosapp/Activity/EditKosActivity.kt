@@ -15,9 +15,7 @@ import com.bumptech.glide.Glide
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
-import com.example.kosapp.Callback.EditKosCallback
-import com.example.kosapp.Callback.SetImageListCallback
-import com.example.kosapp.Callback.SlideClickCallback
+import com.example.kosapp.Callback.KosImageCallback
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
 import com.example.kosapp.Model.GambarKos
@@ -40,7 +38,6 @@ import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.MapboxMap.OnMapClickListener
-import kotlinx.coroutines.tasks.await
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -103,10 +100,9 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         setDataEditKos()
 
 
-        editKosCallback(object :EditKosCallback{
+        editKosCallback(object :KosImageCallback{
 
             override fun setImageList(arrayListImageList: ArrayList<GambarKos>) {
-                Log.d("string",arrayListImageList.toString())
                 arrayListImageList.forEach {urlGambarKos->
                     slideImageArrayList.add(SlideModel(urlGambarKos.url, scaleType = ScaleTypes.FIT))
                 }
@@ -499,7 +495,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     }
 
 
-    private fun editKosCallback(editKosCallback: EditKosCallback)
+    private fun editKosCallback(kosImageCallback: KosImageCallback)
     {
         for (item in kos.gambarKos)
         {
@@ -512,7 +508,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
                     if(gambarKosArrayList.size==kos.gambarKos.size)
                     {
-                        editKosCallback.setImageList(gambarKosArrayList)
+                        kosImageCallback.setImageList(gambarKosArrayList)
                     }
 
 
@@ -522,7 +518,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         storage.child(kos.thumbnailKos)
             .downloadUrl
             .addOnSuccessListener { uri->
-                editKosCallback.setImageThumbnail(uri.toString())
+                kosImageCallback.setImageThumbnail(uri.toString())
             }
     }
 
