@@ -70,4 +70,5 @@ class HomeKosAdapter(private val listKos: ArrayList<Kos>,private val  itemOnClic
     interface ItemOnClick {
         fun onClick(v: View, dataKos: Kos)
     }
+
 }

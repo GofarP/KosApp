@@ -63,6 +63,8 @@ class CommentActivity : AppCompatActivity() {
         idKos=bundle.getString(Constant().KEY_ID_KOS).toString()
         emailPemilik=bundle.getString(Constant().KEY_EMAIL_PEMILIK).toString()
 
+
+
         checkHistoryKos(idKos)
 
         getComment()
@@ -74,51 +76,55 @@ class CommentActivity : AppCompatActivity() {
 
         bind.btnsend.setOnClickListener {
 
-            database.child(Constant().KEY_USER)
-                .child(idPengguna)
-                .get()
-                .addOnSuccessListener {snap->
-                    comment= Comment(
-                        email = emailSaatIni,
-                        foto=snap.child(Constant().KEY_FOTO).value.toString(),
-                        idComment = UUID.randomUUID().toString(),
-                        isiComment = bind.txtcomment.text.toString(),
-                        tanggal = tanggalHariIni,
-                        username = snap.child(Constant().KEY_USERNAME).value.toString()
-                    )
+            val komen=bind.txtcomment.text.toString()
 
-                    sendComment(comment,idKos)
-                }
-                .addOnFailureListener {
-                    Toast.makeText(applicationContext, "Gagal Mengirim Komentar", Toast.LENGTH_SHORT).show()
-                }
+            if(komen.isNullOrEmpty())
+            {
+                Toast.makeText(this@CommentActivity, "Silahkan Masukkan Komen Yang Ingin Dikirim", Toast.LENGTH_SHORT).show()
+            }
+
+            else
+            {
+                kirimKomen(bind.txtcomment.text.toString())
+            }
         }
 
 
     }
 
 
-    private fun data()
+
+    private fun kirimKomen(komen:String)
     {
-        comment= Comment(
-            email=emailSaatIni,
-            foto = "",
-            idComment = UUID.randomUUID().toString(),
-            isiComment = "Ini Sebuah Comment",
-            tanggal=tanggalHariIni,
-            username = "Putra"
-        )
+        database.child(Constant().KEY_USER)
+            .child(idPengguna)
+            .get()
+            .addOnSuccessListener {snap->
+                comment= Comment(
+                    email = emailSaatIni,
+                    foto=snap.child(Constant().KEY_FOTO).value.toString(),
+                    idComment = UUID.randomUUID().toString(),
+                    isiComment = komen,
+                    tanggal = tanggalHariIni,
+                    username = snap.child(Constant().KEY_USERNAME).value.toString()
+                )
 
-        commentArrayList.add(comment)
-
-        layoutManager=LinearLayoutManager(this)
-        commentAdapter= CommentAdapter(commentArrayList)
-        bind.rvcomment.layoutManager=layoutManager
-        bind.rvcomment.adapter=commentAdapter
+                sendComment(comment,idKos)
+            }
+            .addOnFailureListener {
+                Toast.makeText(applicationContext, "Gagal Mengirim Komentar", Toast.LENGTH_SHORT).show()
+            }
     }
+
 
     private fun checkHistoryKos(idKos:String)
     {
+        if(emailPemilik == emailSaatIni)
+        {
+            bind.btnsend.visibility=View.VISIBLE
+            bind.txtcomment.visibility=View.VISIBLE
+        }
+
         database.addListenerForSingleValueEvent(object:ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                if(snapshot.child(Constant().KEY_HISTORY).exists())
@@ -136,12 +142,6 @@ class CommentActivity : AppCompatActivity() {
                                 bind.txtcomment.visibility=View.VISIBLE
                             }
                         }
-
-                    if(historyDitemukan || emailPemilik == emailSaatIni)
-                    {
-                        bind.btnsend.visibility=View.VISIBLE
-                        bind.txtcomment.visibility=View.VISIBLE
-                    }
 
                }
 

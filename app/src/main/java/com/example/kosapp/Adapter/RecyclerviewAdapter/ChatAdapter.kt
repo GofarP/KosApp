@@ -26,14 +26,14 @@ class ChatAdapter(private val arrayListChat:ArrayList<Chat>, private val emailSa
         class SendMessageViewHolder(layoutChatSenderTextBinding: LayoutChatSenderTextBinding)
             : RecyclerView.ViewHolder(layoutChatSenderTextBinding.root){
 
-                private val item=layoutChatSenderTextBinding
+                private val binding=layoutChatSenderTextBinding
 
 
                 fun bind(chat: Chat)
                 {
                     itemView.apply {
-                        item.textMessage.text=chat.pesan
-                        item.textDateTime.text=chat.tanggal
+                        binding.textMessage.text=chat.pesan
+                        binding.textDateTime.text=chat.tanggal
                     }
                 }
 
@@ -145,6 +145,7 @@ class ChatAdapter(private val arrayListChat:ArrayList<Chat>, private val emailSa
         {
             VIEW_TYPE_SENT->{
                 (holder as SendMessageViewHolder).bind(arrayListChat[position])
+                holder
             }
 
             VIEW_TYPE_RECEIVE->{
@@ -159,6 +160,8 @@ class ChatAdapter(private val arrayListChat:ArrayList<Chat>, private val emailSa
                 (holder as ReceiveImageViewHolder).bind(arrayListChat[position])
             }
         }
+
+
     }
 
     override fun getItemViewType(position: Int): Int {

@@ -80,7 +80,7 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
                         val snapGambarKos=snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>
                         val snapThumbnailKos=snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString()
                         val snapJenis=snap.child(Constant().KEY_JENIS_KOS).value.toString()
-                        val snapJenisBayar=snap.child(Constant().KEY_JENIS_KELAMIN).value.toString()
+                        val snapJenisBayar=snap.child(Constant().KEY_JENIS_BAYAR_KOS).value.toString()
                         val snapLattitude=snap.child(Constant().KEY_LATTITUDE_KOS).value.toString()
                         val snapLongitude=snap.child(Constant().KEY_LONGITUDE_KOS).value.toString()
                         val snapNamaKos=snap.child(Constant().KEY_NAMA_KOS).value.toString()
@@ -147,7 +147,7 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
                         val snapGambarKos=snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value as ArrayList<String>
                         val snapThumbnailKos=snap.child(Constant().KEY_GAMBAR_KOS).value.toString()
                         val snapJenis=snap.child(Constant().KEY_JENIS_KOS).value.toString()
-                        val snapJenisBayar=snap.child(Constant().KEY_JENIS_KELAMIN).value.toString()
+                        val snapJenisBayar=snap.child(Constant().KEY_JENIS_BAYAR_KOS).value.toString()
                         val snapLattitude=snap.child(Constant().KEY_LATTITUDE_KOS).value.toString()
                         val snapLongitude=snap.child(Constant().KEY_LONGITUDE_KOS).value.toString()
                         val snapNamaKos=snap.child(Constant().KEY_NAMA_KOS).value.toString()
