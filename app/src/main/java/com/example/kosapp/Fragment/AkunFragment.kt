@@ -6,12 +6,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.PenyewaAdapter
-import com.example.kosapp.Adapter.RecyclerviewAdapter.PenyewaAdapter.ItemOnClick
+import com.example.kosapp.Adapter.RecyclerviewAdapter.PenyewaAdapter.AdminItemOnClick
 import com.example.kosapp.Helper.Constant
+import com.example.kosapp.Model.Kos
 import com.example.kosapp.Model.Pengguna
 import com.example.kosapp.R
 import com.example.kosapp.databinding.FragmentAkunBinding
@@ -24,15 +28,20 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 
 
-class AkunFragment : Fragment(), ItemOnClick {
+class AkunFragment : Fragment(), AdminItemOnClick {
 
     private lateinit var binding:FragmentAkunBinding
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var akunAdapter:PenyewaAdapter
     private lateinit var pengguna: Pengguna
+    private lateinit var kriteria:String
+    private lateinit var keyword:String
 
     private var database=FirebaseDatabase.getInstance().reference
     private var akunArrayList=ArrayList<Pengguna>()
+    private var cariAkunArrayList=ArrayList<Pengguna>()
+
+    private val VIEW_ADMIN=1
 
 
     override fun onCreateView(
@@ -47,8 +56,70 @@ class AkunFragment : Fragment(), ItemOnClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getAkunPengguna()
+        setSpinner()
+
+        binding.spnfilterakun.onItemSelectedListener=object:AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                kriteria=binding.spnfilterakun.selectedItem.toString()
+
+                if(kriteria=="Semua Akun")
+                {
+                    getAkunPengguna()
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+        }
+
+        binding.textinputlayout.setEndIconOnClickListener {
+
+            keyword=binding.txtsearchkos.text.toString()
+            kriteria=binding.spnfilterakun.selectedItem.toString()
+            cariAkunArrayList.clear()
+
+            when(kriteria)
+            {
+                "Kelurahan"->{
+
+                    for(i in akunArrayList.indices)
+                    {
+                        if(akunArrayList[i].kelurahan.lowercase().equals(keyword,ignoreCase=true))
+                        {
+                            cariAkunArrayList.add(akunArrayList[i])
+                        }
+                    }
+
+                }
+
+                "Kecamatan"->{
+                    for(i in akunArrayList.indices)
+                    {
+                        if(akunArrayList[i].kecamatan.lowercase().equals(keyword, ignoreCase=true))
+                        {
+                            cariAkunArrayList.add(akunArrayList[i])
+                        }
+                    }
+                }
+            }
+
+            akunAdapter= PenyewaAdapter(cariAkunArrayList,VIEW_ADMIN)
+            layoutManager=LinearLayoutManager(activity)
+            binding.rvakun.layoutManager=layoutManager
+            binding.rvakun.adapter=akunAdapter
+
+        }
+
+
     }
+
+    private fun setSpinner()
+    {
+        val arrayFilterKos= arrayOf("Semua Akun","Kelurahan","Kecamatan")
+        val jenisKosAdapter= ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, arrayFilterKos)
+        binding.spnfilterakun.adapter=jenisKosAdapter
+    }
+
 
     private fun getAkunPengguna()
     {
@@ -63,6 +134,11 @@ class AkunFragment : Fragment(), ItemOnClick {
                         val foto=snap.child(Constant().KEY_FOTO).value.toString()
                         val jenisKelamin=snap.child(Constant().KEY_JENIS_KELAMIN).value.toString()
                         val noTelp=snap.child(Constant().KEY_NOTELP).value.toString()
+                        val nik=snap.child(Constant().KEY_NIK).value.toString()
+                        val kelurahan=snap.child(Constant().KEY_KELURAHAN).value.toString()
+                        val kecamatan=snap.child(Constant().KEY_KECAMATAN).value.toString()
+
+                        Log.d("snap",snapshot.value.toString())
 
                         if(role!=Constant().KEY_ROLE_ADMIN)
                         {
@@ -72,14 +148,18 @@ class AkunFragment : Fragment(), ItemOnClick {
                                 email=email,
                                 foto=foto,
                                 jenisKelamin = jenisKelamin,
-                                noTelp = noTelp
+                                noTelp = noTelp,
+                                nik=nik,
+                                kelurahan = kelurahan,
+                                kecamatan = kecamatan
                             )
 
                             akunArrayList.add(pengguna)
                         }
                     }
 
-                    akunAdapter= PenyewaAdapter(akunArrayList,this@AkunFragment)
+                    akunAdapter= PenyewaAdapter(akunArrayList,VIEW_ADMIN)
+                    akunAdapter.adminClickListener=this@AkunFragment
                     layoutManager=LinearLayoutManager(activity)
                     binding.rvakun.layoutManager=layoutManager
                     binding.rvakun.adapter=akunAdapter

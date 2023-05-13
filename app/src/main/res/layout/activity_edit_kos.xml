@@ -75,6 +75,32 @@
                     />
 
                 <EditText
+                    android:id="@+id/txtkelurahankos"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:hint="@string/txt_kelurahan_kos"
+                    android:padding="10dp"
+                    style="@style/EditText.Primary"
+                    android:background="@drawable/edittext_outline"
+                    />
+
+                <EditText
+                    android:id="@+id/txtkecamatankos"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:hint="@string/txt_kecamatan_kos"
+                    android:padding="10dp"
+                    style="@style/EditText.Primary"
+                    android:background="@drawable/edittext_outline"
+                    />
+
+                <EditText
                     android:id="@+id/txtjumlahkamarkos"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"

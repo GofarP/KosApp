@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_color"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="20sp"
+            android:text="Rating"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="20sp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Beri Rating Kos Ini"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            />
+
+        <RatingBar
+            android:id="@+id/ratingbarkos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20sp"
+            android:stepSize="1"
+            />
+
+        <Button
+            android:id="@+id/btnaddrating"
+            android:layout_width="280sp"
+            android:layout_marginTop="20sp"
+            android:layout_height="wrap_content"
+            android:text="Beri rating"
+            android:layout_marginBottom="20sp"
+            android:progressTint="@color/yellow_edit"
+            android:textColor="@color/white"
+            android:background="@drawable/button_background_round"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

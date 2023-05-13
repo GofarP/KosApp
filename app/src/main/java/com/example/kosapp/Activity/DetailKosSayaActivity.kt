@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.kosapp.Callback.SetImageListCallback
@@ -14,6 +15,7 @@ import com.example.kosapp.Model.Kos
 import com.example.kosapp.Model.Permintaan
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityDetailKosSayaBinding
+import com.example.kosapp.databinding.LayoutRatingBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -25,20 +27,27 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class DetailKosSayaActivity : AppCompatActivity() {
 
-    private lateinit var binding:ActivityDetailKosSayaBinding
-    private val slideArrayList=ArrayList<SlideModel>()
-    private val storage=FirebaseStorage.getInstance().reference
-    private var database=Firebase.database.reference
     private lateinit var permintaan:Permintaan
     private lateinit var kos: Kos
     private lateinit var dataKosIntent: Intent
-    private var emailSaatIni=FirebaseAuth.getInstance().currentUser?.email.toString()
-    private var calendar=Calendar.getInstance()
+    private lateinit var binding:ActivityDetailKosSayaBinding
     private lateinit var tglHariIni:String
 
+    private val slideArrayList=ArrayList<SlideModel>()
+    private val storage=FirebaseStorage.getInstance().reference
+    private var database=Firebase.database.reference
+    private var calendar=Calendar.getInstance()
+    private var emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
+    private var idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
+    private var hashMapAddRating=HashMap<String, Any>()
+    private var hashMapKosRating= mutableMapOf(1 to 0, 2 to 0, 3 to 0, 4 to 0, 5 to 0)
+    private var jumlahRating=0
+    private var totalRating=0
+    private var nilaiAkhirRating=0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,11 +59,14 @@ class DetailKosSayaActivity : AppCompatActivity() {
         dataKosIntent=intent
         kos=dataKosIntent.getParcelableExtra("dataKos")!!
 
+
         tglHariIni=SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(calendar.time)
 
         cekPermintaanKeluarKos()
 
         setDataKos()
+
+
 
         setGambarKos(object:SetImageListCallback{
 
@@ -71,9 +83,23 @@ class DetailKosSayaActivity : AppCompatActivity() {
 
         binding.btnchatpemilik.setOnClickListener {
             val intent=Intent(this@DetailKosSayaActivity, ChatActiviity::class.java)
-            intent.putExtra(Constant().KEY_EMAIL_PENGIRIM,emailSaatIni)
+            intent.putExtra(Constant().KEY_EMAIL_PENGIRIM,emailPengguna)
             intent.putExtra(Constant().KEY_EMAIL_PENGIRIM,kos.emailPemilik)
+
+            startActivity(intent)
         }
+
+        binding.btnaddcomment.setOnClickListener {
+            val intent=Intent(this@DetailKosSayaActivity, CommentActivity::class.java)
+            intent.putExtra(Constant().KEY_ID_KOS,kos.idKos)
+            intent.putExtra(Constant().KEY_EMAIL_PEMILIK,kos.emailPemilik)
+            startActivity(intent)
+        }
+
+        binding.btnrating.setOnClickListener {
+            beriRating()
+        }
+
 
     }
 
@@ -119,7 +145,7 @@ class DetailKosSayaActivity : AppCompatActivity() {
                         val snapIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()
                         val snapEmail=snap.child(Constant().KEY_DARI).value.toString()
 
-                        if(snapIdKos==kos.idKos && emailSaatIni==snapEmail)
+                        if(snapIdKos==kos.idKos && emailPengguna==snapEmail)
                         {
                             binding.btncancel.isEnabled=false
                             binding.btncancel.text="Permintaan Diproses..."
@@ -142,7 +168,7 @@ class DetailKosSayaActivity : AppCompatActivity() {
             idPermintaan= UUID.randomUUID().toString(),
             idKos=kos.idKos,
             namaKos=kos.nama,
-            dari = emailSaatIni,
+            dari = emailPengguna,
             kepada = kos.emailPemilik,
             judul = Constant().PERMINTAAAN_AKHIRI_SEWA,
             isi ="Mengajukan Permintaan Untuk Mengakhiri Sewa Kos ${kos.nama}",
@@ -164,6 +190,78 @@ class DetailKosSayaActivity : AppCompatActivity() {
                 Toast.makeText(this@DetailKosSayaActivity, "Gagal Mengajukan Permintaan Untuk Mengakhiri Sewa Kos", Toast.LENGTH_SHORT).show()
             }
 
+
+    }
+
+
+    private fun beriRating()
+    {
+
+        val dialogView=layoutInflater.inflate(R.layout.layout_rating, null)
+        val customDialog=AlertDialog.Builder(this)
+            .setView(dialogView)
+            .show()
+        val customDialogBinding= LayoutRatingBinding.inflate(layoutInflater)
+        customDialog.setContentView(customDialogBinding.root)
+
+        database.child(Constant().KEY_RATING)
+            .child(kos.idKos)
+            .addListenerForSingleValueEvent(object:ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                   snapshot.children.forEach {snap->
+                       val snapIdPengguna=snap.child(Constant().KEY_ID_PENGGUNA).value.toString()
+                       val snapRating=snap.child(Constant().KEY_RATING).value.toString().toInt()
+
+                       if(snapIdPengguna==idPengguna)
+                       {
+                            customDialogBinding.ratingbarkos.rating= snapRating.toFloat()
+                       }
+
+                       jumlahRating=hashMapKosRating[snapRating]?:0
+                       hashMapKosRating[snapRating]=jumlahRating+1
+
+                   }
+
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("db error", error.message)
+                }
+            })
+
+        customDialogBinding.btnaddrating.setOnClickListener {
+
+            val rating=customDialogBinding.ratingbarkos.rating.toString()
+
+            jumlahRating=hashMapKosRating[rating.toInt()]?:0
+            hashMapKosRating[rating.toInt()]=jumlahRating+1
+
+            hashMapAddRating[Constant().KEY_ID_PENGGUNA]=idPengguna
+            hashMapAddRating[Constant().KEY_RATING]=rating.toDouble()
+
+            for(ratingKey in hashMapKosRating.keys)
+            {
+                jumlahRating+=ratingKey * hashMapKosRating[ratingKey]!!
+                totalRating+=hashMapKosRating[ratingKey]!!
+            }
+
+            nilaiAkhirRating=(jumlahRating.toFloat() / totalRating.toFloat()).toInt()
+
+            database.child(Constant().KEY_DATA_KOS)
+                .child(kos.idKos)
+                .child(Constant().KEY_RATING)
+                .setValue(nilaiAkhirRating)
+
+            database.child(Constant().KEY_RATING)
+                .child(kos.idKos)
+                .push()
+                .setValue(hashMapAddRating)
+                .addOnSuccessListener {
+                    Toast.makeText(this@DetailKosSayaActivity, "Sukses Menambah Rating", Toast.LENGTH_SHORT).show()
+                }
+
+        }
 
     }
 }

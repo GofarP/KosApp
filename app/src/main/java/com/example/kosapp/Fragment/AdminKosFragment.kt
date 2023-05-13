@@ -7,15 +7,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.kosapp.Activity.DetailVerifikasiAkunActivity
+import com.example.kosapp.Activity.DetailSewaKosActivity
 import com.example.kosapp.Activity.DetailVerifikasiKosActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter.ItemOnClick
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Model.Kos
-import com.example.kosapp.R
 import com.example.kosapp.databinding.FragmentAdminKosBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -29,10 +29,13 @@ class FragmentAdminKos : Fragment(), ItemOnClick {
     private lateinit var binding:FragmentAdminKosBinding
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter:HomeKosAdapter
+    private lateinit var kriteria:String
+    private lateinit var keyword:String
 
     private var database=FirebaseDatabase.getInstance().reference
     private var storage=FirebaseStorage.getInstance().reference
     private var kosArrayList=ArrayList<Kos>()
+    private var cariKosArrayList=ArrayList<Kos>()
 
 
     override fun onCreateView(
@@ -47,8 +50,72 @@ class FragmentAdminKos : Fragment(), ItemOnClick {
         super.onViewCreated(view, savedInstanceState)
 
         getDataKos()
+        setSpinner()
+
+
+        binding.spnfilterkos.onItemSelectedListener=object:AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                kriteria=binding.spnfilterkos.selectedItem.toString()
+
+                if(kriteria=="Semua Kos")
+                {
+                    getDataKos()
+                }
+
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+
+        }
+
+        binding.textinputlayout.setEndIconOnClickListener {
+
+            keyword=binding.txtsearchkos.text.toString()
+            kriteria=binding.spnfilterkos.selectedItem.toString()
+            cariKosArrayList.clear()
+
+            when(kriteria)
+            {
+                "Kelurahan"->{
+
+                    for(i in kosArrayList.indices)
+                    {
+                        if(kosArrayList[i].kelurahan.lowercase().equals(keyword,ignoreCase=true))
+                        {
+                            cariKosArrayList.add(kosArrayList[i])
+                        }
+                    }
+
+                }
+
+                "Kecamatan"->{
+                    for(i in kosArrayList.indices)
+                    {
+                        if(kosArrayList[i].kecamatan.lowercase().equals(keyword, ignoreCase=true))
+                        {
+                            cariKosArrayList.add(kosArrayList[i])
+                        }
+                    }
+                }
+            }
+
+            adapter= HomeKosAdapter(cariKosArrayList,this@FragmentAdminKos)
+            linearLayoutManager=LinearLayoutManager(activity)
+            binding.rvaadminkos.layoutManager=linearLayoutManager
+            binding.rvaadminkos.adapter=adapter
+
+        }
+
     }
 
+
+    private fun setSpinner()
+    {
+        val arrayFilterKos= arrayOf("Semua Kos","Kelurahan","Kecamatan")
+        val jenisKosAdapter= ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, arrayFilterKos)
+        binding.spnfilterkos.adapter=jenisKosAdapter
+    }
 
     private fun getDataKos()
     {
@@ -61,6 +128,8 @@ class FragmentAdminKos : Fragment(), ItemOnClick {
                     snapshot.children.forEach {snap->
                         val snapIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()
                         val snapAlamat=snap.child(Constant().KEY_ALAMAT_KOS).value.toString()
+                        val snapKelurahan=snap.child(Constant().KEY_KELURAHAN).value.toString()
+                        val snapKecamatan=snap.child(Constant().KEY_KECAMATAN).value.toString()
                         val snapBiaya=snap.child(Constant().KEY_BIAYA_KOS).value.toString()
                         val snapEmailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString()
                         val snapGambarKos=snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>
@@ -80,6 +149,8 @@ class FragmentAdminKos : Fragment(), ItemOnClick {
                             kos=Kos(
                                 idKos=snapIdKos,
                                 alamat = snapAlamat,
+                                kelurahan=snapKelurahan,
+                                kecamatan=snapKecamatan,
                                 biaya = snapBiaya.toDouble(),
                                 emailPemilik=snapEmailPemilik,
                                 gambarKos = snapGambarKos,
@@ -114,7 +185,8 @@ class FragmentAdminKos : Fragment(), ItemOnClick {
     }
 
     override fun onClick(v: View, dataKos: Kos) {
-        startActivity(Intent(activity,DetailVerifikasiKosActivity::class.java))
+        val intent=Intent(requireActivity(), DetailVerifikasiKosActivity::class.java).putExtra(Constant().KEY_ID_KOS, dataKos.idKos)
+        startActivity(intent)
     }
 
 

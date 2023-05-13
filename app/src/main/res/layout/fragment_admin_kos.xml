@@ -1,10 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment.FragmentAdminKos">
-    
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragment.FragmentAdminKos"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/linearlayoutSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_below="@id/linearLayoutUsername"
+        android:orientation="horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        >
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textinputlayout"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            app:endIconMode="custom"
+            app:endIconDrawable="@drawable/ic_search"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtsearchkos"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:paddingTop="10dp"
+                android:background="@drawable/edittext_oval_outline"
+                android:textSize="17sp"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_search"
+            />
+    </LinearLayout>
+
+
+    <Spinner
+        android:id="@+id/spnfilterkos"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="25sp"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvaadminkos"
         android:layout_width="match_parent"
@@ -13,4 +62,4 @@
     </androidx.recyclerview.widget.RecyclerView>
     
 
-</FrameLayout>
+</LinearLayout>

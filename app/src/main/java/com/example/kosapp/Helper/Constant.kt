@@ -36,6 +36,7 @@ class Constant {
     val KEY_LONGITUDE_KOS="longitude"
     val KEY_FASILITAS="fasilitas"
     val KEY_DESKRIPSI="deskripsi"
+    val KEY_RATING="rating"
 
     val JENISKOS_SPINNER_DEFAULT="Pilih Jenis Kos"
     val JENISBAYAR_SPINNER_DEFAULT="Pilih Jenis Bayar"
@@ -105,7 +106,11 @@ class Constant {
     val KEY_BELUM_VERIFIKASI="Belum Verifikasi"
     val KEY_PENGAJUAN_VERIFIKASI="Pengajuan"
 
+    val KEY_NIK="nik"
+    val KEY_KELURAHAN="kelurahan"
+    val KEY_KECAMATAN="kecamatan"
 
+    val KEY_PENGELUARAN_KOS="Pengeliatan Kos"
 
 
 }

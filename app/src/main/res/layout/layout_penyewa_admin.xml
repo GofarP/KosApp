@@ -60,10 +60,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
+            android:layout_height="match_parent"
+            android:gravity="end|center_vertical"
             android:orientation="vertical"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             >
 
             <ImageButton
@@ -72,16 +72,6 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_eye"
-                android:layout_marginTop="10dp"
-                android:layout_gravity="end"
-                />
-
-            <ImageButton
-                android:id="@+id/btnpenyewahapus"
-                style="@style/Button.Round_Delete"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_delete"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="end"
                 />

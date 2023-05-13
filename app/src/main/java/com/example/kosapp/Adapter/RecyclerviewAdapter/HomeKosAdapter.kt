@@ -34,6 +34,8 @@ class HomeKosAdapter(private val listKos: ArrayList<Kos>,private val  itemOnClic
                 binding.lblalamat.text=dataKos.alamat
                 binding.lblfasilitas.text=dataKos.fasilitas
                 binding.lblharga.text=format.format(dataKos.biaya)
+                binding.lblrating.text= dataKos.rating?.toString()
+
 
                 store.reference.child(dataKos.thumbnailKos)
                     .downloadUrl

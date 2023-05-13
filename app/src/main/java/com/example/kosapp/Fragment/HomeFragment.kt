@@ -191,7 +191,6 @@ class HomeFragment : Fragment() {
 
                     preferenceManager.putString(Constant().KEY_STATUS_VERIFIKASI_AKUN,snapVerifikasi)
 
-                    Log.d("snap",snapshot.value.toString())
 
                     when (snapVerifikasi) {
                         Constant().KEY_TERVERIFIKASI -> {

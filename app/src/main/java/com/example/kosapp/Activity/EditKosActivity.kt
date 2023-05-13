@@ -69,13 +69,16 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
     private lateinit var dataKosIntent:Intent
 
-    private var lattitude=""
-    private var longitude=""
+    private lateinit var lattitude:String
+    private lateinit var longitude:String
     private lateinit var alamat:String
     private lateinit var biaya:String
     private lateinit var deskripsi:String
     private lateinit var fasilitas:String
     private lateinit var idKos:String
+    private lateinit var kelurahan:String
+    private lateinit var kecamatan:String
+
     private var jenis:Int?=null
     private var jenisBayar:Int?=null
     private lateinit var nama:String
@@ -193,6 +196,8 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         binding.txtharga.setText(kos.biaya.toString())
         binding.txtfasilitas.setText(kos.fasilitas)
         binding.txtdeskripsi.setText(kos.deskripsi)
+        binding.txtkelurahankos.setText(kos.kelurahan)
+        binding.txtkecamatankos.setText(kos.kecamatan)
         lattitude=kos.lattitude
         longitude=kos.longitude
         gambarThumbnail=kos.thumbnailKos
@@ -289,7 +294,8 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         val jenisBayar=binding.spnjenisbayar.selectedItem.toString()
         nama=binding.txtnamakos.text.trim().toString()
         sisa=binding.txtjumlahkamarkos.text.trim().toString()
-
+        kelurahan=binding.txtkelurahankos.text.trim().toString()
+        kecamatan=binding.txtkecamatankos.text.trim().toString()
 
         kos=Kos(
             idKos=idKos,
@@ -306,6 +312,8 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
             longitude =  longitude,
             fasilitas=fasilitas,
             deskripsi=deskripsi,
+            kecamatan=kecamatan,
+            kelurahan=kelurahan,
             status=Constant().KEY_PENGAJUAN_VERIFIKASI
         )
 

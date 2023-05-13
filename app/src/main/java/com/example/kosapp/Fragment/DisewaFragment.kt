@@ -72,6 +72,8 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
                             idKos=snap.child(Constant().KEY_ID_KOS).value.toString(),
                             alamat = snap.child(Constant().KEY_ALAMAT_KOS).value.toString(),
                             biaya = snap.child(Constant().KEY_BIAYA_KOS).value.toString().toDouble(),
+                            kecamatan=snap.child(Constant().KEY_KECAMATAN).value.toString(),
+                            kelurahan=snap.child(Constant().KEY_KELURAHAN).value.toString(),
                             emailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString(),
                             gambarKos = snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>,
                             thumbnailKos = snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString(),

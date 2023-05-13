@@ -84,6 +84,7 @@ class VerifikasiActivity : AppCompatActivity() {
                 }
         }
 
+
     }
 
     private fun checkVerifikasi()
@@ -205,6 +206,7 @@ class VerifikasiActivity : AppCompatActivity() {
             binding.ivVerifikasi.setImageURI(uriVerifikasi!!)
         }
     }
+
 
 
 }

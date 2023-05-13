@@ -123,6 +123,51 @@
                     android:layout_marginRight="20dp" />
 
                 <EditText
+                    android:id="@+id/txtnik"
+                    style="@style/EditText.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/edittext_outline"
+                    android:hint="@string/txt_nik_anda"
+                    android:padding="10dp"
+                    android:inputType="number"
+                    android:textColor="@color/main_color"
+                    android:textSize="15sp" />
+
+
+                <EditText
+                    android:id="@+id/txtkelurahan"
+                    style="@style/EditText.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/edittext_outline"
+                    android:hint="@string/txt_kelurahan_anda"
+                    android:padding="10dp"
+                    android:textColor="@color/main_color"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/txtkecamatan"
+                    style="@style/EditText.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/edittext_outline"
+                    android:hint="@string/txt_kecamatan_anda"
+                    android:padding="10dp"
+                    android:textColor="@color/main_color"
+                    android:textSize="15sp" />
+
+
+                <EditText
                     android:id="@+id/txtpassword"
                     style="@style/EditText.Primary"
                     android:layout_width="match_parent"

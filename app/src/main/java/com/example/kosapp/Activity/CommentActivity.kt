@@ -5,13 +5,17 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Adapter.RecyclerviewAdapter.CommentAdapter
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
 import com.example.kosapp.Model.Comment
+import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityCommentBinding
+import com.example.kosapp.databinding.LayoutBreakdownRatingBinding
+import com.example.kosapp.databinding.LayoutRatingBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -21,15 +25,12 @@ import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class CommentActivity : AppCompatActivity() {
     private lateinit var bind:ActivityCommentBinding
 
-    private var commentArrayList=ArrayList<Comment>()
-
     private lateinit var commentAdapter:CommentAdapter
-
-    private var calendar=Calendar.getInstance()
 
     private lateinit var tanggalHariIni: String
 
@@ -37,17 +38,26 @@ class CommentActivity : AppCompatActivity() {
 
     private lateinit var emailPemilik: String
 
-    private var database= Firebase.database.reference
-
     private lateinit var bundle:Bundle
 
     private lateinit var comment: Comment
+
+    private lateinit var layoutManager:RecyclerView.LayoutManager
+
+    private var commentArrayList=ArrayList<Comment>()
+
+    private var calendar=Calendar.getInstance()
+
+    private var database= Firebase.database.reference
 
     private var emailSaatIni=FirebaseAuth.getInstance().currentUser?.email.toString()
 
     private var idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
 
-    private lateinit var layoutManager:RecyclerView.LayoutManager
+    private var hashMapRating= mutableMapOf(1 to 0, 2 to 0, 3 to 0, 4 to 0, 5 to 0)
+
+    private var jumlahRatingSekarang=0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,8 +72,6 @@ class CommentActivity : AppCompatActivity() {
 
         idKos=bundle.getString(Constant().KEY_ID_KOS).toString()
         emailPemilik=bundle.getString(Constant().KEY_EMAIL_PEMILIK).toString()
-
-
 
         checkHistoryKos(idKos)
 
@@ -89,7 +97,41 @@ class CommentActivity : AppCompatActivity() {
             }
         }
 
+        bind.ivrating.setOnClickListener {
 
+            val dialogView=layoutInflater.inflate(R.layout.layout_breakdown_rating, null)
+            val customDialog= AlertDialog.Builder(this)
+                .setView(dialogView)
+                .show()
+            val customDialogBinding= LayoutBreakdownRatingBinding.inflate(layoutInflater)
+            customDialog.setContentView(customDialogBinding.root)
+
+            database.child(Constant().KEY_RATING)
+                .child(idKos)
+                .addListenerForSingleValueEvent(object:ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        snapshot.children.forEach { snap->
+
+                            val rating=snap.child(Constant().KEY_RATING).value.toString().toInt()
+
+                            jumlahRatingSekarang=hashMapRating[rating]?:0
+                            hashMapRating[rating]=jumlahRatingSekarang+1
+
+                            customDialogBinding.lblrating1.text="${hashMapRating[1]} Orang"
+                            customDialogBinding.lblrating2.text="${hashMapRating[2]} Orang"
+                            customDialogBinding.lblrating3.text="${hashMapRating[3]} Orang"
+                            customDialogBinding.lblrating4.text="${hashMapRating[4]} Orang"
+                            customDialogBinding.lblrating5.text="${hashMapRating[5]} Orang"
+
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.d("db error",error.message)
+                    }
+
+                })
+        }
     }
 
 
@@ -130,14 +172,14 @@ class CommentActivity : AppCompatActivity() {
                if(snapshot.child(Constant().KEY_HISTORY).exists())
                {
 
-                   var historyDitemukan=false
                     snapshot.child(Constant().KEY_HISTORY)
                         .child(emailSaatIni.replace(".",","))
                         .children.forEach {snap->
+
                             val snapIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()
+
                             if(snapIdKos==idKos)
                             {
-                                historyDitemukan=true
                                 bind.btnsend.visibility=View.VISIBLE
                                 bind.txtcomment.visibility=View.VISIBLE
                             }

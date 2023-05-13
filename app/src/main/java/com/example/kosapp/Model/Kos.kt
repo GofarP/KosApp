@@ -12,6 +12,8 @@ import kotlinx.android.parcel.Parcelize
       val jenis:String,
       val sisa:Int,
       val alamat:String,
+      val kecamatan:String,
+      val kelurahan:String,
       val thumbnailKos:String,
       val gambarKos:ArrayList<String>,
       val fasilitas:String,
@@ -20,5 +22,6 @@ import kotlinx.android.parcel.Parcelize
       val jenisBayar:String,
       val lattitude:String,
       val longitude:String,
-      val status:String
+      val status:String,
+      val rating:Int?=null
       ):Parcelable

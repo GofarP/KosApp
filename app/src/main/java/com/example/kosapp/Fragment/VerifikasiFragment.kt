@@ -170,7 +170,7 @@ class VerifikasiFragment : Fragment(), OnItemClickListener {
     private fun detailVerifikasiKos(permintaanVerifikasi: PermintaanVerifikasi)
     {
         val intent=Intent(activity, DetailVerifikasiKosActivity::class.java)
-            .putExtra(Constant().KEY_PERMINTAAN_VERIFIKASI_KOS, permintaanVerifikasi)
+            .putExtra(Constant().KEY_ID_KOS, permintaanVerifikasi.id)
         startActivity(intent)
     }
 

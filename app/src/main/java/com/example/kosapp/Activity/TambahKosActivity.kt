@@ -122,6 +122,8 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                 val jumlahKamar=binding.txtjumlahkamarkos.text.trim().toString()
                 val fasilitas=binding.txtfasilitas.text.trim().toString()
                 val deskripsi=binding.txtdeskripsi.text.trim().toString()
+                val kecamatan=binding.txtkecamatankos.text.trim().toString()
+                val kelurahan=binding.txtkelurahankos.text.trim().toString()
 
                 for(i in slideImageArrayList.indices)
                 {
@@ -133,6 +135,8 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                     nama=namaKos,
                     emailPemilik=userEmail,
                     alamat = alamat,
+                    kelurahan=kelurahan,
+                    kecamatan=kecamatan,
                     biaya =biaya.toDouble(),
                     jenisBayar=jenisBayar,
                     gambarKos =gambarKosList,
@@ -143,7 +147,8 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                     longitude =  longitudeKos.toString(),
                     fasilitas=fasilitas,
                     deskripsi=deskripsi,
-                    status=Constant().KEY_PENGAJUAN_VERIFIKASI
+                    status=Constant().KEY_PENGAJUAN_VERIFIKASI,
+                    rating=0
                 )
 
                 permintaanVerifikasi=PermintaanVerifikasi(
@@ -174,14 +179,12 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                         }
 
 
-
                         Toast.makeText(this@TambahKosActivity, "Sukses Menambah Kos Baru, Sekarang Tunggu Verifikasi Kos Anda Dari Admin", Toast.LENGTH_SHORT).show()
                         clear()
                     }
                     .addOnFailureListener {
                         Toast.makeText(this@TambahKosActivity, "Gagal Menambah Kos Baru", Toast.LENGTH_SHORT).show()
                     }
-
 
             }
 

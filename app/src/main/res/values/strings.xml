@@ -91,6 +91,11 @@
     <string name="txt_gambar_kos">Gambar Kos</string>
     <string name="txt_detail_kos">Detail Kos</string>
     <string name="txt_jenis_pembayaran">Jenis Pembayaran:</string>
+    <string name="txt_nik_anda">Nik Anda</string>
+    <string name="txt_kelurahan_anda">Kelurahan Anda</string>
+    <string name="txt_kecamatan_anda">Kecamatan Anda</string>
+    <string name="txt_kelurahan_kos">Kelurahan Kos</string>
+    <string name="txt_kecamatan_kos">Kecamatan Kos</string>
 
 
 </resources>

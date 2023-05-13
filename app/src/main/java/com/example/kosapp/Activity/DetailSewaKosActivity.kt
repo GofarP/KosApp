@@ -54,7 +54,7 @@ class DetailSewaKosActivity : AppCompatActivity() {
         Helper().setStatusBarColor(this@DetailSewaKosActivity)
 
         dataKosIntent=intent
-        kos=dataKosIntent.getParcelableExtra(Constant().KEY_DATA_KOS)!!
+        kos=dataKosIntent.getParcelableExtra(Constant().KEY_ID_KOS)!!
 
         if(emailPengguna==kos.emailPemilik)
         {
@@ -233,8 +233,6 @@ class DetailSewaKosActivity : AppCompatActivity() {
         binding.includeLayoutDetail.lbljenispembayaran.text=kos.jenisBayar
         binding.includeLayoutDetail.lbljeniskos.text=kos.jenis
         binding.includeLayoutDetail.lbldeskripsikos.text=kos.deskripsi
-
-
 
     }
 

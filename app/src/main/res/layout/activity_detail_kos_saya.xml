@@ -54,22 +54,32 @@
         android:layout_height="wrap_content"
         android:background="@color/main_color"
         android:layout_alignParentBottom="true"
-
         >
 
         <Button
             android:id="@+id/btncancel"
             style="@style/Button.Cancel"
-            android:layout_width="300dp"
+            android:layout_width="290dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="12dp"
             android:layout_marginTop="12dp"
-            android:layout_marginRight="70dp"
             android:layout_marginBottom="12dp"
             android:background="@drawable/button_background_cancel"
             android:text="Batalkan"
             android:textColor="@color/white" />
+
+        <ImageButton
+            android:id="@+id/btnrating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/rating_start"
+                android:background="@color/main_color"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10sp"
+                android:layout_marginEnd="10sp"
+                android:layout_toEndOf="@+id/btncancel"
+            />
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/btnaddcomment"

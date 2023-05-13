@@ -152,6 +152,9 @@ class SignupActivity : AppCompatActivity() {
         val noTelp=binding.txtnoTelp.text.toString()
         val jenisKelamin=binding.spinnerjk.selectedItem.toString()
         val password=binding.txtpassword.text.toString()
+        val nik=binding.txtnik.text.toString()
+        val kecamatan=binding.txtkecamatan.text.toString()
+        val kelurahan=binding.txtkelurahan.text.toString()
 
 
         auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener {task->
@@ -167,6 +170,9 @@ class SignupActivity : AppCompatActivity() {
                 noTelp = noTelp,
                 jenisKelamin=jenisKelamin,
                 foto=imgName,
+                nik=nik,
+                kelurahan=kelurahan,
+                kecamatan=kecamatan,
                 role=Constant().KEY_ROLE_USER
             )
 

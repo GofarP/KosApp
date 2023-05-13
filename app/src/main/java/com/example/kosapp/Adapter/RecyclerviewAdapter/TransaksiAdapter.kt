@@ -38,6 +38,11 @@ class TransaksiAdapter(private val listTransaksi: ArrayList<Transaksi>, )
                         isiTransaksi="Anda Menerima Permintaan Sewa Kos dari ${dataTransaksi.kepada}"
                     }
 
+                    else if(dataTransaksi.dari==emailPengguna && dataTransaksi.tipe==Constant().KEY_PENGELUARAN_KOS)
+                    {
+                        isiTransaksi="Anda Mengeluarkan ${dataTransaksi.kepada} dari kos anda"
+                    }
+
                     else
                     {
                         isiTransaksi="${dataTransaksi.isi} oleh ${dataTransaksi.dari}"

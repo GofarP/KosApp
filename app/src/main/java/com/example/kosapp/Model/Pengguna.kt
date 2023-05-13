@@ -7,5 +7,8 @@ data class Pengguna(
     var noTelp:String,
     var jenisKelamin:String,
     var foto:String,
+    var nik:String,
+    var kelurahan:String,
+    var kecamatan:String,
     var role:String="",
 )

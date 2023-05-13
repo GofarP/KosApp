@@ -145,7 +145,6 @@ class ChatAdapter(private val arrayListChat:ArrayList<Chat>, private val emailSa
         {
             VIEW_TYPE_SENT->{
                 (holder as SendMessageViewHolder).bind(arrayListChat[position])
-                holder
             }
 
             VIEW_TYPE_RECEIVE->{

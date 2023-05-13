@@ -67,6 +67,8 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
 
                             val snapIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()
                             val snapAlamat=snap.child(Constant().KEY_ALAMAT_KOS).value.toString()
+                            val snapKelurahan=snap.child(Constant().KEY_KELURAHAN).value.toString()
+                            val snapKecamatan=snap.child(Constant().KEY_KECAMATAN).value.toString()
                             val snapBiaya=snap.child(Constant().KEY_BIAYA_KOS).value.toString()
                             val snapEmailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString()
                             val snapGambarKos=snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>
@@ -80,12 +82,16 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                             val snapFasilitas=snap.child(Constant().KEY_FASILITAS).value.toString()
                             val snapDeskripsi=snap.child(Constant().KEY_DESKRIPSI).value.toString()
                             val snapStatus=snap.child(Constant().KEY_STATUS_VERIFIKASI_KOS).value.toString()
+                            val snapRating=snap.child(Constant().KEY_RATING).value.toString().toInt()
+
 
                             if(snapStatus==Constant().KEY_TERVERIFIKASI)
                             {
                                 kos=Kos(
                                     idKos=snapIdKos,
                                     alamat = snapAlamat,
+                                    kelurahan=snapKelurahan,
+                                    kecamatan=snapKecamatan,
                                     biaya = snapBiaya.toDouble(),
                                     emailPemilik=snapEmailPemilik,
                                     gambarKos = snapGambarKos,
@@ -98,8 +104,8 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                                     sisa = snapSisa.toInt(),
                                     fasilitas=snapFasilitas,
                                     deskripsi=snapDeskripsi,
-                                    status=snapStatus
-
+                                    status=snapStatus,
+                                    rating=snapRating
                                 )
 
                                 kosArrayList.add(kos)
@@ -135,6 +141,8 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
 
                         val snapIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()
                         val snapAlamat=snap.child(Constant().KEY_ALAMAT_KOS).value.toString()
+                        val snapKelurahan=snap.child(Constant().KEY_KELURAHAN).value.toString()
+                        val snapKecamatan=snap.child(Constant().KEY_KECAMATAN).value.toString()
                         val snapBiaya=snap.child(Constant().KEY_BIAYA_KOS).value.toString()
                         val snapEmailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString()
                         val snapGambarKos=snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>
@@ -148,6 +156,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                         val snapFasilitas=snap.child(Constant().KEY_FASILITAS).value.toString()
                         val snapDeskripsi=snap.child(Constant().KEY_DESKRIPSI).value.toString()
                         val snapStatus=snap.child(Constant().KEY_STATUS_VERIFIKASI_KOS).value.toString()
+                        val snapRating=snap.child(Constant().KEY_RATING).value.toString().toInt()
                         namaKos=snap.child(Constant().KEY_NAMA_KOS).value.toString()
 
                         if(namaKos.contains(cari,true) && snapStatus==Constant().KEY_TERVERIFIKASI)
@@ -156,6 +165,8 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                            kos=Kos(
                                idKos=snapIdKos,
                                alamat = snapAlamat,
+                               kelurahan=snapKelurahan,
+                               kecamatan=snapKecamatan,
                                biaya = snapBiaya.toDouble(),
                                emailPemilik=snapEmailPemilik,
                                gambarKos = snapGambarKos,
@@ -166,10 +177,10 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                                longitude = snapLongitude,
                                nama = snapNamaKos,
                                sisa = snapSisa.toInt(),
-                               fasilitas=snapFasilitas.toString(),
+                               fasilitas=snapFasilitas,
                                deskripsi=snapDeskripsi,
-                               status=snapStatus
-
+                               status=snapStatus,
+                               rating=snapRating
                            )
 
                            kosArrayList.add(kos)
@@ -178,7 +189,6 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                            layoutManager=LinearLayoutManager(activity)
                            binding.rvkossemua.layoutManager=layoutManager
                            binding.rvkossemua.adapter=homeKosAdapter
-
 
                        }
 
@@ -209,7 +219,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
 
         else
         {
-            val intent=Intent(activity, DetailSewaKosActivity::class.java).putExtra(Constant().KEY_DATA_KOS, dataKos)
+            val intent=Intent(activity, DetailSewaKosActivity::class.java).putExtra(Constant().KEY_ID_KOS, dataKos)
             startActivity(intent)
         }
 

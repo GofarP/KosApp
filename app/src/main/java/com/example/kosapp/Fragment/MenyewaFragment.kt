@@ -79,6 +79,8 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
                                                 val kos=Kos(
                                                     idKos=snap.child(Constant().KEY_ID_KOS).value.toString(),
                                                     alamat = snap.child(Constant().KEY_ALAMAT_KOS).value.toString(),
+                                                    kecamatan=snap.child(Constant().KEY_KECAMATAN).value.toString(),
+                                                    kelurahan=snap.child(Constant().KEY_KELURAHAN).value.toString(),
                                                     biaya = snap.child(Constant().KEY_BIAYA_KOS).value.toString().toDouble(),
                                                     emailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString(),
                                                     gambarKos = snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>,
@@ -91,7 +93,8 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
                                                     sisa = snap.child(Constant().KEY_JUMLAH_KAMAR_KOS).value.toString().toInt(),
                                                     fasilitas=snap.child(Constant().KEY_FASILITAS).value.toString(),
                                                     deskripsi=snap.child(Constant().KEY_DESKRIPSI).value.toString(),
-                                                    status=snap.child(Constant().KEY_STATUS_VERIFIKASI_AKUN).value.toString()
+                                                    status=snap.child(Constant().KEY_STATUS_VERIFIKASI_AKUN).value.toString(),
+                                                    rating=snap.child(Constant().KEY_RATING).value.toString().toInt()
                                                 )
                                                 kosArrayList.add(kos)
                                             }
