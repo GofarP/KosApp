@@ -3,12 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment.CampurKosFragment">
+    tools:context=".Fragment.KosTerdekatFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvcampurkos"
+        android:id="@+id/rvkosterdekat"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
+
 
 </FrameLayout>

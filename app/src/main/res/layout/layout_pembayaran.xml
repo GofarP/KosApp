@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10sp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:id="@+id/lbltekstransfer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pengguna@mail.com Mengirim Bukti Pembayaran"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:layout_marginStart="15sp"
+                android:layout_marginTop="20sp"
+                android:layout_marginBottom="20sp"
+                />
+
+            <TextView
+                android:id="@+id/lbltanggaltransfer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginStart="15sp"
+                android:text="29-05-2023 17:45:20"
+                android:layout_marginBottom="10sp"
+                />
+
+            <Button
+                android:id="@+id/btnterima"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="20sp"
+                android:layout_marginEnd="20sp"
+                android:layout_marginTop="20sp"
+                style="@style/Button.Ok"
+                android:text="@string/text_lihat_bukti_pembayaran"
+                android:layout_marginBottom="20sp"
+                />
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

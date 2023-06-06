@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment.CampurKosFragment">
+    tools:context=".Fragment.BuktiPembayaranFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvcampurkos"
+        android:id="@+id/rvpembayaran"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

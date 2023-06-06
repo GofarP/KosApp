@@ -1,7 +1,10 @@
 package com.example.kosapp.Fragment
 
 import android.content.Intent
+import android.location.Location
+import android.location.LocationListener
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,76 +14,75 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Activity.DetailSewaKosActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
-import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter.ItemOnClick
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.PreferenceManager
 import com.example.kosapp.LocationManager.LocationManager
 import com.example.kosapp.Model.Kos
-import com.example.kosapp.databinding.FragmentWanitaBinding
-import com.google.firebase.auth.FirebaseAuth
+import com.example.kosapp.databinding.FragmentKosTerdekatBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.mapbox.android.core.location.LocationEngine
+import com.mapbox.android.core.location.LocationEnginePriority
+import com.mapbox.android.core.location.LocationEngineProvider
 import com.mapbox.geojson.Point
 import com.mapbox.turf.TurfConstants
 import com.mapbox.turf.TurfMeasurement
 import java.text.DecimalFormat
 
-class WanitaKosFragment : Fragment(), ItemOnClick {
 
-    private var kosArrayList=ArrayList<Kos>()
-    private var cariKosArrayList=ArrayList<Kos>()
-    private lateinit var binding: FragmentWanitaBinding
-    private lateinit var kos:Kos
-    private var adapter:HomeKosAdapter?=null
-    private var auth=FirebaseAuth.getInstance().currentUser
-    private lateinit var layoutManager: RecyclerView.LayoutManager
-    private var database=Firebase.database.reference
-    private lateinit var preferenceManager: PreferenceManager
-    private lateinit var jenisKos:String
-    private lateinit var namaKos:String
-    private lateinit var locationManager: LocationManager
-    private lateinit var lokasiKosLatLng:Point
-    private lateinit var lokasiSekarangLatLng:Point
+class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationListener {
+
+    private lateinit var binding:FragmentKosTerdekatBinding
+    private  var kosArrayList=ArrayList<Kos>()
+    private  var cariKosArrayList=ArrayList<Kos>()
+    private var adapter: HomeKosAdapter?=null
+    private var database= Firebase.database.reference
     private var jarak=0.0
+    private lateinit var kos: Kos
+    private lateinit var  layoutManager: RecyclerView.LayoutManager
+    private lateinit var preferenceManager: PreferenceManager
+    private lateinit var namaKos:String
+    private lateinit var locationEngine: LocationEngine
+    private lateinit var lokasiSekarang:Location
+    private lateinit var lokasiSekarangLatLng:Point
+    private lateinit var lokasiKosLatLng:Point
+    private lateinit var locationManager:LocationManager
+
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding=FragmentWanitaBinding.inflate(inflater,container,false)
+        binding= FragmentKosTerdekatBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getDataKosWanita()
-
-        preferenceManager= PreferenceManager()
-        preferenceManager.preferenceManager(view.context)
-
-        locationManager=LocationManager()
+        locationManager= LocationManager()
         locationManager.ambilLokasiSekarang(requireActivity())
 
         lokasiSekarangLatLng=Point.fromLngLat(locationManager.ambilLokasiSekarang(requireActivity()).longitude,
             locationManager.ambilLokasiSekarang(requireActivity()).latitude)
 
+        getSemuaKosTerdekat()
     }
 
 
-    fun getDataKosWanita()
+    fun getSemuaKosTerdekat()
     {
 
         database.child(Constant().KEY_DAFTAR_KOS)
-            .addValueEventListener(object:ValueEventListener{
+            .addValueEventListener(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
 
                     kosArrayList.clear()
-                    binding.rvkoswanita.adapter=null
+                    binding.rvkosterdekat.adapter=null
 
                     snapshot.children.forEach { snap->
 
@@ -102,12 +104,11 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
                         val snapDeskripsi=snap.child(Constant().KEY_DESKRIPSI).value.toString()
                         val snapStatus=snap.child(Constant().KEY_STATUS_VERIFIKASI_KOS).value.toString()
                         val snapRating=snap.child(Constant().KEY_RATING).value.toString().toInt()
-                        lokasiKosLatLng= Point.fromLngLat(snapLongitude.toDouble(), snapLattitude.toDouble())
                         namaKos=snap.child(Constant().KEY_NAMA_KOS).value.toString()
-                        jenisKos=snap.child(Constant().KEY_JENIS_KOS).value.toString()
-                        jarak=TurfMeasurement.distance(lokasiSekarangLatLng, lokasiKosLatLng, TurfConstants.UNIT_KILOMETERS)
+                        lokasiKosLatLng=Point.fromLngLat(snapLongitude.toDouble(), snapLattitude.toDouble())
+                        jarak= TurfMeasurement.distance(lokasiSekarangLatLng,lokasiKosLatLng, TurfConstants.UNIT_KILOMETERS)
 
-                        if(jenisKos==Constant().KEY_WANITA  && snapStatus==Constant().KEY_TERVERIFIKASI)
+                        if(snapStatus== Constant().KEY_TERVERIFIKASI && jarak < 4.0)
                         {
 
                             kos=Kos(
@@ -125,20 +126,21 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
                                 longitude = snapLongitude,
                                 nama = snapNamaKos,
                                 sisa = snapSisa.toInt(),
-                                fasilitas= snapFasilitas,
+                                fasilitas=snapFasilitas.toString(),
                                 deskripsi=snapDeskripsi,
                                 status=snapStatus,
                                 rating=snapRating,
-                                jarak=DecimalFormat("#.##").format(jarak).toDouble()
+                                jarak = DecimalFormat("#.##").format(jarak).toDouble()
                             )
-
                             kosArrayList.add(kos)
-                            adapter= HomeKosAdapter(kosArrayList,this@WanitaKosFragment)
-                            layoutManager=LinearLayoutManager(activity)
-                            binding.rvkoswanita.layoutManager=layoutManager
-                            binding.rvkoswanita.adapter=adapter
+                            adapter= HomeKosAdapter(kosArrayList,this@KosTerdekatFragment)
+                            layoutManager= LinearLayoutManager(activity)
+                            binding.rvkosterdekat.layoutManager=layoutManager
+                            binding.rvkosterdekat.adapter=adapter
                         }
+
                     }
+
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -148,8 +150,7 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
             })
     }
 
-
-    fun cariDataKosWanita(cari:String)
+    fun cariKosTerdekat( cari:String)
     {
         cariKosArrayList.clear()
         kosArrayList.forEach {result->
@@ -157,7 +158,7 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
             val namaKos=result.nama.trim().replace(" ","")
             val alamatKos=result.alamat.trim().replace(" ","")
 
-            if((result.jenis==Constant().KEY_WANITA) && (namaKos.contains(cari, true) || alamatKos.contains(cari, true)))
+            if(namaKos.contains(cari, true) || alamatKos.contains(cari, true))
             {
                 kos=Kos(
                     idKos=result.idKos,
@@ -178,23 +179,20 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
                     status = result.status,
                     thumbnailKos = result.thumbnailKos,
                     rating = result.rating,
-                    jarak = result.jarak
+                    jarak=result.jarak
                 )
                 cariKosArrayList.add(kos)
             }
         }
 
-        adapter= HomeKosAdapter(cariKosArrayList,this@WanitaKosFragment)
+        adapter= HomeKosAdapter(cariKosArrayList,this@KosTerdekatFragment)
         layoutManager=LinearLayoutManager(activity)
-        binding.rvkoswanita.layoutManager=layoutManager
-        binding.rvkoswanita.adapter=adapter
+        binding.rvkosterdekat.layoutManager=layoutManager
+        binding.rvkosterdekat.adapter=adapter
+
     }
 
-
-
-
     override fun onClick(v: View, dataKos: Kos) {
-
         val jenisKelaminUser=preferenceManager.getString(Constant().KEY_JENIS_KELAMIN)
 
         if(dataKos.sisa==0)
@@ -202,18 +200,20 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
             Toast.makeText(activity, "Mohon Maaf, Kos Sedang Penuh", Toast.LENGTH_SHORT).show()
         }
 
-        else if(dataKos.jenis!=jenisKelaminUser)
+        else if(dataKos.jenis != jenisKelaminUser && dataKos.jenis!="Campur")
         {
-            Toast.makeText(activity, "Jenis Kelamin Anda Tidak Cocok Untuk Kos Ini", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, "Jenis Kelamin Anda Tidak Cocok Untuk Kos Ini $jenisKelaminUser", Toast.LENGTH_SHORT).show()
         }
 
         else
         {
-            val intent=Intent(activity, DetailSewaKosActivity::class.java).putExtra("dataKos", dataKos)
+            val intent= Intent(activity, DetailSewaKosActivity::class.java).putExtra(Constant().KEY_ID_KOS, dataKos)
             startActivity(intent)
         }
-
     }
 
+    override fun onLocationChanged(p0: Location) {
+        println("test")
+    }
 
 }

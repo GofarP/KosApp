@@ -96,6 +96,7 @@
     <string name="txt_kecamatan_anda">Kecamatan Anda</string>
     <string name="txt_kelurahan_kos">Kelurahan Kos</string>
     <string name="txt_kecamatan_kos">Kecamatan Kos</string>
+    <string name="text_lihat_bukti_pembayaran">Lihat Bukti Pembayaran</string>
 
 
 </resources>

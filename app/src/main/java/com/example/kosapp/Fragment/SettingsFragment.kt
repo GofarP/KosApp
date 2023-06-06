@@ -14,12 +14,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.kosapp.Activity.*
 import com.example.kosapp.Adapter.RecyclerviewAdapter.SettingsAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.SettingsAdapter.ItemOnClick
-import com.example.kosapp.Activity.ProfileActivity
-import com.example.kosapp.Activity.SigninActivity
-import com.example.kosapp.Activity.TestActivity
-import com.example.kosapp.Activity.VerifikasiActivity
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.PreferenceManager
 import com.example.kosapp.databinding.FragmentSettingsBinding
@@ -118,6 +115,7 @@ class SettingsFragment : Fragment(), ItemOnClick {
         settingList.add("Profile")
         settingList.add("Logout")
         settingList.add("Verifikasi")
+        settingList.add("Rating Profile Saya")
         adapter= SettingsAdapter(settingList,this)
         binding.rvsettings.layoutManager=LinearLayoutManager(activity)
         binding.rvsettings.adapter=adapter
@@ -177,6 +175,10 @@ class SettingsFragment : Fragment(), ItemOnClick {
                 Toast.makeText(activity, "Sukses Logout", Toast.LENGTH_SHORT).show()
                 activity?.finish()
                 startActivity(Intent(activity,SigninActivity::class.java))
+            }
+
+            "Rating Profile Saya"->{
+                startActivity(Intent(activity, RatingProfileActivity::class.java))
             }
 
 

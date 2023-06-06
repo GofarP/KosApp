@@ -23,5 +23,7 @@ import kotlinx.android.parcel.Parcelize
       val lattitude:String,
       val longitude:String,
       val status:String,
-      val rating:Int?=null
+      val rating:Int?=null,
+      val jarak:Double=0.0
+
       ):Parcelable

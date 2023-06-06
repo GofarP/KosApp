@@ -2,6 +2,7 @@ package com.example.kosapp.Fragment
 
 import android.content.Intent
 import android.content.res.Resources
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,6 +25,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.mapbox.android.core.location.LocationEngine
+import com.mapbox.android.core.location.LocationEnginePriority
+import com.mapbox.android.core.location.LocationEngineProvider
+import com.mapbox.geojson.Point
 
 
 class HomeFragment : Fragment() {
@@ -31,6 +36,9 @@ class HomeFragment : Fragment() {
     private lateinit var binding:FragmentHomeBinding
     private lateinit var preferenceManager: PreferenceManager
     val userId=FirebaseAuth.getInstance().currentUser?.uid
+    private lateinit var locationEngine: LocationEngine
+    private lateinit var lokasiSekarang: Location
+
 
     private var database=Firebase.database.reference
 
@@ -63,6 +71,7 @@ class HomeFragment : Fragment() {
                 1->{"Pria"}
                 2->{"Wanita"}
                 3->{"Campur"}
+                4->{"Terdekat"}
                 else->{throw Resources.NotFoundException("Posisi Tidak DItemukan")}
             }
 
@@ -95,6 +104,8 @@ class HomeFragment : Fragment() {
                      if(binding.txtsearchkos.text.isNullOrEmpty())
                      {
                          frag.getSemuaDataKos()
+                         @SuppressWarnings("MissingPermission")
+                         frag.lokasiSekarang=locationEngine.lastLocation
                      }
 
                      else
@@ -136,6 +147,18 @@ class HomeFragment : Fragment() {
                     else
                     {
                         frag.cariDataKosCampuran(binding.txtsearchkos.text.toString())
+                    }
+                }
+
+                is KosTerdekatFragment->{
+                    if (binding.txtsearchkos.text.isNullOrEmpty())
+                    {
+                        frag.getSemuaKosTerdekat()
+                    }
+
+                    else
+                    {
+                        frag.cariKosTerdekat(binding.txtsearchkos.text.toString())
                     }
                 }
 
