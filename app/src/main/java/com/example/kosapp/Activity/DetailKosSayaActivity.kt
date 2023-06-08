@@ -167,6 +167,7 @@ class DetailKosSayaActivity : AppCompatActivity() {
         permintaan= Permintaan(
             idPermintaan= UUID.randomUUID().toString(),
             idKos=kos.idKos,
+            idPengguna=idPengguna,
             namaKos=kos.nama,
             dari = emailPengguna,
             kepada = kos.emailPemilik,

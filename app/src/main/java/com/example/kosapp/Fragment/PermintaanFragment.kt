@@ -1,5 +1,6 @@
 package com.example.kosapp.Fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kosapp.Activity.RatingProfileActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.PermintaanAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.PermintaanAdapter.OnClickListener
 import com.example.kosapp.Helper.Constant
@@ -44,6 +46,7 @@ class PermintaanFragment : Fragment(), OnClickListener {
     private lateinit var format:SimpleDateFormat
     private var calendar=Calendar.getInstance()
     private lateinit var tanggalHariIni:String
+    private lateinit var intent:Intent
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -85,6 +88,7 @@ class PermintaanFragment : Fragment(), OnClickListener {
                                     dari=snap.child(Constant().KEY_DARI).value.toString(),
                                     idKos=snap.child(Constant().KEY_ID_KOS).value.toString(),
                                     idPermintaan = snap.child(Constant().KEY_ID_PERMINTAAN).value.toString(),
+                                    idPengguna=snap.child(Constant().KEY_ID_PENGGUNA).value.toString(),
                                     isi=snap.child(Constant().KEY_ISI).value.toString(),
                                     judul=snap.child(Constant().KEY_JUDUL).value.toString(),
                                     kepada = snap.child(Constant().KEY_KEPADA).value.toString(),
@@ -285,9 +289,9 @@ class PermintaanFragment : Fragment(), OnClickListener {
 
                                    val transaksi=Transaksi(
                                        transaksiId=UUID.randomUUID().toString(),
-                                       judul = "Permintaan Sewa Dibatalkan",
-                                       isi = "Anda Membatalkan Permintaan Sewa",
-                                       tipe=Constant().KEY_BATAL_SEWA,
+                                       judul = "Permintaan Sewa Ditolak",
+                                       isi = "Anda Menolak Permintaan Sewa",
+                                       tipe=Constant().KEY_TOLAK_SEWA,
                                        dari=emailPengguna,
                                        kepada=permintaan.dari,
                                        tanggal=tanggalHariIni
@@ -361,6 +365,14 @@ class PermintaanFragment : Fragment(), OnClickListener {
             })
     }
 
+
+    private fun lihatProfilePengguna(idPengguna:String)
+    {
+        intent= Intent(requireActivity(),RatingProfileActivity::class.java)
+        intent.putExtra("idPengguna",idPengguna)
+        startActivity(intent)
+    }
+
     override fun onTerimaCLickListener(view: View, dataPermintaan: Permintaan) {
         if(dataPermintaan.judul==Constant().PERMINTAAAN_AKHIRI_SEWA)
         {
@@ -383,6 +395,10 @@ class PermintaanFragment : Fragment(), OnClickListener {
         {
             tolakPermintaan(dataPermintaan.idPermintaan)
         }
+    }
+
+    override fun onLihatProfileListener(view: View, dataPermintaan: Permintaan) {
+        lihatProfilePengguna(dataPermintaan.idPengguna)
     }
 
 

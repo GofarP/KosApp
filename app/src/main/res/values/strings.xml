@@ -97,6 +97,11 @@
     <string name="txt_kelurahan_kos">Kelurahan Kos</string>
     <string name="txt_kecamatan_kos">Kecamatan Kos</string>
     <string name="text_lihat_bukti_pembayaran">Lihat Bukti Pembayaran</string>
+    <string name="txt_tambah_rating">Tambah Rating</string>
+    <string name="txt_koss_null">Pengguna Ini Belum Pernah Menyewa Kos</string>
+    <string name="txt_sewa_kos">Sewa Kos</string>
+    <string name="txt_totl_harga">Total Harga:</string>
+    <string name="txt_judul_bukti_pembayaran">Bukti Pembayaran Pengguna</string>
 
 
 </resources>

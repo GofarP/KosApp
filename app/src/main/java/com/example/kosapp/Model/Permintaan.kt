@@ -5,6 +5,7 @@ import java.util.*
 data class Permintaan(
     val idPermintaan:String,
     val idKos:String,
+    val idPengguna:String,
     val namaKos:String,
     val judul:String,
     val isi:String,

@@ -43,6 +43,7 @@ class CampurKosFragment : Fragment(), ItemOnClick {
     private lateinit var locationManager: LocationManager
     private lateinit var lokasiSekarangLatLng:Point
     private lateinit var lokasiKosLatLng:Point
+    private lateinit var preferenceManager: PreferenceManager
     private var jarak=0.0
 
 
@@ -61,6 +62,9 @@ class CampurKosFragment : Fragment(), ItemOnClick {
 
         locationManager= LocationManager()
         locationManager.ambilLokasiSekarang(requireActivity())
+
+        preferenceManager=PreferenceManager()
+        preferenceManager.preferenceManager(requireActivity())
 
         lokasiSekarangLatLng=Point.fromLngLat(locationManager.ambilLokasiSekarang(requireActivity()).longitude,
             locationManager.ambilLokasiSekarang(requireActivity()).latitude)

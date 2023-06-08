@@ -61,7 +61,7 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
         getDataKosWanita()
 
         preferenceManager= PreferenceManager()
-        preferenceManager.preferenceManager(view.context)
+        preferenceManager.preferenceManager(requireActivity())
 
         locationManager=LocationManager()
         locationManager.ambilLokasiSekarang(requireActivity())

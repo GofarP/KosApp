@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,10 +16,11 @@ import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.Model.Pengguna
+import com.example.kosapp.Model.RatingProfile
 import com.example.kosapp.Model.Transaksi
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityPenyewaBinding
-import com.example.kosapp.databinding.LayoutDetailPenyewaBinding
+import com.example.kosapp.databinding.LayoutBeriRatingProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -29,6 +31,7 @@ import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class PenyewaActivity : AppCompatActivity(), PenggunaItemOnCLick {
 
@@ -37,6 +40,7 @@ class PenyewaActivity : AppCompatActivity(), PenggunaItemOnCLick {
     private val VIEW_PENGGUNA=2
     private val emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
     private var calendar= Calendar.getInstance()
+    private var sudahDiberiRating=false
 
     private lateinit var binding:ActivityPenyewaBinding
     private lateinit var adapter: PenyewaAdapter
@@ -46,6 +50,9 @@ class PenyewaActivity : AppCompatActivity(), PenggunaItemOnCLick {
     private lateinit var  layoutManager: RecyclerView.LayoutManager
     private lateinit var  transaksi:Transaksi
     private lateinit var tanggalHariIni:String
+    private lateinit var ratingProfile:RatingProfile
+    private lateinit var ratingProfileMap:MutableMap<String,Any>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +67,8 @@ class PenyewaActivity : AppCompatActivity(), PenggunaItemOnCLick {
 
         dataKosIntent=intent
         kos=dataKosIntent.getParcelableExtra("dataKos")!!
+
+
 
         getData()
 
@@ -131,17 +140,90 @@ class PenyewaActivity : AppCompatActivity(), PenggunaItemOnCLick {
 
     override fun OnClickDetail(view: View, pengguna: Pengguna) {
 
-        val dialogView=layoutInflater.inflate(R.layout.layout_detail_penyewa, null)
+        val dialogView=layoutInflater.inflate(R.layout.layout_beri_rating_profile, null)
         val customDialog=AlertDialog.Builder(this)
             .setView(dialogView)
             .show()
-        val customDialogBinding= LayoutDetailPenyewaBinding.inflate(layoutInflater)
+        val customDialogBinding= LayoutBeriRatingProfileBinding.inflate(layoutInflater)
         customDialog.setContentView(customDialogBinding.root)
 
-        customDialogBinding.lbldetailnama.text=pengguna.username
-        customDialogBinding.lbldetailemail.text=pengguna.email
-        customDialogBinding.lblnotelp.text=pengguna.noTelp
-        customDialogBinding.lbljeniskelamin.text=pengguna.jenisKelamin
+        val arrayRatingPengguna=arrayOf(Constant().KEY_RATING_SANGAT_BAIK,
+            Constant().KEY_RATING_BAIK, Constant().KEY_RATING_BIASA,
+            Constant().KEY_RATING_BURUK, Constant().KEY_RATING_SANGAT_BURUK
+        )
+
+
+        val ratingProfileAdapter= ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayRatingPengguna)
+        ratingProfileAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        customDialogBinding.spnrating.adapter=ratingProfileAdapter
+
+        
+        database.child(Constant().KEY_RATING_USER)
+            .child(pengguna.id)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                if(snapshot.exists())
+                {
+                    val snapRating=snapshot.child(kos.idKos).child(Constant().KEY_RATING_USER).value.toString()
+                    val jenisRatingProfilePosition=ratingProfileAdapter.getPosition(snapRating)
+                    customDialogBinding.spnrating.setSelection(jenisRatingProfilePosition)
+                    sudahDiberiRating=true
+                    customDialogBinding.btntambahrating.text="Update Rating"
+                    customDialogBinding.lbltitleratingprofile.text="Update Rating"
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("db error", "Database Error")
+            }
+        })
+
+        ratingProfile=RatingProfile(
+            idKos = kos.idKos,
+            idPengguna = pengguna.id,
+            namaKos = kos.nama,
+            ratingPengguna = customDialogBinding.spnrating.selectedItem.toString(),
+            tanggal ="20-02-1999"
+        )
+
+        customDialogBinding.btntambahrating.setOnClickListener {
+
+            if(sudahDiberiRating)
+            {
+                ratingProfileMap=HashMap()
+                ratingProfileMap[Constant().KEY_RATING_USER]=customDialogBinding.spnrating.selectedItem.toString()
+                ratingProfileMap[Constant().KEY_TANGGAL]=tanggalHariIni
+                database.child(Constant().KEY_RATING_USER)
+                    .child(pengguna.id)
+                    .child(kos.idKos)
+                    .updateChildren(ratingProfileMap)
+                    .addOnSuccessListener {
+                        Toast.makeText(this@PenyewaActivity, "Sukses Mengubah Rating Profile Pengguna", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this@PenyewaActivity, "Gagal Mengubah Rating Profile Pengguna", Toast.LENGTH_SHORT).show()
+                    }
+            }
+
+            else
+            {
+                database.child(Constant().KEY_RATING_USER)
+                    .child(pengguna.id)
+                    .child(kos.idKos)
+                    .setValue(ratingProfile)
+                    .addOnSuccessListener {
+                        Toast.makeText(this@PenyewaActivity, "Sukses Menambah Rating Profile Pengguna ", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this@PenyewaActivity, "Gagal Menambah Rating Profile Pengguna", Toast.LENGTH_SHORT).show()
+                    }
+            }
+
+            customDialog.dismiss()
+
+        }
 
 
     }
@@ -205,7 +287,7 @@ class PenyewaActivity : AppCompatActivity(), PenggunaItemOnCLick {
             .setNegativeButton("Tidak"){dialog, id->
 
             }
-        
+
         val alert=alertBuilder.create()
         alert.show()
     }

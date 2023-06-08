@@ -67,6 +67,9 @@ class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationList
         locationManager= LocationManager()
         locationManager.ambilLokasiSekarang(requireActivity())
 
+        preferenceManager=PreferenceManager()
+        preferenceManager.preferenceManager(requireActivity())
+
         lokasiSekarangLatLng=Point.fromLngLat(locationManager.ambilLokasiSekarang(requireActivity()).longitude,
             locationManager.ambilLokasiSekarang(requireActivity()).latitude)
 

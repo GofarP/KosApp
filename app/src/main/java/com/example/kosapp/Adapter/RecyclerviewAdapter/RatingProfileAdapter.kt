@@ -1,26 +1,24 @@
 package com.example.kosapp.Adapter.RecyclerviewAdapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kosapp.Model.Kos
-import com.example.kosapp.Model.Rating
+import com.example.kosapp.Model.RatingProfile
 import com.example.kosapp.databinding.LayoutRatingProfileBinding
 
-class RatingProfileAdapter(private val ratingArrayList:ArrayList<Rating>):
+class RatingProfileAdapter(private val ratingProfileArrayList:ArrayList<RatingProfile>):
     RecyclerView.Adapter<RatingProfileAdapter.ViewHolder>() {
 
     class ViewHolder(layoutRatingProfileBinding: LayoutRatingProfileBinding)
         :RecyclerView.ViewHolder(layoutRatingProfileBinding.root) {
             private val binding=layoutRatingProfileBinding
 
-            fun bind(rating: Rating)
+            fun bind(ratingProfile: RatingProfile)
             {
                 itemView.apply {
-                    binding.lblnamakos.text=rating.namaKos
-                    binding.lblbrating.text=rating.rating
-                    binding.lbltanggal.text=rating.tanggal
+                    binding.lblnamakos.text=ratingProfile.namaKos
+                    binding.lblbrating.text=ratingProfile.ratingPengguna
+                    binding.lbltanggal.text=ratingProfile.tanggal
                 }
 
 
@@ -38,11 +36,11 @@ class RatingProfileAdapter(private val ratingArrayList:ArrayList<Rating>):
     }
 
     override fun onBindViewHolder(holder: RatingProfileAdapter.ViewHolder, position: Int) {
-        holder.bind(ratingArrayList[position])
+        holder.bind(ratingProfileArrayList[position])
     }
 
     override fun getItemCount(): Int {
-        return ratingArrayList.size
+        return ratingProfileArrayList.size
     }
 
 

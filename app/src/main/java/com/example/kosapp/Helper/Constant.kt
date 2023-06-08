@@ -12,6 +12,12 @@ class Constant {
     val KEY_ROLE="role"
     val KEY_ROLE_ADMIN="admin"
     val KEY_ROLE_USER="user"
+    val KEY_RATING_USER="ratingPengguna"
+    val KEY_RATING_SANGAT_BAIK="sangat baik"
+    val KEY_RATING_BAIK="baik"
+    val KEY_RATING_BIASA="biasa"
+    val KEY_RATING_BURUK="buruk"
+    val KEY_RATING_SANGAT_BURUK="sangat buruk"
 
 
     val KEY_PRIA="Pria"
@@ -23,7 +29,7 @@ class Constant {
 
     val KEY_DATA_KOS="dataKos"
     val KEY_ID_KOS="idKos"
-    val KEY_NAMA_KOS="nama"
+    val KEY_NAMA_KOS="namaKos"
     val KEY_EMAIL_PEMILIK="emailPemilik"
     val KEY_ALAMAT_KOS="alamat"
     val KEY_BIAYA_KOS="biaya"
@@ -110,7 +116,9 @@ class Constant {
     val KEY_KELURAHAN="kelurahan"
     val KEY_KECAMATAN="kecamatan"
 
-    val KEY_PENGELUARAN_KOS="Pengeliatan Kos"
+    val KEY_PENGELUARAN_KOS="Pengeluaran Kos"
 
+    val KEY_HARI="Hari"
+    val KEY_BULAN="Bulan"
 
 }

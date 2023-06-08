@@ -2,10 +2,15 @@ package com.example.kosapp.Activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.kosapp.Callback.SetImageListCallback
@@ -15,6 +20,8 @@ import com.example.kosapp.Model.Kos
 import com.example.kosapp.Model.Permintaan
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityDetailSewaKosBinding
+import com.example.kosapp.databinding.LayoutWaktuSewaBinding
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -31,6 +38,7 @@ import kotlin.collections.HashMap
 class DetailSewaKosActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailSewaKosBinding
+    private lateinit var bindingWaktuSewa:LayoutWaktuSewaBinding
     private var slideHashMap=HashMap<String,SlideModel>()
     private var slideArrayList=ArrayList<SlideModel>()
     private var storage=FirebaseStorage.getInstance().reference
@@ -42,7 +50,11 @@ class DetailSewaKosActivity : AppCompatActivity() {
     private var permintaanDitemukan=false
     private var kosSudahDisewa=false
     private var calendar=Calendar.getInstance()
+    private var idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
+    private var total:Double=0.0
+    private lateinit var jumlahHari:String
     private lateinit var tanggalHari:String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,7 +119,59 @@ class DetailSewaKosActivity : AppCompatActivity() {
 
             else
             {
-                sewaKos()
+                val dialogSewa=layoutInflater.inflate(R.layout.layout_waktu_sewa, null)
+                val customDialog=AlertDialog
+                    .Builder(this)
+                    .setView(dialogSewa)
+                    .show()
+
+                bindingWaktuSewa= LayoutWaktuSewaBinding.inflate(layoutInflater)
+                customDialog.setContentView(bindingWaktuSewa.root)
+
+                val arrayWaktu=arrayOf(Constant().KEY_HARI, Constant().KEY_BULAN)
+
+                val ratingProfileAdapter= ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayWaktu)
+                ratingProfileAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                bindingWaktuSewa.spnsatuanwaktu.adapter=ratingProfileAdapter
+
+
+                val textWatcher=object:TextWatcher{
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    }
+
+                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                        jumlahHari=bindingWaktuSewa.txtjmlhari.text.toString()
+
+
+                        if(jumlahHari.isEmpty())
+                        {
+                            total=0.0
+                        }
+
+                        else
+                        {
+                            total=jumlahHari.toDouble() * kos.biaya
+                        }
+
+                        bindingWaktuSewa.lbltotalharga.text=NumberFormat.getCurrencyInstance().format(total)
+
+                    }
+
+                    override fun afterTextChanged(p0: Editable?) {
+                    }
+
+                }
+
+
+                if(total!=0.0)
+                {
+                    sewaKos()
+                }
+
+                bindingWaktuSewa.txtjmlhari.addTextChangedListener (textWatcher )
+
+
             }
 
         }
@@ -120,6 +184,7 @@ class DetailSewaKosActivity : AppCompatActivity() {
         permintaan=Permintaan(
             idPermintaan=UUID.randomUUID().toString(),
             idKos=kos.idKos,
+            idPengguna=idPengguna,
             namaKos=kos.nama,
             dari = emailPengguna,
             kepada = kos.emailPemilik,
@@ -127,6 +192,11 @@ class DetailSewaKosActivity : AppCompatActivity() {
             isi ="Mengajukan Permintaan Untuk Menyewa Kos ${kos.nama}",
             tanggal = tanggalHari,
         )
+
+        if(kos.jenisBayar=="Transfer")
+        {
+
+        }
 
         database.child(Constant().KEY_PERMINTAAN)
             .push()

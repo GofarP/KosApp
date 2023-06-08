@@ -44,29 +44,61 @@
             android:textSize="17sp"
             />
 
-            <Button
-                android:id="@+id/btnterima"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="20sp"
-                android:layout_marginEnd="20sp"
-                android:layout_marginTop="20sp"
-                style="@style/Button.Ok"
-                android:text="@string/text_permintaan_terima"
-                />
+                android:layout_marginTop="35dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
 
-            <Button
-                android:id="@+id/btntolak"
+                >
+
+                <ImageButton
+                    android:id="@+id/btnterima"
+                    style="@style/Button.Round_Success"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentStart="true"
+                    android:src="@drawable/ic_check" />
+
+                <ImageButton
+                    android:id="@+id/btntolak"
+                    style="@style/Button.Round_Delete"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_delete" />
+
+                <ImageButton
+                    android:id="@+id/btnlihatprofilerating"
+                    style="@style/Button.Round_Detail"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_eye" />
+
+            </RelativeLayout>
+            
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
-                android:layout_marginEnd="20sp"
-                android:text="@string/text_permintaan_tola"
-                style="@style/Button.Cancel"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                />
+                >
+                
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnbatalkan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20sp"
+                    android:layout_marginEnd="20sp"
+                    android:layout_marginTop="20sp"
+                    android:layout_marginBottom="10sp"
+                    android:background="@color/red_cancel"
+                    android:text="@string/txt_batalkan"
+                    android:textColor="@color/white"
+                    >
+                </androidx.appcompat.widget.AppCompatButton>
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/lbltanggal"

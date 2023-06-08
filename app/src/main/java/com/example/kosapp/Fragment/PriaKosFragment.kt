@@ -63,6 +63,9 @@ class PriaKosFragment : Fragment(), ItemOnClick {
         locationManager= LocationManager()
         locationManager.ambilLokasiSekarang(requireActivity())
 
+        preferenceManager=PreferenceManager()
+        preferenceManager.preferenceManager(requireActivity())
+
         lokasiSekarangLatLng= Point.fromLngLat(locationManager.ambilLokasiSekarang(requireActivity()).longitude,
             locationManager.ambilLokasiSekarang(requireActivity()).latitude)
 

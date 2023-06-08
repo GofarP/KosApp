@@ -28,18 +28,20 @@ class PermintaanAdapter(private var permintaanArrayList:ArrayList<Permintaan>,pr
                          if(emailUser==dataPermintaan.kepada)
                          {
                             isiPermintaan="${dataPermintaan.dari} ${dataPermintaan.isi}"
+                             binding.btnbatalkan.visibility=View.GONE
                          }
 
                          else
                          {
                              isiPermintaan="Anda ${dataPermintaan.isi}"
-                             binding.btntolak.text="Batalkan"
                              binding.btnterima.visibility=View.GONE
+                             binding.btntolak.visibility=View.GONE
+                             binding.btnlihatprofilerating.visibility=View.GONE
                          }
 
                          binding.lbljudulpermintaan.text=judulPermintaan
                          binding.lblisipermintaan.text=isiPermintaan
-                         binding.lbltanggal.text= dataPermintaan.tanggal.toString()
+                         binding.lbltanggal.text= dataPermintaan.tanggal
 
                          binding.btnterima.setOnClickListener {view->
                              itemClickListner.onTerimaCLickListener(view, dataPermintaan)
@@ -47,6 +49,10 @@ class PermintaanAdapter(private var permintaanArrayList:ArrayList<Permintaan>,pr
 
                          binding.btntolak.setOnClickListener { view->
                              itemClickListner.onTolakClickListener(view, dataPermintaan)
+                         }
+
+                         binding.btnlihatprofilerating.setOnClickListener {view->
+                             itemClickListner.onLihatProfileListener(view, dataPermintaan)
                          }
                      }
                  }
@@ -69,5 +75,6 @@ class PermintaanAdapter(private var permintaanArrayList:ArrayList<Permintaan>,pr
     {
         fun onTerimaCLickListener(view: View, dataPermintaan: Permintaan)
         fun onTolakClickListener(view: View, dataPermintaan: Permintaan)
+        fun onLihatProfileListener(view:View, dataPermintaan: Permintaan)
     }
 }
