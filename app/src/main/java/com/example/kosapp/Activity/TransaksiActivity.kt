@@ -29,9 +29,12 @@ class TransaksiActivity : AppCompatActivity() {
 
     private var database=Firebase.database.reference
     private var emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
+    private var idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
+
     private lateinit var transaksi:Transaksi
     private var calendar=Calendar.getInstance()
     private lateinit var tglHariIni:String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,16 +46,17 @@ class TransaksiActivity : AppCompatActivity() {
         Helper().setStatusBarColor(this@TransaksiActivity)
 
 
-        getDataHistory()
+        getDataTransaksi()
         adapter=TransaksiAdapter(transaksiList)
         val layoutManager:RecyclerView.LayoutManager=LinearLayoutManager(this)
         binding.rvhistory.layoutManager=layoutManager
         binding.rvhistory.adapter=adapter
     }
 
-    private fun getDataHistory()
+    private fun getDataTransaksi()
     {
         database.child(Constant().KEY_TRANSAKSI)
+            .child(idPengguna)
             .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
 
@@ -60,19 +64,20 @@ class TransaksiActivity : AppCompatActivity() {
                     binding.rvhistory.adapter=null
 
                     snapshot.children.forEach { snap->
-                        val childDari=snap.child(Constant().KEY_DARI).value.toString()
-                        val childKepada=snap.child(Constant().KEY_KEPADA).value.toString()
+                        val childIdPenyewa=snap.child(Constant().KEY_ID_PEMILIK).value.toString()
+                        val childIdPemilik=snap.child(Constant().KEY_ID_PENYEWA).value.toString()
 
-                        if(childDari==emailPengguna || childKepada==emailPengguna)
+                        if(childIdPemilik==idPengguna || childIdPenyewa==idPengguna)
                         {
                             transaksi= Transaksi(
-                                transaksiId=snap.child(Constant().KEY_ID_TRANSAKSI).value.toString(),
-                                dari = childDari,
-                                kepada = childKepada,
+                                idTransaksi=snap.child(Constant().KEY_ID_TRANSAKSI).value.toString(),
                                 judul=snap.child(Constant().KEY_JUDUL).value.toString(),
+                                idPemilik=snap.child(Constant().KEY_ID_PEMILIK).value.toString(),
+                                idPenyewa=snap.child(Constant().KEY_ID_PENYEWA).value.toString(),
                                 isi = snap.child(Constant().KEY_ISI).value.toString(),
                                 tipe = snap.child(Constant().KEY_TYPE).value.toString(),
                                 tanggal = snap.child(Constant().KEY_TANGGAL).value.toString()
+
                             )
 
                             transaksiList.add(transaksi)

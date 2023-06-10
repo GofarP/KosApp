@@ -87,6 +87,10 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
     private var thumbnailDiganti=false
 
+    private var emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
+    private var idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -188,7 +192,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         val jenisKosPosition=jenisKosAdapter.getPosition(kos.jenis)
         val jenisBayarPosition=jenisBayarAdapter.getPosition(kos.jenisBayar)
 
-        binding.txtnamakos.setText(kos.nama)
+        binding.txtnamakos.setText(kos.namaKos)
         binding.txtalamatkos.setText(kos.alamat)
         binding.txtjumlahkamarkos.setText(kos.sisa.toString())
         binding.spnjeniskos.setSelection(jenisKosPosition)
@@ -299,10 +303,11 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
         kos=Kos(
             idKos=idKos,
-            nama=nama,
+            namaKos=nama,
             alamat = alamat,
             biaya =biaya.toDouble(),
-            emailPemilik=userEmail.toString(),
+            idPemilik=idPengguna,
+            emailPemilik = emailPengguna,
             jenisBayar=jenisBayar,
             gambarKos =kos.gambarKos,
             thumbnailKos = gambarThumbnail,
@@ -314,7 +319,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
             deskripsi=deskripsi,
             kecamatan=kecamatan,
             kelurahan=kelurahan,
-            status=Constant().KEY_PENGAJUAN_VERIFIKASI
+            status=Constant().KEY_PENGAJUAN_VERIFIKASI,
         )
 
         database.child(Constant().KEY_DAFTAR_KOS)

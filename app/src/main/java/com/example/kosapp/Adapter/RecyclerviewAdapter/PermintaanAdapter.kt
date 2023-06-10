@@ -16,6 +16,7 @@ class PermintaanAdapter(private var permintaanArrayList:ArrayList<Permintaan>,pr
         {
                  val binding=layoutPermintaanBinding
                  val emailUser=FirebaseAuth.getInstance().currentUser?.email.toString()
+                 val idUser=FirebaseAuth.getInstance().currentUser?.uid.toString()
                  var isiPermintaan:String?=null
                  var judulPermintaan:String?=null
 
@@ -25,9 +26,9 @@ class PermintaanAdapter(private var permintaanArrayList:ArrayList<Permintaan>,pr
 
                      itemView.apply {
 
-                         if(emailUser==dataPermintaan.kepada)
+                         if(idUser==dataPermintaan.idPenyewa)
                          {
-                            isiPermintaan="${dataPermintaan.dari} ${dataPermintaan.isi}"
+                            isiPermintaan="${dataPermintaan.emailPenyewa} ${dataPermintaan.isi}"
                              binding.btnbatalkan.visibility=View.GONE
                          }
 
@@ -54,6 +55,10 @@ class PermintaanAdapter(private var permintaanArrayList:ArrayList<Permintaan>,pr
                          binding.btnlihatprofilerating.setOnClickListener {view->
                              itemClickListner.onLihatProfileListener(view, dataPermintaan)
                          }
+
+                         binding.btnbatalkan.setOnClickListener { view->
+                             itemClickListner.onBatalClickListener(view, dataPermintaan)
+                         }
                      }
                  }
             }
@@ -76,5 +81,6 @@ class PermintaanAdapter(private var permintaanArrayList:ArrayList<Permintaan>,pr
         fun onTerimaCLickListener(view: View, dataPermintaan: Permintaan)
         fun onTolakClickListener(view: View, dataPermintaan: Permintaan)
         fun onLihatProfileListener(view:View, dataPermintaan: Permintaan)
+        fun onBatalClickListener(view:View, dataPermintaan: Permintaan)
     }
 }

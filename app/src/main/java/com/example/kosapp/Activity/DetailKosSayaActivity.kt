@@ -84,7 +84,7 @@ class DetailKosSayaActivity : AppCompatActivity() {
         binding.btnchatpemilik.setOnClickListener {
             val intent=Intent(this@DetailKosSayaActivity, ChatActiviity::class.java)
             intent.putExtra(Constant().KEY_EMAIL_PENGIRIM,emailPengguna)
-            intent.putExtra(Constant().KEY_EMAIL_PENGIRIM,kos.emailPemilik)
+            intent.putExtra(Constant().KEY_EMAIL_PENGIRIM,kos.idPemilik)
 
             startActivity(intent)
         }
@@ -92,7 +92,7 @@ class DetailKosSayaActivity : AppCompatActivity() {
         binding.btnaddcomment.setOnClickListener {
             val intent=Intent(this@DetailKosSayaActivity, CommentActivity::class.java)
             intent.putExtra(Constant().KEY_ID_KOS,kos.idKos)
-            intent.putExtra(Constant().KEY_EMAIL_PEMILIK,kos.emailPemilik)
+            intent.putExtra(Constant().KEY_EMAIL_PEMILIK,kos.idPemilik)
             startActivity(intent)
         }
 
@@ -108,7 +108,7 @@ class DetailKosSayaActivity : AppCompatActivity() {
         val format: NumberFormat = NumberFormat.getCurrencyInstance()
         format.maximumFractionDigits = 2
 
-        binding.includeLayoutDetail.lblnamakos.text= kos.nama
+        binding.includeLayoutDetail.lblnamakos.text= kos.namaKos
         binding.includeLayoutDetail.lblfasilitas.text= kos.fasilitas
         binding.includeLayoutDetail.lblhargakos.text=  format.format(kos.biaya)
         binding.includeLayoutDetail.lbljenispembayaran.text=kos.jenisBayar
@@ -167,12 +167,13 @@ class DetailKosSayaActivity : AppCompatActivity() {
         permintaan= Permintaan(
             idPermintaan= UUID.randomUUID().toString(),
             idKos=kos.idKos,
-            idPengguna=idPengguna,
-            namaKos=kos.nama,
-            dari = emailPengguna,
-            kepada = kos.emailPemilik,
+            idPenyewa = idPengguna,
+            idPemilik=kos.idPemilik,
+            emailPenyewa=emailPengguna,
+            emailPemilik=kos.emailPemilik,
+            namaKos=kos.namaKos,
             judul = Constant().PERMINTAAAN_AKHIRI_SEWA,
-            isi ="Mengajukan Permintaan Untuk Mengakhiri Sewa Kos ${kos.nama}",
+            isi ="Mengajukan Permintaan Untuk Mengakhiri Sewa Kos ${kos.namaKos}",
             tanggal = tglHariIni,
         )
 

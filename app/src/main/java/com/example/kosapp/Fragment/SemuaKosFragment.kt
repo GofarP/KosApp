@@ -19,14 +19,12 @@ import com.example.kosapp.Helper.PreferenceManager
 import com.example.kosapp.LocationManager.LocationManager
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.FragmentSemuaKosBinding
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.mapbox.android.core.location.LocationEngine
-import com.mapbox.android.core.location.LocationEnginePriority
-import com.mapbox.android.core.location.LocationEngineProvider
 import com.mapbox.geojson.Point
 import com.mapbox.turf.TurfConstants
 import com.mapbox.turf.TurfMeasurement
@@ -40,11 +38,10 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
     private var cariKosArrayList=ArrayList<Kos>()
     private var homeKosAdapter:HomeKosAdapter?=null
     private var database=Firebase.database.reference
+    private var emailPemilik=FirebaseAuth.getInstance().currentUser?.email.toString()
     private lateinit var kos:Kos
     private lateinit var  layoutManager: RecyclerView.LayoutManager
     private lateinit var preferenceManager: PreferenceManager
-    private lateinit var namaKos:String
-    private lateinit var locationEngine: LocationEngine
     lateinit var lokasiSekarang: Location
     private lateinit var lokasiSekarangLatLng: Point
     private lateinit var lokasiKosLatLng: Point
@@ -94,6 +91,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                             val snapKecamatan=snap.child(Constant().KEY_KECAMATAN).value.toString()
                             val snapBiaya=snap.child(Constant().KEY_BIAYA_KOS).value.toString()
                             val snapEmailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString()
+                            val snapIdPemilik=snap.child(Constant().KEY_ID_PEMILIK).value.toString()
                             val snapGambarKos=snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>
                             val snapThumbnailKos=snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString()
                             val snapJenis=snap.child(Constant().KEY_JENIS_KOS).value.toString()
@@ -118,6 +116,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                                     kelurahan=snapKelurahan,
                                     kecamatan=snapKecamatan,
                                     biaya = snapBiaya.toDouble(),
+                                    idPemilik=snapIdPemilik,
                                     emailPemilik=snapEmailPemilik,
                                     gambarKos = snapGambarKos,
                                     thumbnailKos = snapThumbnailKos,
@@ -125,7 +124,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                                     jenisBayar = snapJenisBayar,
                                     lattitude = snapLattitude,
                                     longitude = snapLongitude,
-                                    nama = snapNamaKos,
+                                    namaKos = snapNamaKos,
                                     sisa = snapSisa.toInt(),
                                     fasilitas=snapFasilitas,
                                     deskripsi=snapDeskripsi,
@@ -160,15 +159,16 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
             cariKosArrayList.clear()
             kosArrayList.forEach {result->
                 val cari=cari.trim().replace(" ","")
-                val namaKos=result.nama.trim().replace(" ","")
+                val namaKos=result.namaKos.trim().replace(" ","")
                 val alamatKos=result.alamat.trim().replace(" ","")
 
                 if(namaKos.contains(cari, true) || alamatKos.contains(cari, true))
                 {
                     kos=Kos(
                         idKos=result.idKos,
-                        nama=result.nama,
-                        emailPemilik = result.emailPemilik,
+                        namaKos=result.namaKos,
+                        idPemilik = result.idPemilik,
+                        emailPemilik=result.emailPemilik,
                         jenis = result.jenis,
                         alamat=result.alamat,
                         biaya = result.biaya,
@@ -207,7 +207,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
             Toast.makeText(activity, "Mohon Maaf, Kos Sedang Penuh", Toast.LENGTH_SHORT).show()
         }
 
-        else if(dataKos.jenis != jenisKelaminUser && dataKos.jenis!="Campur")
+        else if(dataKos.jenis != jenisKelaminUser && dataKos.idPemilik!= emailPemilik &&  dataKos.jenis!="Campur")
         {
             Toast.makeText(activity, "Jenis Kelamin Anda Tidak Cocok Untuk Kos Ini $jenisKelaminUser", Toast.LENGTH_SHORT).show()
         }

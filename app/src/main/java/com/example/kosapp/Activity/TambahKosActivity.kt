@@ -17,6 +17,7 @@ import com.example.kosapp.Helper.Helper
 import com.example.kosapp.Helper.PreferenceManager
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.Model.PermintaanVerifikasi
+import com.example.kosapp.Model.PermintaanVerifikasiKos
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityTambahKosBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -43,7 +44,7 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
     private var sliderUri:Uri?=null
     private var database=Firebase.database.reference
     private var firebaseStorage=FirebaseStorage.getInstance().reference
-    private var userEmail=FirebaseAuth.getInstance().currentUser?.email.toString()
+    private var emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
     private var userId=FirebaseAuth.getInstance().currentUser?.uid.toString()
     private val slideImageArrayList=ArrayList<SlideModel>()
     private var gambarKosList=ArrayList<String>()
@@ -51,12 +52,12 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
     private var lattitudeKos=0.0
     private var longitudeKos=0.0
     private var calendar=Calendar.getInstance()
-
+    private var idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
 
     private lateinit var binding:ActivityTambahKosBinding
     private lateinit var map:MapboxMap
     private lateinit var latLng: LatLng
-    private lateinit var permintaanVerifikasi: PermintaanVerifikasi
+    private lateinit var permintaanVerifikasiKos: PermintaanVerifikasiKos
     private lateinit var tanggalHariIni:String
     private lateinit var preferenceManager: PreferenceManager
 
@@ -132,8 +133,9 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
 
                 val kos=Kos(
                     idKos=kosId,
-                    nama=namaKos,
-                    emailPemilik=userEmail,
+                    namaKos=namaKos,
+                    idPemilik=idPengguna,
+                    emailPemilik=emailPengguna,
                     alamat = alamat,
                     kelurahan=kelurahan,
                     kecamatan=kecamatan,
@@ -151,19 +153,22 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                     rating=0
                 )
 
-                permintaanVerifikasi=PermintaanVerifikasi(
-                    email=userEmail,
-                    id=kosId,
+                permintaanVerifikasiKos=PermintaanVerifikasiKos(
+                    email=emailPengguna,
+                    idPemohon =idPengguna,
                     idPermintaan = UUID.randomUUID().toString(),
+                    idKos=kosId,
                     username=preferenceManager.getString(Constant().KEY_USERNAME).toString(),
-                    isi="$userEmail ingin melakukan verifikasi kos",
+                    isi="$emailPengguna ingin melakukan verifikasi kos",
                     judul=Constant().KEY_PERMINTAAN_VERIFIKASI_KOS,
                     tanggal=tanggalHariIni
                 )
 
+
+
                 database.child(Constant().KEY_PERMINTAAN)
                     .child(kosId)
-                    .setValue(permintaanVerifikasi)
+                    .setValue(permintaanVerifikasiKos)
 
                 database.child(Constant().KEY_DAFTAR_KOS)
                     .child(kosId)

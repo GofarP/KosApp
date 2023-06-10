@@ -4,7 +4,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.kosapp.Fragment.DisewaFragment
 import com.example.kosapp.Fragment.MenyewaFragment
-import com.example.kosapp.Fragment.BuktiPembayaranFragment
+import com.example.kosapp.Fragment.BuktiTransferFragment
 import com.example.kosapp.Fragment.PermintaanFragment
 
 class MyKosPagerAdapter(fragmentActivity: FragmentActivity):FragmentStateAdapter(fragmentActivity)  {
@@ -13,7 +13,7 @@ class MyKosPagerAdapter(fragmentActivity: FragmentActivity):FragmentStateAdapter
         MenyewaFragment(),
         DisewaFragment(),
         PermintaanFragment(),
-        BuktiPembayaranFragment(),
+        BuktiTransferFragment(),
     )
 
     override fun getItemCount(): Int=fragmentList.size

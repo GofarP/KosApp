@@ -18,8 +18,10 @@ class AdminPagerAdapter(fragmentActivity: FragmentActivity):FragmentStateAdapter
         when(position)
         {
             0->fragment= VerifikasiFragment()
-            1->fragment=FragmentAdminKos()
-            2->fragment= AkunFragment()
+            1->fragment=VerifikasiKosFragment()
+            2->fragment=FragmentAdminKos()
+            3->fragment= AkunFragment()
+            4->fragment=FrgmnetAdminNotifikasi()
         }
 
         return fragment as Fragment

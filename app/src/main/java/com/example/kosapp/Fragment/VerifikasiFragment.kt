@@ -1,7 +1,5 @@
 package com.example.kosapp.Fragment
 
-import android.app.ActionBar
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,10 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.example.kosapp.Activity.DetailVerifikasiAkunActivity
 import com.example.kosapp.Activity.DetailVerifikasiKosActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.PermintaanVerifikasiAdapter
@@ -20,10 +16,8 @@ import com.example.kosapp.Adapter.RecyclerviewAdapter.PermintaanVerifikasiAdapte
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Model.PermintaanVerifikasi
 import com.example.kosapp.Model.Transaksi
-import com.example.kosapp.R
 import com.example.kosapp.databinding.FragmentVerifikasiBinding
-import com.example.kosapp.databinding.LayoutDetailVerifikasiAkunBinding
-import com.example.kosapp.databinding.LayoutDetailVerifikasiKosBinding
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -42,6 +36,7 @@ class VerifikasiFragment : Fragment(), OnItemClickListener {
     private var storage=FirebaseStorage.getInstance().reference
     private var verifikasiArrayList=ArrayList<PermintaanVerifikasi>()
     private var calendar=Calendar.getInstance()
+    private var idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
 
     private lateinit var permintaanVerifikasiAdapter: PermintaanVerifikasiAdapter
     private lateinit var layoutManager: LinearLayoutManager
@@ -50,6 +45,7 @@ class VerifikasiFragment : Fragment(), OnItemClickListener {
     private lateinit var binding:FragmentVerifikasiBinding
     private lateinit var tanggalHariIni:String
     private lateinit var format:Format
+
 
 
 
@@ -80,11 +76,11 @@ class VerifikasiFragment : Fragment(), OnItemClickListener {
                     verifikasiArrayList.clear()
                     binding.rvadminverifikasi.adapter=null
 
-                        snapshot.children.forEach {snap->
+                    snapshot.children.forEach {snap->
                             permintaanVerifikasi= PermintaanVerifikasi(
                                 email = snap.child(Constant().KEY_EMAIL).value.toString(),
-                                id = snap.child(Constant().KEY_ID_PENGGUNA).value.toString(),
                                 idPermintaan = snap.child(Constant().KEY_ID_PERMINTAAN).value.toString(),
+                                idPemohon=snap.child(Constant().KEY_ID_PEMOHON).value.toString(),
                                 isi=snap.child(Constant().KEY_ISI).value.toString(),
                                 judul = snap.child(Constant().KEY_JUDUL).value.toString(),
                                 tanggal = snap.child(Constant().KEY_TANGGAL).value.toString(),
@@ -111,27 +107,38 @@ class VerifikasiFragment : Fragment(), OnItemClickListener {
     {
 
         transaksi= Transaksi(
-                transaksiId = UUID.randomUUID().toString(),
-                dari=Constant().KEY_ROLE_ADMIN,
+                idTransaksi = UUID.randomUUID().toString(),
+                idPenyewa = permintaanVerifikasi.idPemohon,
+                idPemilik = idPengguna,
                 isi="Permintaan Verifikasi Diterima",
                 judul="Verifikasi Akun",
-                kepada = permintaanVerifikasi.email,
                 tanggal = tanggalHariIni,
                 tipe = Constant().KEY_VERIFIKASI
             )
 
         database.child(Constant().KEY_PERMINTAAN_VERIFIKASI)
-            .child(permintaanVerifikasi.id)
+            .child(permintaanVerifikasi.idPermintaan)
             .removeValue()
 
         database.child(Constant().KEY_VERIFIKASI)
-            .child(permintaanVerifikasi.id)
+            .child(permintaanVerifikasi.idPemohon)
             .child(Constant().KEY_STATUS_VERIFIKASI_AKUN)
             .setValue(Constant().KEY_TERVERIFIKASI)
 
         database.child(Constant().KEY_TRANSAKSI)
+            .child(permintaanVerifikasi.idPemohon)
             .push()
             .setValue(transaksi)
+
+        transaksi.isi="Anda Telah Menerima Permintaan Verifikasi Dari ${permintaanVerifikasi.email}"
+
+        database.child(Constant().KEY_TRANSAKSI)
+            .child(idPengguna)
+            .push()
+            .setValue(transaksi)
+
+        val indexVerifikasi=verifikasiArrayList.indexOf(permintaanVerifikasi)
+        permintaanVerifikasiAdapter.notifyItemRemoved(indexVerifikasi)
 
         Toast.makeText(activity, "Sukses menerima Verifikasi Akun", Toast.LENGTH_SHORT).show()
     }
@@ -139,18 +146,45 @@ class VerifikasiFragment : Fragment(), OnItemClickListener {
 
     private fun tolakVerifikasiAkun(permintaanVerifikasi:PermintaanVerifikasi)
     {
+
+        transaksi= Transaksi(
+            idTransaksi = UUID.randomUUID().toString(),
+            idPenyewa = permintaanVerifikasi.idPemohon,
+            idPemilik = idPengguna,
+            isi="Permintaan Verifikasi Ditolak",
+            judul="Verifikasi Akun",
+            tanggal = tanggalHariIni,
+            tipe = Constant().KEY_VERIFIKASI
+        )
+
         database.child(Constant().KEY_PERMINTAAN_VERIFIKASI)
             .child(permintaanVerifikasi.idPermintaan)
             .removeValue()
 
-        storage.child(Constant().KEY_VERIFIKASI)
-            .child(permintaanVerifikasi.id)
-            .delete()
-
         database.child(Constant().KEY_VERIFIKASI)
-            .child(permintaanVerifikasi.id)
+            .child(permintaanVerifikasi.idPemohon)
             .child(Constant().KEY_STATUS_VERIFIKASI_AKUN)
             .setValue(Constant().KEY_BELUM_VERIFIKASI)
+
+        database.child(Constant().KEY_TRANSAKSI)
+            .child(permintaanVerifikasi.idPemohon)
+            .push()
+            .setValue(transaksi)
+
+        transaksi.isi="Anda Telah Menolak Permintaan Verifikasi Dari ${permintaanVerifikasi.email}"
+
+        database.child(Constant().KEY_TRANSAKSI)
+            .child(idPengguna)
+            .push()
+            .setValue(transaksi)
+
+        database.child(Constant().KEY_VERIFIKASI)
+            .child(permintaanVerifikasi.idPemohon)
+            .get().addOnSuccessListener {snap->
+                val snapFotoKtp=snap.child(Constant().KEY_FOTO).value.toString()
+
+                storage.child(snapFotoKtp).delete()
+            }
 
         val indexVerifikasi=verifikasiArrayList.indexOf(permintaanVerifikasi)
         permintaanVerifikasiAdapter.notifyItemRemoved(indexVerifikasi)
@@ -170,33 +204,32 @@ class VerifikasiFragment : Fragment(), OnItemClickListener {
     private fun detailVerifikasiKos(permintaanVerifikasi: PermintaanVerifikasi)
     {
         val intent=Intent(activity, DetailVerifikasiKosActivity::class.java)
-            .putExtra(Constant().KEY_ID_KOS, permintaanVerifikasi.id)
+            .putExtra(Constant().KEY_ID_KOS, permintaanVerifikasi.idPermintaan)
         startActivity(intent)
     }
 
     private fun terimaVerifikasiKos(permintaanVerifikasi: PermintaanVerifikasi)
     {
         transaksi= Transaksi(
-            transaksiId = UUID.randomUUID().toString(),
-            dari=Constant().KEY_ROLE_ADMIN,
+            idTransaksi = UUID.randomUUID().toString(),
+            idPemilik = idPengguna,
+            idPenyewa = permintaanVerifikasi.idPemohon,
             isi="Permintaan Verifikasi Diterima",
             judul="Verifikasi Kos",
-            kepada = permintaanVerifikasi.email,
             tanggal = tanggalHariIni,
             tipe = Constant().KEY_VERIFIKASI
         )
 
         database.child(Constant().KEY_PERMINTAAN_VERIFIKASI)
-            .child(permintaanVerifikasi.id)
+            .child(permintaanVerifikasi.idPermintaan)
             .removeValue()
 
         database.child(Constant().KEY_DAFTAR_KOS)
-            .child(permintaanVerifikasi.id)
+            .child(permintaanVerifikasi.idPermintaan)
             .child(Constant().KEY_STATUS_VERIFIKASI_AKUN)
             .setValue(Constant().KEY_TERVERIFIKASI)
 
         database.child(Constant().KEY_TRANSAKSI)
-            .push()
             .setValue(transaksi)
 
         Toast.makeText(activity, "Sukses menerima Verifikasi Kos", Toast.LENGTH_SHORT).show()
@@ -210,11 +243,11 @@ class VerifikasiFragment : Fragment(), OnItemClickListener {
 
 
         database.child(Constant().KEY_DAFTAR_KOS)
-            .child(permintaanVerifikasi.id)
+            .child(permintaanVerifikasi.idPermintaan)
             .removeValue()
 
         storage.child(Constant().KEY_GAMBAR_KOS)
-            .child(permintaanVerifikasi.id)
+            .child(permintaanVerifikasi.idPermintaan)
             .delete()
 
         val indexVerifikasi=verifikasiArrayList.indexOf(permintaanVerifikasi)

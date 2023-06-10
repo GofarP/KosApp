@@ -32,7 +32,7 @@ class NegaraAdapter(private val kosArrayList: List<Kos>)
 
     // untuk memasukkan atau set data ke dalam view
     override fun onBindViewHolder(holder: NegaraViewHolder, position: Int) {
-        holder.layoutKosMenyewaBinding.lblnama.text = kosArrayList[position].nama
+        holder.layoutKosMenyewaBinding.lblnama.text = kosArrayList[position].namaKos
         holder.layoutKosMenyewaBinding.lblalamat.text = kosArrayList[position].alamat
 
         // event onclick pada setiap item

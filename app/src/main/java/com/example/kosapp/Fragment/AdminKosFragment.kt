@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kosapp.Activity.DetailSewaKosActivity
 import com.example.kosapp.Activity.DetailVerifikasiKosActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter.ItemOnClick
@@ -132,6 +131,7 @@ class FragmentAdminKos : Fragment(), ItemOnClick {
                         val snapKecamatan=snap.child(Constant().KEY_KECAMATAN).value.toString()
                         val snapBiaya=snap.child(Constant().KEY_BIAYA_KOS).value.toString()
                         val snapEmailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString()
+                        val snapIdPemilik=snap.child(Constant().KEY_ID_PEMILIK).value.toString()
                         val snapGambarKos=snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>
                         val snapThumbnailKos=snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString()
                         val snapJenis=snap.child(Constant().KEY_JENIS_KOS).value.toString()
@@ -152,19 +152,19 @@ class FragmentAdminKos : Fragment(), ItemOnClick {
                                 kelurahan=snapKelurahan,
                                 kecamatan=snapKecamatan,
                                 biaya = snapBiaya.toDouble(),
-                                emailPemilik=snapEmailPemilik,
+                                idPemilik=snapIdPemilik,
                                 gambarKos = snapGambarKos,
                                 thumbnailKos = snapThumbnailKos,
                                 jenis=snapJenis,
                                 jenisBayar = snapJenisBayar,
                                 lattitude = snapLattitude,
                                 longitude = snapLongitude,
-                                nama = snapNamaKos,
+                                namaKos = snapNamaKos,
                                 sisa = snapSisa.toInt(),
                                 fasilitas=snapFasilitas,
                                 deskripsi=snapDeskripsi,
-                                status=snapStatus
-
+                                status=snapStatus,
+                                emailPemilik=snapEmailPemilik
                             )
 
                             kosArrayList.add(kos)

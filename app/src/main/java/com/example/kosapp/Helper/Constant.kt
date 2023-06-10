@@ -31,6 +31,9 @@ class Constant {
     val KEY_ID_KOS="idKos"
     val KEY_NAMA_KOS="namaKos"
     val KEY_EMAIL_PEMILIK="emailPemilik"
+    val KEY_EMAIL_PENYEWA="emailPenyewa"
+    val KEY_ID_PEMILIK="idPemilik"
+    val KEY_ID_PENYEWA="idPenyewa"
     val KEY_ALAMAT_KOS="alamat"
     val KEY_BIAYA_KOS="biaya"
     val KEY_JENIS_BAYAR_KOS="jenisBayar"
@@ -106,6 +109,7 @@ class Constant {
     val KEY_PERMINTAAN_VERIFIKASI_AKUN="permintaan verifikasi akun"
     val KEY_STATUS_VERIFIKASI_AKUN="status"
     val KEY_STATUS_VERIFIKASI_KOS="status"
+    val KEY_ID_PEMOHON="idPemohon"
 
 
     val KEY_TERVERIFIKASI="Terverifikasi"
@@ -120,5 +124,9 @@ class Constant {
 
     val KEY_HARI="Hari"
     val KEY_BULAN="Bulan"
+
+    val KEY_BUKTI_TRANSFER="buktiTransfer"
+    val KEY_URL_BUKTI_TRANSFER="urlBuktiTransfer"
+    val KEY_ID_BUKTI_TRANSFER="idBuktiTransfer"
 
 }

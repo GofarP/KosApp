@@ -22,7 +22,7 @@ class MenyewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickMe
                  fun bind(dataKos:Kos, itemAdapterCallback:ItemOnCLickMenyewa)
                  {
                      itemView.apply {
-                         binding.lblnama.text=dataKos.nama
+                         binding.lblnama.text=dataKos.namaKos
                          binding.lblalamat.text=dataKos.alamat
 
                          storage.child(dataKos.thumbnailKos)

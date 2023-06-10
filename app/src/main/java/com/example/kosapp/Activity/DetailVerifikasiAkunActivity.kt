@@ -38,12 +38,12 @@ class DetailVerifikasiAkunActivity : AppCompatActivity() {
         permintaanVerifikasi=dataAkunIntent.getParcelableExtra(Constant().KEY_PERMINTAAN_VERIFIKASI_AKUN)!!
 
         binding.lbldetailidverifikasi.text=permintaanVerifikasi.idPermintaan
-        binding.lbldetailidpengguna.text=permintaanVerifikasi.id
+        binding.lbldetailidpengguna.text=permintaanVerifikasi.idPemohon
         binding.lbldetailnama.text=permintaanVerifikasi.username
         binding.lbldetailemail.text=permintaanVerifikasi.email
 
         database.child(Constant().KEY_VERIFIKASI)
-            .child(permintaanVerifikasi.id)
+            .child(permintaanVerifikasi.idPemohon)
             .addListenerForSingleValueEvent(object:ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val snapFoto=snapshot.child(Constant().KEY_FOTO).value.toString()

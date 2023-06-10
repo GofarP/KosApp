@@ -1,13 +1,15 @@
 package com.example.kosapp.Model
 
 import android.os.Parcelable
+import com.google.firebase.database.Exclude
 import kotlinx.android.parcel.Parcelize
 
 
 @Parcelize
  data class Kos
      (val idKos:String,
-      val nama:String,
+      val namaKos:String,
+      val idPemilik:String,
       val emailPemilik:String,
       val jenis:String,
       val sisa:Int,
@@ -24,6 +26,6 @@ import kotlinx.android.parcel.Parcelize
       val longitude:String,
       val status:String,
       val rating:Int?=null,
+      @get:Exclude
       val jarak:Double=0.0
-
       ):Parcelable

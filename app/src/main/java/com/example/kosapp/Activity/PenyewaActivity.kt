@@ -39,6 +39,7 @@ class PenyewaActivity : AppCompatActivity(), PenggunaItemOnCLick {
     private var database= Firebase.database.reference
     private val VIEW_PENGGUNA=2
     private val emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
+    private val idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
     private var calendar= Calendar.getInstance()
     private var sudahDiberiRating=false
 
@@ -183,7 +184,7 @@ class PenyewaActivity : AppCompatActivity(), PenggunaItemOnCLick {
         ratingProfile=RatingProfile(
             idKos = kos.idKos,
             idPengguna = pengguna.id,
-            namaKos = kos.nama,
+            namaKos = kos.namaKos,
             ratingPengguna = customDialogBinding.spnrating.selectedItem.toString(),
             tanggal ="20-02-1999"
         )
@@ -250,11 +251,11 @@ class PenyewaActivity : AppCompatActivity(), PenggunaItemOnCLick {
                                         .addOnSuccessListener {
 
                                             transaksi= Transaksi(
-                                                transaksiId = UUID.randomUUID().toString(),
-                                                dari=emailPengguna,
-                                                kepada=snapEmail,
+                                                idTransaksi = UUID.randomUUID().toString(),
+                                                idPenyewa = pengguna.id,
+                                                idPemilik = idPengguna,
                                                 judul="Pengeluaran Kos",
-                                                isi = "Anda Dikeluarkan Dari Kos ${kos.nama} oleh pemilik",
+                                                isi = "Anda Dikeluarkan Dari Kos ${kos.namaKos} oleh pemilik",
                                                 tipe = Constant().KEY_PENGELUARAN_KOS,
                                                 tanggal =tanggalHariIni
                                             )

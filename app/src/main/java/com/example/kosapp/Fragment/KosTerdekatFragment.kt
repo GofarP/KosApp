@@ -4,7 +4,6 @@ import android.content.Intent
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,14 +18,13 @@ import com.example.kosapp.Helper.PreferenceManager
 import com.example.kosapp.LocationManager.LocationManager
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.FragmentKosTerdekatBinding
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.mapbox.android.core.location.LocationEngine
-import com.mapbox.android.core.location.LocationEnginePriority
-import com.mapbox.android.core.location.LocationEngineProvider
 import com.mapbox.geojson.Point
 import com.mapbox.turf.TurfConstants
 import com.mapbox.turf.TurfMeasurement
@@ -41,6 +39,7 @@ class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationList
     private var adapter: HomeKosAdapter?=null
     private var database= Firebase.database.reference
     private var jarak=0.0
+    private var emailPemilik=FirebaseAuth.getInstance().currentUser?.email.toString()
     private lateinit var kos: Kos
     private lateinit var  layoutManager: RecyclerView.LayoutManager
     private lateinit var preferenceManager: PreferenceManager
@@ -95,6 +94,7 @@ class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationList
                         val snapKecamatan=snap.child(Constant().KEY_KECAMATAN).value.toString()
                         val snapBiaya=snap.child(Constant().KEY_BIAYA_KOS).value.toString()
                         val snapEmailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString()
+                        val snapIdPemilik=snap.child(Constant().KEY_ID_PEMILIK).value.toString()
                         val snapGambarKos=snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>
                         val snapThumbnailKos=snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString()
                         val snapJenis=snap.child(Constant().KEY_JENIS_KOS).value.toString()
@@ -120,6 +120,7 @@ class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationList
                                 kelurahan=snapKelurahan,
                                 kecamatan=snapKecamatan,
                                 biaya = snapBiaya.toDouble(),
+                                idPemilik=snapIdPemilik,
                                 emailPemilik=snapEmailPemilik,
                                 gambarKos = snapGambarKos,
                                 thumbnailKos = snapThumbnailKos,
@@ -127,7 +128,7 @@ class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationList
                                 jenisBayar = snapJenisBayar,
                                 lattitude = snapLattitude,
                                 longitude = snapLongitude,
-                                nama = snapNamaKos,
+                                namaKos = snapNamaKos,
                                 sisa = snapSisa.toInt(),
                                 fasilitas=snapFasilitas.toString(),
                                 deskripsi=snapDeskripsi,
@@ -158,15 +159,16 @@ class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationList
         cariKosArrayList.clear()
         kosArrayList.forEach {result->
             val cari=cari.trim().replace(" ","")
-            val namaKos=result.nama.trim().replace(" ","")
+            val namaKos=result.namaKos.trim().replace(" ","")
             val alamatKos=result.alamat.trim().replace(" ","")
 
             if(namaKos.contains(cari, true) || alamatKos.contains(cari, true))
             {
                 kos=Kos(
                     idKos=result.idKos,
-                    nama=result.nama,
-                    emailPemilik = result.emailPemilik,
+                    namaKos=result.namaKos,
+                    idPemilik = result.idPemilik,
+                    emailPemilik=result.emailPemilik,
                     jenis = result.jenis,
                     alamat=result.alamat,
                     biaya = result.biaya,
@@ -203,7 +205,7 @@ class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationList
             Toast.makeText(activity, "Mohon Maaf, Kos Sedang Penuh", Toast.LENGTH_SHORT).show()
         }
 
-        else if(dataKos.jenis != jenisKelaminUser && dataKos.jenis!="Campur")
+        else if(dataKos.jenis != jenisKelaminUser && dataKos.jenis!="Campur" && dataKos.idPemilik!= emailPemilik)
         {
             Toast.makeText(activity, "Jenis Kelamin Anda Tidak Cocok Untuk Kos Ini $jenisKelaminUser", Toast.LENGTH_SHORT).show()
         }

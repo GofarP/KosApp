@@ -92,6 +92,7 @@ class CampurKosFragment : Fragment(), ItemOnClick {
                         val snapKecamatan=snap.child(Constant().KEY_KECAMATAN).value.toString()
                         val snapBiaya=snap.child(Constant().KEY_BIAYA_KOS).value.toString()
                         val snapEmailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString()
+                        val snapIdPemilik=snap.child(Constant().KEY_ID_PEMILIK).value.toString()
                         val snapGambarKos=snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>
                         val snapThumbnailKos=snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString()
                         val snapJenis=snap.child(Constant().KEY_JENIS_KOS).value.toString()
@@ -109,7 +110,7 @@ class CampurKosFragment : Fragment(), ItemOnClick {
                         lokasiKosLatLng=Point.fromLngLat(snapLongitude.toDouble(), snapLattitude.toDouble())
                         jarak=TurfMeasurement.distance(lokasiSekarangLatLng, lokasiKosLatLng, TurfConstants.UNIT_KILOMETERS)
 
-                        if(jenisKos==Constant().KEY_WANITA  && snapStatus==Constant().KEY_TERVERIFIKASI)
+                        if(jenisKos==Constant().KEY_CAMPUR  && snapStatus==Constant().KEY_TERVERIFIKASI)
                         {
 
                             kos=Kos(
@@ -118,6 +119,7 @@ class CampurKosFragment : Fragment(), ItemOnClick {
                                 kelurahan=snapKelurahan,
                                 kecamatan=snapKecamatan,
                                 biaya = snapBiaya.toDouble(),
+                                idPemilik=snapIdPemilik,
                                 emailPemilik=snapEmailPemilik,
                                 gambarKos = snapGambarKos,
                                 thumbnailKos = snapThumbnailKos,
@@ -125,7 +127,7 @@ class CampurKosFragment : Fragment(), ItemOnClick {
                                 jenisBayar = snapJenisBayar,
                                 lattitude = snapLattitude,
                                 longitude = snapLongitude,
-                                nama = snapNamaKos,
+                                namaKos = snapNamaKos,
                                 sisa = snapSisa.toInt(),
                                 fasilitas=snapFasilitas.toString(),
                                 deskripsi=snapDeskripsi,
@@ -159,15 +161,16 @@ class CampurKosFragment : Fragment(), ItemOnClick {
         cariKosArrayList.clear()
         kosArrayList.forEach {result->
             val cari=cari.trim().replace(" ","")
-            val namaKos=result.nama.trim().replace(" ","")
+            val namaKos=result.namaKos.trim().replace(" ","")
             val alamatKos=result.alamat.trim().replace(" ","")
 
             if((result.jenis==Constant().KEY_CAMPUR) && (namaKos.contains(cari, true) || alamatKos.contains(cari, true)))
             {
                 kos=Kos(
                     idKos=result.idKos,
-                    nama=result.nama,
-                    emailPemilik = result.emailPemilik,
+                    namaKos=result.namaKos,
+                    idPemilik = result.idPemilik,
+                    emailPemilik=result.emailPemilik,
                     jenis = result.jenis,
                     alamat=result.alamat,
                     biaya = result.biaya,

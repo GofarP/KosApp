@@ -30,8 +30,8 @@ import java.util.*
 class VerifikasiActivity : AppCompatActivity() {
 
     private var database=FirebaseDatabase.getInstance().reference
-    private val userId=FirebaseAuth.getInstance().currentUser?.uid
-    private val userEmail=FirebaseAuth.getInstance().currentUser?.email
+    private val idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
+    private val emailPengguna=FirebaseAuth.getInstance().currentUser?.email
 
     private val storage=FirebaseStorage.getInstance().reference
     private var uriVerifikasi: Uri?=null
@@ -45,6 +45,7 @@ class VerifikasiActivity : AppCompatActivity() {
     private lateinit var tanggalHariIni:String
     private lateinit var username:String
     private lateinit var preferenceManager: PreferenceManager
+    private lateinit var idPermintaan:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +92,7 @@ class VerifikasiActivity : AppCompatActivity() {
     {
 
         database.child(Constant().KEY_VERIFIKASI)
-            .child(userId.toString())
+            .child(idPengguna.toString())
             .addListenerForSingleValueEvent(object:ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
 
@@ -144,12 +145,15 @@ class VerifikasiActivity : AppCompatActivity() {
 
     private fun uploadVerifikasi()
     {
-        fotoVerifikasi="${Constant().KEY_VERIFIKASI}/$userId/$userId"
+        fotoVerifikasi="${Constant().KEY_VERIFIKASI}/$idPengguna/$idPengguna"
+
+
+        idPermintaan=UUID.randomUUID().toString()
 
         verifikasi= Verifikasi(
             idVerifikasi = UUID.randomUUID().toString(),
-            idPengguna =userId.toString(),
-            email = userEmail.toString(),
+            idPengguna =idPengguna,
+            email = emailPengguna.toString(),
             username=username,
             foto =fotoVerifikasi,
             status = Constant().KEY_PENGAJUAN_VERIFIKASI
@@ -157,23 +161,23 @@ class VerifikasiActivity : AppCompatActivity() {
 
 
         permintaanVerifikasi= PermintaanVerifikasi(
-            id=userId.toString(),
-            idPermintaan = UUID.randomUUID().toString(),
-            email = userEmail.toString(),
+            idPermintaan = idPermintaan,
+            idPemohon=idPengguna,
+            email = emailPengguna.toString(),
             judul = Constant().KEY_PERMINTAAN_VERIFIKASI_AKUN,
-            isi="$userEmail ingin melakukan verifikasi akun",
+            isi="$emailPengguna ingin melakukan verifikasi akun",
             username=username,
             tanggal = tanggalHariIni
         )
 
         database.child(Constant().KEY_VERIFIKASI)
-            .child(userId.toString())
+            .child(idPengguna)
             .setValue(verifikasi)
             .addOnSuccessListener {
                 storage.child(fotoVerifikasi).putFile(uriVerifikasi!!)
 
                 database.child(Constant().KEY_USER)
-                    .child(userId.toString())
+                    .child(idPengguna)
                     .child(Constant().KEY_VERIFIKASI)
                     .setValue(Constant().KEY_PENGAJUAN_VERIFIKASI)
 
@@ -183,7 +187,7 @@ class VerifikasiActivity : AppCompatActivity() {
 
 
         database.child(Constant().KEY_PERMINTAAN_VERIFIKASI)
-            .child(userId.toString())
+            .child(idPermintaan)
             .setValue(permintaanVerifikasi)
             .addOnSuccessListener {
                 Toast.makeText(this@VerifikasiActivity, "Berhasil Mengajukan Permintaan Verifikasi AKun", Toast.LENGTH_SHORT).show()

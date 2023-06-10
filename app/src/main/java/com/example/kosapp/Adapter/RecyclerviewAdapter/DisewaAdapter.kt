@@ -23,7 +23,7 @@ class DisewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickDis
                  fun bind(dataKos:Kos, itemAdapterCallback:ItemOnClickDisewa)
                  {
                      itemView.apply {
-                         binding.lblnama.text=dataKos.nama
+                         binding.lblnama.text=dataKos.namaKos
                          binding.lblalamat.text=dataKos.alamat
 
                          binding.btndisewaedit.setOnClickListener {view->

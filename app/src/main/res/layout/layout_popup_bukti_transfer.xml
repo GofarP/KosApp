@@ -26,12 +26,39 @@
 
 
     <ImageView
+        android:id="@+id/ivbuktipembayaran"
         android:layout_width="match_parent"
         android:layout_height="200sp"
         android:layout_marginStart="20sp"
         android:layout_marginEnd="20sp"
         android:layout_marginTop="20sp"
+        android:layout_marginBottom="20sp"
         />
 
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnpopup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20sp"
+        android:layout_marginEnd="20sp"
+        android:text="Upload"
+        android:background="@color/main_color"
+        android:textColor="@color/white"
+        android:layout_marginBottom="20sp"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnpopupbatalkan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20sp"
+        android:layout_marginEnd="20sp"
+        android:text="Batalkan"
+        android:background="@color/red_cancel"
+        android:textColor="@color/white"
+        android:layout_marginBottom="20sp"
+        android:visibility="gone"
+        />
 
 </LinearLayout>

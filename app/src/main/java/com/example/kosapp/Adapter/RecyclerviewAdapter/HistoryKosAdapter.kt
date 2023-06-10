@@ -29,9 +29,10 @@ class HistoryKosAdapter(val historyKosList:ArrayList<History>)
 
                 itemView.apply {
 
-                    namaKos=dataHistory.nama
-                    alamatKos=dataHistory.alamat
-                    tanggalSewa=dataHistory.tanggal
+
+                    binding.lblnama.text=dataHistory.nama
+                    binding.lblalamat.text=dataHistory.alamat
+                    binding.lbltanggal.text=dataHistory.tanggal
 
                     storage.child(dataHistory.thumbnailKos).downloadUrl.addOnSuccessListener { uri->
                         Glide.with(context)

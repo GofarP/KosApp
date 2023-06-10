@@ -15,41 +15,12 @@ class TransaksiAdapter(private val listTransaksi: ArrayList<Transaksi>, )
             :RecyclerView.ViewHolder(layoutTransaksi.root)
         {
                 val binding=layoutTransaksi
-                var judulTransaksi:String?=null
-                var isiTransaksi:String?=null
-                val emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
 
                 fun bind(dataTransaksi: Transaksi)
                 {
 
-                    judulTransaksi=dataTransaksi.judul
-
-                    if(dataTransaksi.dari==emailPengguna && dataTransaksi.tipe==Constant().KEY_TOLAK_SEWA)
-                    {
-                       isiTransaksi="Anda Menolak Permintaan Kos dari ${dataTransaksi.kepada}"
-                    }
-                    else if(dataTransaksi.dari==emailPengguna && dataTransaksi.tipe==Constant().KEY_BATAL_SEWA)
-                    {
-                        isiTransaksi="Anda Membatalkan Permintaan Kos dari ${dataTransaksi.kepada} "
-                    }
-
-                    else if(dataTransaksi.dari==emailPengguna && dataTransaksi.tipe==Constant().KEY_TERIMA_SEWA)
-                    {
-                        isiTransaksi="Anda Menerima Permintaan Sewa Kos dari ${dataTransaksi.kepada}"
-                    }
-
-                    else if(dataTransaksi.dari==emailPengguna && dataTransaksi.tipe==Constant().KEY_PENGELUARAN_KOS)
-                    {
-                        isiTransaksi="Anda Mengeluarkan ${dataTransaksi.kepada} dari kos anda"
-                    }
-
-                    else
-                    {
-                        isiTransaksi="${dataTransaksi.isi} oleh ${dataTransaksi.dari}"
-                    }
-
-                    binding.lbljudulhistory.text=judulTransaksi
-                    binding.lblbodyhistory.text=isiTransaksi
+                    binding.lbljudulhistory.text=dataTransaksi.judul
+                    binding.lblbodyhistory.text=dataTransaksi.isi
                     binding.lbltglhistory.text=dataTransaksi.tanggal
 
                 }
