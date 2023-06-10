@@ -178,7 +178,7 @@ class BuktiTransferFragment : Fragment(), ItemOnCLickLihatBukti {
 
 
                 database.child(Constant().KEY_DAFTAR_KOS)
-                    .child(sewa.idKos).get()
+                    .child(idKos).get()
                     .addOnSuccessListener {snap->
                         val snapAlamat=snap.child(Constant().KEY_ALAMAT_KOS).value.toString()
                         val snapNamaKos=snap.child(Constant().KEY_NAMA_KOS).value.toString()
@@ -187,7 +187,7 @@ class BuktiTransferFragment : Fragment(), ItemOnCLickLihatBukti {
 
                         history=History(
                             idHistory =UUID.randomUUID().toString(),
-                            idKos = sewa.idKos,
+                            idKos = idKos,
                             alamat = snapAlamat,
                             tanggal = tanggalHariIni,
                             nama=snapNamaKos,
@@ -204,6 +204,13 @@ class BuktiTransferFragment : Fragment(), ItemOnCLickLihatBukti {
                             tipe = Constant().KEY_PERMINTAAN_SEWA
                         )
 
+                        sewa=Sewa(
+                            idSewa=idSewa,
+                            idKos=idKos,
+                            idPenyewa = idPenyewa,
+                            tanggal = tanggal
+                        )
+
                         database.child(Constant().KEY_TRANSAKSI)
                             .child(idPenyewa)
                             .push()
@@ -217,6 +224,7 @@ class BuktiTransferFragment : Fragment(), ItemOnCLickLihatBukti {
                             .setValue(history)
 
                         database.child(Constant().KEY_DAFTAR_SEWA_KOS)
+                            .child(idPenyewa)
                             .push()
                             .setValue(sewa)
 

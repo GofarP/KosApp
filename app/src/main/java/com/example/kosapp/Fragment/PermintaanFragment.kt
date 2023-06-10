@@ -222,11 +222,6 @@ class PermintaanFragment : Fragment(), OnClickListener {
                                                 .setValue(history)
                                         }
 
-                                    database.child(Constant().KEY_DAFTAR_KOS)
-                                        .child(permintaan.idKos)
-                                        .child(Constant().KEY_JUMLAH_KAMAR_KOS)
-                                        .setValue(ServerValue.increment(-1))
-
 
                                     Toast.makeText(activity, "Sukses Menerima Permintaan", Toast.LENGTH_SHORT).show()
 
@@ -256,9 +251,6 @@ class PermintaanFragment : Fragment(), OnClickListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
 
                     snapshot.children.forEach {snap->
-                        val permintaanIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()
-                        val permintaanDari=snap.child(Constant().KEY_DARI).value.toString()
-
                         if(snap.child(Constant().KEY_ID_PERMINTAAN).value.toString()==permintaanId)
                         {
                             snap.ref.removeValue()
@@ -272,8 +264,6 @@ class PermintaanFragment : Fragment(), OnClickListener {
                                 tanggal=tanggalHariIni,
                                 tipe=Constant().KEY_AKHIRI_SEWA
                             )
-
-
 
                             database.child(Constant().KEY_TRANSAKSI)
                                 .child(permintaan.idPenyewa)
@@ -294,31 +284,22 @@ class PermintaanFragment : Fragment(), OnClickListener {
                                 .setValue(ServerValue.increment(1))
 
                             database.child(Constant().KEY_DAFTAR_SEWA_KOS)
-                                .addValueEventListener(object:ValueEventListener{
-                                    override fun onDataChange(snapshot: DataSnapshot) {
-                                        snapshot.children.forEach {snap->
-                                            val emailSewa=snap.child(Constant().KEY_EMAIL).value.toString()
-                                            val idKosSewa=snap.child(Constant().KEY_ID_KOS).value.toString()
+                                .child(permintaan.idPenyewa)
+                                .get().addOnSuccessListener {snap_sewa->
+                                    val idKosSewa=snap_sewa.child(Constant().KEY_ID_KOS).value.toString()
 
-                                            if(permintaanDari==emailSewa && permintaanIdKos==idKosSewa)
-                                            {
-                                                snap.ref.removeValue()
-                                                    .addOnSuccessListener {
-                                                        Toast.makeText(activity, "Sukses Keluar", Toast.LENGTH_SHORT)
-                                                            .show()
-                                                        val indexPermintaan= permintaanArrayList.indexOf(permintaan)
-                                                        adapter.notifyItemRemoved(indexPermintaan)
-                                                    }
-
+                                    if(permintaan.idKos==idKosSewa)
+                                    {
+                                        snap.ref.removeValue()
+                                            .addOnSuccessListener {
+                                                Toast.makeText(activity, "Sukses Keluar", Toast.LENGTH_SHORT)
+                                                    .show()
+                                                val indexPermintaan= permintaanArrayList.indexOf(permintaan)
+                                                adapter.notifyItemRemoved(indexPermintaan)
                                             }
-                                        }
-                                    }
 
-                                    override fun onCancelled(error: DatabaseError) {
-                                        Log.d("error",error.message)
                                     }
-
-                                } )
+                                }
                         }
                     }
                 }
@@ -389,6 +370,58 @@ class PermintaanFragment : Fragment(), OnClickListener {
     }
 
 
+    private fun tolakPermintanAkhiriSewa(view:View, permintaanId: String)
+    {
+        database.child(Constant().KEY_PERMINTAAN)
+            .addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach {snap->
+                        if(snap.child(Constant().KEY_ID_PERMINTAAN).value.toString()==permintaanId)
+                        {
+                            snap.ref.removeValue()
+                                .addOnSuccessListener {
+
+                                    val transaksi=Transaksi(
+                                        idTransaksi=UUID.randomUUID().toString(),
+                                        idPemilik = permintaan.idPemilik,
+                                        idPenyewa = permintaan.idPenyewa,
+                                        judul = "Permintaan Akhiri Sewa Ditolak",
+                                        isi = "Permintaan Akhiri Sewa Anda Ditolak Oleh ${permintaan.emailPemilik}",
+                                        tipe=Constant().KEY_TOLAK_SEWA,
+                                        tanggal=tanggalHariIni
+                                    )
+
+                                    database.child(Constant().KEY_TRANSAKSI)
+                                        .child(permintaan.idPenyewa)
+                                        .push()
+                                        .setValue(transaksi)
+
+                                    transaksi.isi="Anda Menolak Permintaan Akhiri Sewa Dari ${permintaan.emailPenyewa} untuk Kos ${permintaan.namaKos}"
+
+                                    database.child(Constant().KEY_TRANSAKSI)
+                                        .child(permintaan.idPemilik)
+                                        .push()
+                                        .setValue(transaksi)
+
+                                    Toast.makeText(activity, "Sukses Menolak Permintaan Akhiri Sewa", Toast.LENGTH_SHORT).show()
+
+                                    val indexPermintaan= permintaanArrayList.indexOf(permintaan)
+                                    adapter.notifyItemRemoved(indexPermintaan)
+
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(view.context, "Gagal Menolak Permintaan", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("database Error",error.message)
+                }
+
+            })
+    }
 
     private fun batalkanPermintaan(idPermintaan: String)
     {
@@ -489,7 +522,14 @@ class PermintaanFragment : Fragment(), OnClickListener {
     }
 
     override fun onTolakClickListener(view: View, dataPermintaan: Permintaan) {
-        tolakPermintaan(view,dataPermintaan.idPermintaan)
+        if(dataPermintaan.judul==Constant().PERMINTAAAN_AKHIRI_SEWA)
+        {
+            tolakPermintanAkhiriSewa(view, dataPermintaan.idPermintaan)
+        }
+        else
+        {
+            tolakPermintaan(view,dataPermintaan.idPermintaan)
+        }
     }
 
     override fun onLihatProfileListener(view: View, dataPermintaan: Permintaan) {

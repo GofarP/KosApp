@@ -25,20 +25,20 @@ private val itemClickLihatBukti:ItemOnCLickLihatBukti):
 
             itemView.apply {
                 binding.lbljudulbuktitransfer.text="Bukti Transfer ${dataBuktiTransfer.namaKos}"
-                binding.lblnamapengirim.text="Pengirim: ${dataBuktiTransfer.idPemilik}"
+                binding.lblnamapengirim.text="Pengirim: ${dataBuktiTransfer.emailPenyewa}"
                 binding.lbltanggal.text= dataBuktiTransfer.tanggal
 
-                if(dataBuktiTransfer.urlBuktiTransfer=="" && dataBuktiTransfer.idPemilik==emailSaatIni)
+                if(dataBuktiTransfer.urlBuktiTransfer=="" && dataBuktiTransfer.emailPenyewa==emailSaatIni)
                 {
                     binding.btnlihatbuktitransfer.text="Upload Bukti Transfer"
                 }
 
-                else if(dataBuktiTransfer.urlBuktiTransfer!="" && dataBuktiTransfer.idPemilik==emailSaatIni)
+                else if(dataBuktiTransfer.urlBuktiTransfer!="" && dataBuktiTransfer.emailPenyewa==emailSaatIni)
                 {
                     binding.btnlihatbuktitransfer.text="Lihat Bukti Transfer"
                 }
 
-                else if(dataBuktiTransfer.urlBuktiTransfer=="" && dataBuktiTransfer.idPenyewa==emailSaatIni)
+                else if(dataBuktiTransfer.urlBuktiTransfer=="" && dataBuktiTransfer.emailPemilik==emailSaatIni)
                 {
                     binding.btnlihatbuktitransfer.text="Bukti Transfer Belum Diupload"
                     binding.btnlihatbuktitransfer.isEnabled=false
@@ -46,7 +46,7 @@ private val itemClickLihatBukti:ItemOnCLickLihatBukti):
 
                 }
 
-                else if(dataBuktiTransfer.urlBuktiTransfer!="" && dataBuktiTransfer.idPenyewa==emailSaatIni)
+                else if(dataBuktiTransfer.urlBuktiTransfer!="" && dataBuktiTransfer.emailPemilik==emailSaatIni)
                 {
                     binding.btnlihatbuktitransfer.text="Lihat Bukti Transfer"
                     binding.btnlihatbuktitransfer

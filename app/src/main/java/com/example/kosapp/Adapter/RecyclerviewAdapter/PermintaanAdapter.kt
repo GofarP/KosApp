@@ -26,7 +26,7 @@ class PermintaanAdapter(private var permintaanArrayList:ArrayList<Permintaan>,pr
 
                      itemView.apply {
 
-                         if(idUser==dataPermintaan.idPenyewa)
+                         if(idUser==dataPermintaan.idPemilik)
                          {
                             isiPermintaan="${dataPermintaan.emailPenyewa} ${dataPermintaan.isi}"
                              binding.btnbatalkan.visibility=View.GONE

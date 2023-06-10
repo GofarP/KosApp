@@ -30,7 +30,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class VerifikasiFragment : Fragment(), OnItemClickListener {
+class VerifikasiAkunFragment : Fragment(), OnItemClickListener {
 
     private var database= Firebase.database.reference
     private var storage=FirebaseStorage.getInstance().reference
@@ -77,20 +77,26 @@ class VerifikasiFragment : Fragment(), OnItemClickListener {
                     binding.rvadminverifikasi.adapter=null
 
                     snapshot.children.forEach {snap->
-                            permintaanVerifikasi= PermintaanVerifikasi(
-                                email = snap.child(Constant().KEY_EMAIL).value.toString(),
-                                idPermintaan = snap.child(Constant().KEY_ID_PERMINTAAN).value.toString(),
-                                idPemohon=snap.child(Constant().KEY_ID_PEMOHON).value.toString(),
-                                isi=snap.child(Constant().KEY_ISI).value.toString(),
-                                judul = snap.child(Constant().KEY_JUDUL).value.toString(),
-                                tanggal = snap.child(Constant().KEY_TANGGAL).value.toString(),
-                                username=snap.child(Constant().KEY_USERNAME).value.toString()
-                            )
+                        val snapJudul=snap.child(Constant().KEY_JUDUL).value.toString()
 
-                            verifikasiArrayList.add(permintaanVerifikasi)
+                            if(snapJudul==Constant().KEY_PERMINTAAN_VERIFIKASI_AKUN)
+                            {
+                                permintaanVerifikasi= PermintaanVerifikasi(
+                                    email = snap.child(Constant().KEY_EMAIL).value.toString(),
+                                    idPermintaan = snap.child(Constant().KEY_ID_PERMINTAAN).value.toString(),
+                                    idPemohon=snap.child(Constant().KEY_ID_PEMOHON).value.toString(),
+                                    isi=snap.child(Constant().KEY_ISI).value.toString(),
+                                    judul = snap.child(Constant().KEY_JUDUL).value.toString(),
+                                    tanggal = snap.child(Constant().KEY_TANGGAL).value.toString(),
+                                    username=snap.child(Constant().KEY_USERNAME).value.toString()
+                                )
+
+                                verifikasiArrayList.add(permintaanVerifikasi)
+                            }
+
                         }
 
-                    permintaanVerifikasiAdapter= PermintaanVerifikasiAdapter(verifikasiArrayList,this@VerifikasiFragment)
+                    permintaanVerifikasiAdapter= PermintaanVerifikasiAdapter(verifikasiArrayList,this@VerifikasiAkunFragment)
                     layoutManager=LinearLayoutManager(activity)
                     binding.rvadminverifikasi.layoutManager=layoutManager
                     binding.rvadminverifikasi.adapter=permintaanVerifikasiAdapter
@@ -201,86 +207,25 @@ class VerifikasiFragment : Fragment(), OnItemClickListener {
         startActivity(intent)
     }
 
-    private fun detailVerifikasiKos(permintaanVerifikasi: PermintaanVerifikasi)
-    {
-        val intent=Intent(activity, DetailVerifikasiKosActivity::class.java)
-            .putExtra(Constant().KEY_ID_KOS, permintaanVerifikasi.idPermintaan)
-        startActivity(intent)
-    }
+
 
     private fun terimaVerifikasiKos(permintaanVerifikasi: PermintaanVerifikasi)
     {
-        transaksi= Transaksi(
-            idTransaksi = UUID.randomUUID().toString(),
-            idPemilik = idPengguna,
-            idPenyewa = permintaanVerifikasi.idPemohon,
-            isi="Permintaan Verifikasi Diterima",
-            judul="Verifikasi Kos",
-            tanggal = tanggalHariIni,
-            tipe = Constant().KEY_VERIFIKASI
-        )
 
-        database.child(Constant().KEY_PERMINTAAN_VERIFIKASI)
-            .child(permintaanVerifikasi.idPermintaan)
-            .removeValue()
-
-        database.child(Constant().KEY_DAFTAR_KOS)
-            .child(permintaanVerifikasi.idPermintaan)
-            .child(Constant().KEY_STATUS_VERIFIKASI_AKUN)
-            .setValue(Constant().KEY_TERVERIFIKASI)
-
-        database.child(Constant().KEY_TRANSAKSI)
-            .setValue(transaksi)
-
-        Toast.makeText(activity, "Sukses menerima Verifikasi Kos", Toast.LENGTH_SHORT).show()
     }
 
     private fun tolakVerifikasiKos(permintaanVerifikasi: PermintaanVerifikasi)
     {
-        database.child(Constant().KEY_PERMINTAAN_VERIFIKASI)
-            .child(permintaanVerifikasi.idPermintaan)
-            .removeValue()
-
-
-        database.child(Constant().KEY_DAFTAR_KOS)
-            .child(permintaanVerifikasi.idPermintaan)
-            .removeValue()
-
-        storage.child(Constant().KEY_GAMBAR_KOS)
-            .child(permintaanVerifikasi.idPermintaan)
-            .delete()
-
-        val indexVerifikasi=verifikasiArrayList.indexOf(permintaanVerifikasi)
-        permintaanVerifikasiAdapter.notifyItemRemoved(indexVerifikasi)
-
-        Toast.makeText(activity, "Sukses Menolak Verifikasi Akun", Toast.LENGTH_SHORT).show()
 
     }
 
 
     override fun onDetailClickListener(view: View, permintaanVerifikasi: PermintaanVerifikasi) {
-
-        if(permintaanVerifikasi.judul==Constant().KEY_PERMINTAAN_VERIFIKASI_AKUN)
-        {
-            detailVerifikasiAkun(permintaanVerifikasi)
-        }
-
-        else if(permintaanVerifikasi.judul==Constant().KEY_PERMINTAAN_VERIFIKASI_KOS)
-        {
-            detailVerifikasiKos(permintaanVerifikasi)
-        }
+        detailVerifikasiAkun(permintaanVerifikasi)
     }
 
     override fun onTerimaClickListener(view: View, permintaanVerifikasi: PermintaanVerifikasi) {
-        if(permintaanVerifikasi.judul==Constant().KEY_PERMINTAAN_VERIFIKASI_AKUN)
-        {
-            terimaVerifikasiAkun(permintaanVerifikasi)
-        }
-
-        else if(permintaanVerifikasi.judul==Constant().KEY_PERMINTAAN_VERIFIKASI_KOS)
-        {
-            terimaVerifikasiKos(permintaanVerifikasi)
-        }
+        terimaVerifikasiAkun(permintaanVerifikasi)
     }
 
     override fun onTolakClickListener(view: View, permintaanVerifikasi: PermintaanVerifikasi) {

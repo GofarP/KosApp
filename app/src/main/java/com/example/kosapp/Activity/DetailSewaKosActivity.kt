@@ -69,7 +69,7 @@ class DetailSewaKosActivity : AppCompatActivity() {
         dataKosIntent=intent
         kos=dataKosIntent.getParcelableExtra(Constant().KEY_ID_KOS)!!
 
-        if(emailPengguna==kos.idPemilik)
+        if(idPengguna==kos.idPemilik)
         {
             binding.btnpesan.visibility=View.INVISIBLE
             binding.btnchatpemilik.visibility=View.INVISIBLE
@@ -95,14 +95,14 @@ class DetailSewaKosActivity : AppCompatActivity() {
         binding.btnaddcomment.setOnClickListener {
             val intent=Intent(this@DetailSewaKosActivity, CommentActivity::class.java)
             intent.putExtra(Constant().KEY_ID_KOS,kos.idKos)
-            intent.putExtra(Constant().KEY_EMAIL_PEMILIK,kos.idPemilik)
+            intent.putExtra(Constant().KEY_ID_PEMILIK,kos.idPemilik)
             startActivity(intent)
         }
 
         binding.btnchatpemilik.setOnClickListener {
             val intent=Intent(this@DetailSewaKosActivity, ChatActiviity::class.java)
                 .putExtra(Constant().KEY_EMAIL_PENGIRIM,emailPengguna)
-                .putExtra(Constant().KEY_EMAIL_PENERIMA,kos.idPemilik)
+                .putExtra(Constant().KEY_EMAIL_PENERIMA,kos.emailPemilik)
             startActivity(intent)
         }
 
@@ -151,9 +151,14 @@ class DetailSewaKosActivity : AppCompatActivity() {
                             total=0.0
                         }
 
-                        else
+                        else if(bindingWaktuSewa.spnsatuanwaktu.selectedItem.toString()==Constant().KEY_HARI)
                         {
                             total=jumlahHari.toDouble() * kos.biaya
+                        }
+
+                        else if(bindingWaktuSewa.spnsatuanwaktu.selectedItem.toString()==Constant().KEY_BULAN)
+                        {
+                            total=(jumlahHari.toDouble()*30) * kos.biaya
                         }
 
                         bindingWaktuSewa.lbltotalharga.text=NumberFormat.getCurrencyInstance().format(total)
@@ -236,10 +241,10 @@ class DetailSewaKosActivity : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
 
                     snapshot.children.forEach {snap->
-                        val emailDari=snap.child(Constant().KEY_DARI).value.toString()
-                        val idKos=snap.child(Constant().KEY_ID_KOS).value.toString()
+                        val snapIdPenyewa=snap.child(Constant().KEY_ID_PENYEWA).value.toString()
+                        val snapIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()
 
-                        if(emailDari==emailPengguna && idKos==kos.idKos)
+                        if(snapIdPenyewa==idPengguna && snapIdKos==kos.idKos)
                         {
                             binding.btnpesan.isEnabled=false
                             binding.btnpesan.setBackgroundResource(R.drawable.button_background_disabled)
@@ -262,10 +267,10 @@ class DetailSewaKosActivity : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach { snap->
 
-                        val emailPenyewa=snap.child(Constant().KEY_EMAIL).value.toString()
+                        val idPenyewa=snap.child(Constant().KEY_ID_PENYEWA).value.toString()
                         val idKos=snap.child(Constant().KEY_ID_KOS).value.toString()
 
-                        if(emailPenyewa==emailPengguna && idKos==kos.idKos)
+                        if(idPenyewa==idPengguna && idKos==kos.idKos)
                         {
                             binding.btnpesan.isEnabled=false
                             binding.btnpesan.setBackgroundResource(R.drawable.button_background_disabled)

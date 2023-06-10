@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment.VerifikasiKosFragment">
+    tools:context=".Fragment.TransaksiAdminFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvverifikasikos"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+ <androidx.recyclerview.widget.RecyclerView
+     android:id="@+id/rvnotifikasiadmin"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"/>
 
 </FrameLayout>

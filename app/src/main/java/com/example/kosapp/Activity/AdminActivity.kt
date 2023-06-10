@@ -32,9 +32,11 @@ class AdminActivity : AppCompatActivity() {
         binding.viewPagerAdmin.adapter= AdminPagerAdapter(this@AdminActivity)
         TabLayoutMediator(binding.tabLayoutAdmin, binding.viewPagerAdmin){tab, index->
             tab.text=when(index){
-                0->{"Verifikasi"}
-                1->{"Kos"}
-                2->{"Pengguna"}
+                0->{"Verifikasi Akun"}
+                1->{"Verifikasi Kos"}
+                2->{"Kos"}
+                3->{"Pengguna"}
+                4->{"Transaksi"}
                 else->{throw Resources.NotFoundException("Posisi Tidak DItemukan")}
             }
         }.attach()

@@ -50,9 +50,10 @@ class CommentActivity : AppCompatActivity() {
 
     private var database= Firebase.database.reference
 
-    private var emailSaatIni=FirebaseAuth.getInstance().currentUser?.email.toString()
+    private var emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
 
     private var idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
+
 
     private var hashMapRating= mutableMapOf(1 to 0, 2 to 0, 3 to 0, 4 to 0, 5 to 0)
 
@@ -71,7 +72,7 @@ class CommentActivity : AppCompatActivity() {
         bundle= intent.extras!!
 
         idKos=bundle.getString(Constant().KEY_ID_KOS).toString()
-        emailPemilik=bundle.getString(Constant().KEY_EMAIL_PEMILIK).toString()
+        emailPemilik=bundle.getString(Constant().KEY_ID_PEMILIK).toString()
 
         checkHistoryKos(idKos)
 
@@ -143,7 +144,7 @@ class CommentActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener {snap->
                 comment= Comment(
-                    email = emailSaatIni,
+                    email = emailPengguna,
                     foto=snap.child(Constant().KEY_FOTO).value.toString(),
                     idComment = UUID.randomUUID().toString(),
                     isiComment = komen,
@@ -161,39 +162,26 @@ class CommentActivity : AppCompatActivity() {
 
     private fun checkHistoryKos(idKos:String)
     {
-        if(emailPemilik == emailSaatIni)
+        if(emailPemilik == idPengguna)
         {
             bind.btnsend.visibility=View.VISIBLE
             bind.txtcomment.visibility=View.VISIBLE
         }
 
-        database.addListenerForSingleValueEvent(object:ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-               if(snapshot.child(Constant().KEY_HISTORY).exists())
-               {
+        database.child(Constant().KEY_HISTORY)
+            .child(idPengguna)
+            .get().addOnSuccessListener {snap->
+                snap.children.forEach { snap_history->
+                    val snapHistoryIdKos=snap_history.child(Constant().KEY_ID_KOS).value.toString()
 
-                    snapshot.child(Constant().KEY_HISTORY)
-                        .child(emailSaatIni.replace(".",","))
-                        .children.forEach {snap->
+                    if(idKos==snapHistoryIdKos)
+                    {
+                        bind.btnsend.visibility=View.VISIBLE
+                        bind.txtcomment.visibility=View.VISIBLE
+                    }
 
-                            val snapIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()
-
-                            if(snapIdKos==idKos)
-                            {
-                                bind.btnsend.visibility=View.VISIBLE
-                                bind.txtcomment.visibility=View.VISIBLE
-                            }
-                        }
-
-               }
-
+                }
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.d("db error",error.message)
-            }
-
-        })
     }
 
     private fun getComment()
@@ -235,7 +223,7 @@ class CommentActivity : AppCompatActivity() {
         comment= Comment(
             foto = commentParam.foto,
             idComment = UUID.randomUUID().toString(),
-            email = emailSaatIni,
+            email = emailPengguna,
             isiComment = commentParam.isiComment,
             tanggal=tanggalHariIni,
             username = commentParam.username
