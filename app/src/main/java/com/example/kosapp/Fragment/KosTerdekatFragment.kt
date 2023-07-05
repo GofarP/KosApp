@@ -1,8 +1,11 @@
 package com.example.kosapp.Fragment
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,7 +18,6 @@ import com.example.kosapp.Activity.DetailSewaKosActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.PreferenceManager
-import com.example.kosapp.LocationManager.LocationManager
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.FragmentKosTerdekatBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -48,7 +50,7 @@ class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationList
     private lateinit var lokasiSekarang:Location
     private lateinit var lokasiSekarangLatLng:Point
     private lateinit var lokasiKosLatLng:Point
-    private lateinit var locationManager:LocationManager
+    private lateinit var locationManager: LocationManager
 
 
 
@@ -60,17 +62,17 @@ class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationList
         return binding.root
     }
 
+    @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        locationManager= LocationManager()
-        locationManager.ambilLokasiSekarang(requireActivity())
+        locationManager= requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         preferenceManager=PreferenceManager()
         preferenceManager.preferenceManager(requireActivity())
 
-        lokasiSekarangLatLng=Point.fromLngLat(locationManager.ambilLokasiSekarang(requireActivity()).longitude,
-            locationManager.ambilLokasiSekarang(requireActivity()).latitude)
+        val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        lokasiSekarangLatLng=Point.fromLngLat(location!!.longitude, location.latitude)
 
         getSemuaKosTerdekat()
     }
@@ -134,7 +136,7 @@ class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationList
                                 deskripsi=snapDeskripsi,
                                 status=snapStatus,
                                 rating=snapRating,
-                                jarak = DecimalFormat("#.##").format(jarak).toDouble()
+                                jarak = DecimalFormat("#.##").format(jarak).replace(",",".").toDouble()
                             )
                             kosArrayList.add(kos)
                             adapter= HomeKosAdapter(kosArrayList,this@KosTerdekatFragment)

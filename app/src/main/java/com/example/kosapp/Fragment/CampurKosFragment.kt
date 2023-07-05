@@ -1,5 +1,7 @@
 package com.example.kosapp.Fragment
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -40,7 +42,7 @@ class CampurKosFragment : Fragment(), ItemOnClick {
     private var database= Firebase.database.reference
     private lateinit var jenisKos:String
     private lateinit var namaKos:String
-    private lateinit var locationManager: LocationManager
+    private lateinit var locationManager: android.location.LocationManager
     private lateinit var lokasiSekarangLatLng:Point
     private lateinit var lokasiKosLatLng:Point
     private lateinit var preferenceManager: PreferenceManager
@@ -57,17 +59,19 @@ class CampurKosFragment : Fragment(), ItemOnClick {
         return binding.root
     }
 
+    @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        locationManager= LocationManager()
-        locationManager.ambilLokasiSekarang(requireActivity())
+        locationManager=requireContext().getSystemService(Context.LOCATION_SERVICE) as android.location.LocationManager
 
         preferenceManager=PreferenceManager()
         preferenceManager.preferenceManager(requireActivity())
 
-        lokasiSekarangLatLng=Point.fromLngLat(locationManager.ambilLokasiSekarang(requireActivity()).longitude,
-            locationManager.ambilLokasiSekarang(requireActivity()).latitude)
+
+        val location = locationManager.getLastKnownLocation(android.location.LocationManager.GPS_PROVIDER)
+
+        lokasiSekarangLatLng=Point.fromLngLat(location!!.longitude, location.latitude)
 
         getDataKosCampuran()
 
@@ -133,7 +137,7 @@ class CampurKosFragment : Fragment(), ItemOnClick {
                                 deskripsi=snapDeskripsi,
                                 status=snapStatus,
                                 rating=snapRating,
-                                jarak = DecimalFormat("#.##").format(jarak).toDouble()
+                                jarak = DecimalFormat("#.##").format(jarak).replace(',','.').toDouble()
 
                             )
                             kosArrayList.add(kos)

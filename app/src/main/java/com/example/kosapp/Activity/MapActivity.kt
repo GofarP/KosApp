@@ -171,7 +171,7 @@ class MapActivity : AppCompatActivity(), PermissionsListener, LocationEngineList
 
 
     override fun onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
-        Toast.makeText(applicationContext, "Need To Enbale Permission", Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, "Need To Enable Permission", Toast.LENGTH_SHORT).show()
     }
 
     override fun onPermissionResult(granted: Boolean) {

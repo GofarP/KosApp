@@ -1,7 +1,10 @@
 package com.example.kosapp.Fragment
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Activity.DetailSewaKosActivity
@@ -16,7 +20,7 @@ import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter.ItemOnClick
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.PreferenceManager
-import com.example.kosapp.LocationManager.LocationManager
+import com.example.kosapp.LocationManager.LocationHelper
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.FragmentSemuaKosBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -46,7 +50,8 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
     private lateinit var lokasiSekarangLatLng: Point
     private lateinit var lokasiKosLatLng: Point
     private var jarak=0.0
-    private lateinit var  locationManager:LocationManager
+    private lateinit var locationManager: LocationManager
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,21 +63,23 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
     }
 
 
+    @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-
-        locationManager=LocationManager()
-        locationManager.ambilLokasiSekarang(requireActivity())
+        locationManager= requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         preferenceManager=PreferenceManager()
         preferenceManager.preferenceManager(requireActivity())
 
-        lokasiSekarangLatLng=Point.fromLngLat(locationManager.ambilLokasiSekarang(requireActivity()).longitude,
-            locationManager.ambilLokasiSekarang(requireActivity()).latitude)
+        val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+
+        lokasiSekarangLatLng=Point.fromLngLat(location!!.longitude, location.latitude)
 
         getSemuaDataKos()
 
     }
+
 
 
         fun getSemuaDataKos()
@@ -107,7 +114,6 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                             lokasiKosLatLng=Point.fromLngLat(snapLongitude.toDouble(), snapLattitude.toDouble())
                             jarak= TurfMeasurement.distance(lokasiSekarangLatLng,lokasiKosLatLng, TurfConstants.UNIT_KILOMETERS)
 
-
                             if(snapStatus==Constant().KEY_TERVERIFIKASI)
                             {
                                 kos=Kos(
@@ -130,7 +136,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                                     deskripsi=snapDeskripsi,
                                     status=snapStatus,
                                     rating=snapRating,
-                                    jarak=DecimalFormat("#.##").format(jarak).toDouble()
+                                    jarak=DecimalFormat("#.##").format(jarak).replace(",",".").toDouble()
                                 )
 
                                 kosArrayList.add(kos)
@@ -219,4 +225,6 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
         }
 
     }
+
+
 }

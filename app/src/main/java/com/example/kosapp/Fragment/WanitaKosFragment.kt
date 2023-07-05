@@ -1,6 +1,9 @@
 package com.example.kosapp.Fragment
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.location.LocationManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,7 +17,6 @@ import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter.ItemOnClick
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.PreferenceManager
-import com.example.kosapp.LocationManager.LocationManager
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.FragmentWanitaBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -55,6 +57,7 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
         return binding.root
     }
 
+    @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -63,11 +66,13 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
         preferenceManager= PreferenceManager()
         preferenceManager.preferenceManager(requireActivity())
 
-        locationManager=LocationManager()
-        locationManager.ambilLokasiSekarang(requireActivity())
+        locationManager=requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-        lokasiSekarangLatLng=Point.fromLngLat(locationManager.ambilLokasiSekarang(requireActivity()).longitude,
-            locationManager.ambilLokasiSekarang(requireActivity()).latitude)
+        val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+        lokasiSekarangLatLng=Point.fromLngLat(location!!.longitude, location.latitude)
+
+
 
     }
 
@@ -131,7 +136,7 @@ class WanitaKosFragment : Fragment(), ItemOnClick {
                                 deskripsi=snapDeskripsi,
                                 status=snapStatus,
                                 rating=snapRating,
-                                jarak=DecimalFormat("#.##").format(jarak).toDouble()
+                                jarak=DecimalFormat("#.##").format(jarak).replace(",",".").toDouble()
                             )
 
                             kosArrayList.add(kos)
