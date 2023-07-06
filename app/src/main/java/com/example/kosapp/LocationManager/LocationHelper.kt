@@ -20,12 +20,12 @@ class LocationHelper(val context: Context): PermissionsListener, LocationEngineL
     private lateinit var lokasiKosLatLng: Point
 
 
+    @SuppressLint("MissingPermission")
     fun ambilLokasiSekarang():Location
     {
         locationEngine= LocationEngineProvider(context).obtainBestLocationEngineAvailable()
         locationEngine.priority = LocationEnginePriority.HIGH_ACCURACY
-        locationEngine?.activate()
-        @SuppressWarnings("MissingPermission")
+        locationEngine.activate()
         lokasiSekarang=locationEngine.lastLocation
 
         return lokasiSekarang

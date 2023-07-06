@@ -80,18 +80,19 @@ class RouteJalanActivity : AppCompatActivity(),  PermissionsListener, LocationEn
 
             mapBox.cameraPosition = CameraPosition.Builder()
                 .target(latLng)
-                .zoom(15.0)
+                .zoom(20.0)
                 .build()
+        }
 
-            binding.btnroute.setOnClickListener {
-                val options= NavigationLauncherOptions.builder()
-                    .origin(originPosition)
-                    .destination(destinationPosition)
-                    .shouldSimulateRoute(false)
-                    .build()
-                NavigationLauncher.startNavigation(this, options)
-            }
-
+        binding.btnroute.setOnClickListener {
+            destinationPosition=Point.fromLngLat(latLng.longitude, latLng.latitude)
+            originPosition=Point.fromLngLat(originLocation.longitude, originLocation.latitude)
+            val options= NavigationLauncherOptions.builder()
+                .origin(originPosition)
+                .destination(destinationPosition)
+                .shouldSimulateRoute(false)
+                .build()
+            NavigationLauncher.startNavigation(this, options)
         }
 
     }

@@ -80,7 +80,6 @@ class PriaKosFragment : Fragment(), ItemOnClick {
 
     fun getDataKosPria()
     {
-
         database.child(Constant().KEY_DAFTAR_KOS)
             .addValueEventListener(object:ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {

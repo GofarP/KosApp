@@ -49,6 +49,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
     lateinit var lokasiSekarang: Location
     private lateinit var lokasiSekarangLatLng: Point
     private lateinit var lokasiKosLatLng: Point
+    private lateinit var locationHelper:LocationHelper
     private var jarak=0.0
     private lateinit var locationManager: LocationManager
 
@@ -68,18 +69,21 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
 
         locationManager= requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
+        locationHelper=LocationHelper(requireContext())
+
         preferenceManager=PreferenceManager()
         preferenceManager.preferenceManager(requireActivity())
 
         val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
+//        val location=locationHelper.ambilLokasiSekarang()
 
         lokasiSekarangLatLng=Point.fromLngLat(location!!.longitude, location.latitude)
+
 
         getSemuaDataKos()
 
     }
-
 
 
         fun getSemuaDataKos()
@@ -112,7 +116,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
                             val snapStatus=snap.child(Constant().KEY_STATUS_VERIFIKASI_KOS).value.toString()
                             val snapRating=snap.child(Constant().KEY_RATING).value.toString().toInt()
                             lokasiKosLatLng=Point.fromLngLat(snapLongitude.toDouble(), snapLattitude.toDouble())
-                            jarak= TurfMeasurement.distance(lokasiSekarangLatLng,lokasiKosLatLng, TurfConstants.UNIT_KILOMETERS)
+                            jarak=TurfMeasurement.distance(lokasiSekarangLatLng, lokasiKosLatLng, TurfConstants.UNIT_KILOMETERS)
 
                             if(snapStatus==Constant().KEY_TERVERIFIKASI)
                             {
