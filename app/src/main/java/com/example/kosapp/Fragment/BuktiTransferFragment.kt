@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import java.text.SimpleDateFormat
@@ -70,6 +71,7 @@ class BuktiTransferFragment : Fragment(), ItemOnCLickLihatBukti {
     private var calendar=Calendar.getInstance()
     private var emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
     private var idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
+
 
 
     override fun onCreateView(
@@ -157,7 +159,6 @@ class BuktiTransferFragment : Fragment(), ItemOnCLickLihatBukti {
 
         if(result.resultCode == AppCompatActivity.RESULT_OK)
         {
-
             pathBuktiTransfer="${Constant().KEY_BUKTI_TRANSFER}/${idBuktiTransfer}/"
 
             dialogBuktiTransfer=layoutInflater.inflate(R.layout.layout_popup_bukti_transfer, null)
@@ -179,34 +180,34 @@ class BuktiTransferFragment : Fragment(), ItemOnCLickLihatBukti {
 
                 database.child(Constant().KEY_DAFTAR_KOS)
                     .child(idKos).get()
-                    .addOnSuccessListener {snap->
-                        val snapAlamat=snap.child(Constant().KEY_ALAMAT_KOS).value.toString()
-                        val snapNamaKos=snap.child(Constant().KEY_NAMA_KOS).value.toString()
-                        val snapThumbnailKos=snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString()
+                    .addOnSuccessListener { snap ->
+                        val snapAlamat = snap.child(Constant().KEY_ALAMAT_KOS).value.toString()
+                        val snapNamaKos = snap.child(Constant().KEY_NAMA_KOS).value.toString()
+                        val snapThumbnailKos =
+                            snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString()
 
-
-                        history=History(
-                            idHistory =UUID.randomUUID().toString(),
+                        history = History(
+                            idHistory = UUID.randomUUID().toString(),
                             idKos = idKos,
                             alamat = snapAlamat,
                             tanggal = tanggalHariIni,
-                            nama=snapNamaKos,
-                            thumbnailKos =snapThumbnailKos
+                            namaKos = snapNamaKos,
+                            thumbnailKos = snapThumbnailKos
                         )
 
-                        transaksi= Transaksi(
-                            idTransaksi=idTransaksi,
-                            idPemilik=idPemilik,
+                        transaksi = Transaksi(
+                            idTransaksi = idTransaksi,
+                            idPemilik = idPemilik,
                             idPenyewa = idPenyewa,
-                            isi=isiTransaksi,
+                            isi = isiTransaksi,
                             judul = Constant().KEY_TERIMA_SEWA,
                             tanggal = tanggalHariIni,
                             tipe = Constant().KEY_PERMINTAAN_SEWA
                         )
 
-                        sewa=Sewa(
-                            idSewa=idSewa,
-                            idKos=idKos,
+                        sewa = Sewa(
+                            idSewa = idSewa,
+                            idKos = idKos,
                             idPenyewa = idPenyewa,
                             tanggal = tanggal
                         )
@@ -216,7 +217,7 @@ class BuktiTransferFragment : Fragment(), ItemOnCLickLihatBukti {
                             .push()
                             .setValue(transaksi)
 
-                        transaksi.isi="Penyewa ${emailPenyewa} Telah Mengupload Bukti Transfer "
+                        transaksi.isi = "Penyewa ${emailPenyewa} Telah Mengupload Bukti Transfer "
 
                         database.child(Constant().KEY_HISTORY)
                             .child(idPengguna)
@@ -225,7 +226,7 @@ class BuktiTransferFragment : Fragment(), ItemOnCLickLihatBukti {
 
                         database.child(Constant().KEY_DAFTAR_SEWA_KOS)
                             .child(idPenyewa)
-                            .push()
+                            .child(idKos)
                             .setValue(sewa)
 
                         database.child(Constant().KEY_TRANSAKSI)
@@ -235,27 +236,35 @@ class BuktiTransferFragment : Fragment(), ItemOnCLickLihatBukti {
                         firebaseStorage.child(pathBuktiTransfer).putFile(uriBuktiTransfer!!)
 
                         database.child(Constant().KEY_BUKTI_TRANSFER)
-                            .child(buktiTransfer.idBuktiTransfer)
+                            .child(idBuktiTransfer)
                             .child(Constant().KEY_URL_BUKTI_TRANSFER)
                             .setValue(pathBuktiTransfer)
 
-                        Toast.makeText(requireActivity(), "Sukses Mengupload Bukti Transfer", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireActivity(),
+                            "Sukses Mengupload Bukti Transfer",
+                            Toast.LENGTH_SHORT
+                        ).show()
 
                         customDialog.dismiss()
 
                     }
                     .addOnFailureListener {
-                        Toast.makeText(requireActivity(), "Gagal Mengupload Bukti Transfer", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireActivity(),
+                            "Gagal Mengupload Bukti Transfer",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
+
+
+                bindingPopUpBuktiTransferBinding.btnpopupbatalkan.setOnClickListener {
+                    customDialog.dismiss()
+                }
+
+
             }
-
-            bindingPopUpBuktiTransferBinding.btnpopupbatalkan.setOnClickListener {
-                customDialog.dismiss()
-            }
-
-
         }
-
         else if(result.resultCode== ImagePicker.RESULT_ERROR)
         {
             Toast.makeText(requireActivity(), ImagePicker.getError(result.data), Toast.LENGTH_SHORT).show()
@@ -263,9 +272,9 @@ class BuktiTransferFragment : Fragment(), ItemOnCLickLihatBukti {
 
     }
 
-    override fun OnClick(v: View, dataBuktiTransfer: BuktiTransfer) {
+    override fun OnClickTransfer(v: View, dataBuktiTransfer: BuktiTransfer) {
 
-        if(buktiTransfer.urlBuktiTransfer=="")
+        if(dataBuktiTransfer.urlBuktiTransfer=="")
         {
             idBuktiTransfer=dataBuktiTransfer.idBuktiTransfer
 
@@ -285,7 +294,6 @@ class BuktiTransferFragment : Fragment(), ItemOnCLickLihatBukti {
 
         else
         {
-
             dialogBuktiTransfer=layoutInflater.inflate(R.layout.layout_popup_bukti_transfer, null)
             customDialog=AlertDialog.Builder(requireActivity())
                 .setView(dialogBuktiTransfer)
@@ -309,5 +317,111 @@ class BuktiTransferFragment : Fragment(), ItemOnCLickLihatBukti {
         }
     }
 
+    override fun OnCancelTransfer(v: View, dataBuktiTransfer: BuktiTransfer) {
+
+        
+        if(emailPengguna==buktiTransfer.emailPemilik)
+        {
+            tolakPembayaran(dataBuktiTransfer)
+        }
+
+        else
+        {
+            batalkanPembayaran(dataBuktiTransfer)
+        }
+    }
+
+
+    private fun batalkanPembayaran(dataBuktiTransfer: BuktiTransfer)
+    {
+
+        isiTransaksi="Anda Membatalkan Menyewa Kos Ini"
+
+        idTransaksi=UUID.randomUUID().toString()
+
+        database.child(Constant().KEY_BUKTI_TRANSFER)
+            .child(dataBuktiTransfer.idBuktiTransfer)
+            .removeValue()
+
+        database.child(Constant().KEY_DAFTAR_KOS)
+            .child(dataBuktiTransfer.idKos)
+            .child(Constant().KEY_JUMLAH_KAMAR_KOS)
+            .setValue(ServerValue.increment(1))
+
+        transaksi = Transaksi(
+            idTransaksi = idTransaksi,
+            idPemilik = dataBuktiTransfer.idPemilik,
+            idPenyewa = dataBuktiTransfer.idPenyewa,
+            isi = isiTransaksi,
+            judul = Constant().KEY_BATAL_BAYAR,
+            tanggal = tanggalHariIni,
+            tipe = Constant().KEY_PERMINTAAN_SEWA
+        )
+
+        database.child(Constant().KEY_TRANSAKSI)
+            .child(buktiTransfer.idPenyewa)
+            .push()
+            .setValue(transaksi)
+
+
+        transaksi.isi="${dataBuktiTransfer.emailPenyewa} Membatalkan Untuk menyewa Kos Ini"
+
+        database.child(Constant().KEY_TRANSAKSI)
+            .child(buktiTransfer.idPemilik)
+            .push()
+            .setValue(transaksi)
+
+
+        val indexBuktiPembayaran= arrayListBuktiTransfer.indexOf(dataBuktiTransfer)
+        adapter.notifyItemRemoved(indexBuktiPembayaran)
+
+        Toast.makeText(requireActivity(), "Sukses Membatalkan Pembayaran", Toast.LENGTH_SHORT).show()
+
+
+    }
+
+
+    private fun tolakPembayaran(dataBuktiTransfer: BuktiTransfer)
+    {
+       isiTransaksi="Anda Menolak Penyewa Untuk Membayar Transfer Kos Ini (Sewa Dibatalkan)"
+        idTransaksi=UUID.randomUUID().toString()
+
+        database.child(Constant().KEY_BUKTI_TRANSFER)
+            .child(dataBuktiTransfer.idBuktiTransfer)
+            .removeValue()
+
+        database.child(Constant().KEY_DAFTAR_KOS)
+            .child(dataBuktiTransfer.idKos)
+            .child(Constant().KEY_JUMLAH_KAMAR_KOS)
+            .setValue(ServerValue.increment(1))
+
+        transaksi = Transaksi(
+            idTransaksi = idTransaksi,
+            idPemilik = dataBuktiTransfer.idPemilik,
+            idPenyewa = dataBuktiTransfer.idPenyewa,
+            isi = isiTransaksi,
+            judul = Constant().KEY_BATAL_BAYAR,
+            tanggal = tanggalHariIni,
+            tipe = Constant().KEY_PERMINTAAN_SEWA
+        )
+
+        database.child(Constant().KEY_TRANSAKSI)
+            .child(dataBuktiTransfer.idPemilik)
+            .push()
+            .setValue(transaksi)
+
+        transaksi.isi="${dataBuktiTransfer.emailPemilik} Menolak Anda Untuk Membayar Transfer Kos Ini (Sewa Dibatalkan)"
+
+        database.child(Constant().KEY_TRANSAKSI)
+            .child(dataBuktiTransfer.idPenyewa)
+            .push()
+            .setValue(transaksi)
+
+
+        val indexBuktiPembayaran= arrayListBuktiTransfer.indexOf(dataBuktiTransfer)
+        adapter.notifyItemRemoved(indexBuktiPembayaran)
+
+        Toast.makeText(requireActivity(), "Sukses menolak Pembayaran Transfer", Toast.LENGTH_SHORT).show()
+    }
 
 }

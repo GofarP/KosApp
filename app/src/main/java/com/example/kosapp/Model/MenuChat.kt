@@ -10,5 +10,4 @@ data class MenuChat (
         val usernamePenerima:String,
         val usernamePengirim:String,
         val pesanTerakhir:String,
-
-        )
+)

@@ -186,7 +186,7 @@ class PermintaanFragment : Fragment(), OnClickListener {
 
                                     database.child(Constant().KEY_DAFTAR_SEWA_KOS)
                                         .child(permintaan.idPenyewa)
-                                        .push()
+                                        .child(permintaan.idKos)
                                         .setValue(sewa)
 
 
@@ -211,7 +211,7 @@ class PermintaanFragment : Fragment(), OnClickListener {
                                                 idHistory=UUID.randomUUID().toString(),
                                                 idKos = snap.child(Constant().KEY_ID_KOS).value.toString(),
                                                 alamat = snap.child(Constant().KEY_ALAMAT_KOS).value.toString(),
-                                                nama=snap.child(Constant().KEY_NAMA_KOS).value.toString(),
+                                                namaKos=snap.child(Constant().KEY_NAMA_KOS).value.toString(),
                                                 tanggal = tanggalHariIni,
                                                 thumbnailKos = snap.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString()
                                             )
@@ -285,21 +285,14 @@ class PermintaanFragment : Fragment(), OnClickListener {
 
                             database.child(Constant().KEY_DAFTAR_SEWA_KOS)
                                 .child(permintaan.idPenyewa)
-                                .get().addOnSuccessListener {snap_sewa->
-                                    val idKosSewa=snap_sewa.child(Constant().KEY_ID_KOS).value.toString()
+                                .child(permintaan.idKos)
+                                .removeValue()
 
-                                    if(permintaan.idKos==idKosSewa)
-                                    {
-                                        snap.ref.removeValue()
-                                            .addOnSuccessListener {
-                                                Toast.makeText(activity, "Sukses Keluar", Toast.LENGTH_SHORT)
-                                                    .show()
-                                                val indexPermintaan= permintaanArrayList.indexOf(permintaan)
-                                                adapter.notifyItemRemoved(indexPermintaan)
-                                            }
+                            Toast.makeText(activity, "Sukses Keluar", Toast.LENGTH_SHORT)
+                                .show()
+                            val indexPermintaan= permintaanArrayList.indexOf(permintaan)
+                            adapter.notifyItemRemoved(indexPermintaan)
 
-                                    }
-                                }
                         }
                     }
                 }

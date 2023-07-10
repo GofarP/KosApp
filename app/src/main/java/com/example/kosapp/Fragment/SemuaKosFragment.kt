@@ -224,7 +224,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
 
         else
         {
-            val intent=Intent(activity, DetailSewaKosActivity::class.java).putExtra(Constant().KEY_ID_KOS, dataKos)
+            val intent=Intent(activity, DetailSewaKosActivity::class.java).putExtra(Constant().KEY_DATA_KOS, dataKos)
             startActivity(intent)
         }
 

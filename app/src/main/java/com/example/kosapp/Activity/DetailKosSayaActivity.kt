@@ -82,10 +82,10 @@ class DetailKosSayaActivity : AppCompatActivity() {
         }
 
         binding.btnchatpemilik.setOnClickListener {
-            val intent=Intent(this@DetailKosSayaActivity, ChatActiviity::class.java)
-            intent.putExtra(Constant().KEY_EMAIL_PENGIRIM,emailPengguna)
-            intent.putExtra(Constant().KEY_EMAIL_PENGIRIM,kos.idPemilik)
 
+            val intent=Intent(this@DetailKosSayaActivity, ChatActiviity::class.java)
+                .putExtra(Constant().KEY_EMAIL_PENGIRIM,emailPengguna)
+                .putExtra(Constant().KEY_EMAIL_PENERIMA,kos.emailPemilik)
             startActivity(intent)
         }
 
@@ -224,7 +224,6 @@ class DetailKosSayaActivity : AppCompatActivity() {
 
                    }
 
-
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -234,10 +233,10 @@ class DetailKosSayaActivity : AppCompatActivity() {
 
         customDialogBinding.btnaddrating.setOnClickListener {
 
-            val rating=customDialogBinding.ratingbarkos.rating.toString()
+            val rating=customDialogBinding.ratingbarkos.rating.toInt()
 
-            jumlahRating=hashMapKosRating[rating.toInt()]?:0
-            hashMapKosRating[rating.toInt()]=jumlahRating+1
+            jumlahRating=hashMapKosRating[rating]?:0
+            hashMapKosRating[rating]=jumlahRating+1
 
             hashMapAddRating[Constant().KEY_ID_PENGGUNA]=idPengguna
             hashMapAddRating[Constant().KEY_RATING]=rating.toDouble()
@@ -250,7 +249,7 @@ class DetailKosSayaActivity : AppCompatActivity() {
 
             nilaiAkhirRating=(jumlahRating.toFloat() / totalRating.toFloat()).toInt()
 
-            database.child(Constant().KEY_DATA_KOS)
+            database.child(Constant().KEY_DAFTAR_KOS)
                 .child(kos.idKos)
                 .child(Constant().KEY_RATING)
                 .setValue(nilaiAkhirRating)

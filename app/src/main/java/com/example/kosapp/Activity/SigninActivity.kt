@@ -44,10 +44,9 @@ class SigninActivity : AppCompatActivity() {
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
+
         locationListener=object:LocationListener{
             override fun onLocationChanged(p0: Location) {
-                val latitude = p0.latitude
-                val longitude = p0.longitude
 
             }
 
@@ -64,12 +63,10 @@ class SigninActivity : AppCompatActivity() {
 
         }
 
-        getLocationPermission()
         preferenceManager=PreferenceManager()
         preferenceManager.preferenceManager(this@SigninActivity)
 
-
-        getLocation()
+        checkLocationPermission()
 
         if(user!=null && preferenceManager.getString(Constant().KEY_ROLE)==Constant().KEY_ROLE_ADMIN)
         {
@@ -103,37 +100,55 @@ class SigninActivity : AppCompatActivity() {
 
     }
 
+    private fun checkLocationPermission()
+    {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Izin belum diberikan, minta izin kepada pengguna
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
+                PERMISSION_REQUEST_CODE
+            )
+        } else
+        {
+            // Izin telah diberikan, minta lokasi sekarang
+            getLocation()
+        }
+    }
 
     private fun getLocation()
     {
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+        {
             // Dapatkan lokasi sekarang
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            {
                 return
             }
+
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
                 MIN_TIME_BETWEEN_UPDATES,
                 MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
                 locationListener
             )
-        } else {
-            Toast.makeText(this@SigninActivity,"Aktifkan GPS untuk mendapatkan lokasi sekarang"
-                , Toast.LENGTH_SHORT).show()
+
+        }
+
+        else
+        {
+            Toast.makeText(this@SigninActivity, "Aktifkan GPS untuk mendapatkan lokasi sekarang", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -202,33 +217,6 @@ class SigninActivity : AppCompatActivity() {
         private const val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 1 // Jarak minimum yang harus ditempuh agar pembaruan lokasi dilakukan (dalam meter)
     }
 
-    private fun getLocationPermission()
-    {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Izin tidak diberikan, minta izin lokasi
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ),
-                PERMISSION_REQUEST_CODE
-            )
-        } else {
-            // Izin sudah diberikan, dapatkan lokasi sekarang
-            getLocation()
-        }
-
-    }
-
-
 
 
     override fun onRequestPermissionsResult(
@@ -242,7 +230,7 @@ class SigninActivity : AppCompatActivity() {
                 // Izin diberikan, dapatkan lokasi terkini
                 getLocation()
             } else {
-                // Izin ditolak, tampilkan pesan atau lakukan tindakan yang sesuai
+                Toast.makeText(this@SigninActivity, "Silahkan Izinkan Perizinan lokasi", Toast.LENGTH_SHORT).show()
             }
         }
     }

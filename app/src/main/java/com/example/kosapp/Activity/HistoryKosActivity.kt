@@ -25,7 +25,7 @@ class HistoryKosActivity : AppCompatActivity() {
     private lateinit var adapter: HistoryKosAdapter
     private lateinit var history: History
 
-    private val emailPengguna=FirebaseAuth.getInstance().currentUser?.email.toString()
+    private val idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
     private val database=FirebaseDatabase.getInstance().reference
     private var historyKosArrayList=ArrayList<History>()
 
@@ -42,7 +42,7 @@ class HistoryKosActivity : AppCompatActivity() {
     private fun getData()
     {
         database.child(Constant().KEY_HISTORY)
-            .child(emailPengguna.replace(".",","))
+            .child(idPengguna)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     historyKosArrayList.clear()
@@ -52,7 +52,7 @@ class HistoryKosActivity : AppCompatActivity() {
                             idKos= snapshotHistory.child(Constant().KEY_ID_KOS).value.toString(),
                             tanggal = snapshotHistory.child(Constant().KEY_TANGGAL).value.toString(),
                             alamat = snapshotHistory.child(Constant().KEY_ALAMAT_KOS).value.toString(),
-                            nama=snapshotHistory.child(Constant().KEY_NAMA_KOS).value.toString(),
+                            namaKos =snapshotHistory.child(Constant().KEY_NAMA_KOS).value.toString(),
                             thumbnailKos = snapshotHistory.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString(),
                         )
                         historyKosArrayList.add(history)

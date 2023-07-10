@@ -104,8 +104,6 @@ class HomeFragment : Fragment() {
                      if(binding.txtsearchkos.text.isNullOrEmpty())
                      {
                          frag.getSemuaDataKos()
-                         @SuppressWarnings("MissingPermission")
-                         frag.lokasiSekarang=locationEngine.lastLocation
                      }
 
                      else

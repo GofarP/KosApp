@@ -85,7 +85,7 @@ class MyKosFragment : Fragment(), ItemOnClick {
                 startActivity(Intent(activity,HistoryKosActivity::class.java))
            }
 
-           "Transaksi Saya"->{
+           "Informasi"->{
                startActivity(Intent(activity, TransaksiActivity::class.java))
            }
 
@@ -98,7 +98,7 @@ class MyKosFragment : Fragment(), ItemOnClick {
         myKosArrayList.add("Buka Kos-Kosan")
         myKosArrayList.add("Kos-Kosan Saya")
         myKosArrayList.add("History Kos Saya")
-        myKosArrayList.add("Transaksi Saya")
+        myKosArrayList.add("Informasi")
     }
 
 }

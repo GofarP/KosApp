@@ -31,11 +31,13 @@ private val itemClickLihatBukti:ItemOnCLickLihatBukti):
                 if(dataBuktiTransfer.urlBuktiTransfer=="" && dataBuktiTransfer.emailPenyewa==emailSaatIni)
                 {
                     binding.btnlihatbuktitransfer.text="Upload Bukti Transfer"
+                    binding.btnbatalkantransfer.text="Batalkan Pembayaran"
                 }
 
                 else if(dataBuktiTransfer.urlBuktiTransfer!="" && dataBuktiTransfer.emailPenyewa==emailSaatIni)
                 {
                     binding.btnlihatbuktitransfer.text="Lihat Bukti Transfer"
+                    binding.btnbatalkantransfer.visibility=View.GONE
                 }
 
                 else if(dataBuktiTransfer.urlBuktiTransfer=="" && dataBuktiTransfer.emailPemilik==emailSaatIni)
@@ -43,7 +45,7 @@ private val itemClickLihatBukti:ItemOnCLickLihatBukti):
                     binding.btnlihatbuktitransfer.text="Bukti Transfer Belum Diupload"
                     binding.btnlihatbuktitransfer.isEnabled=false
                     binding.btnlihatbuktitransfer.setBackgroundResource(R.drawable.button_background_disabled)
-
+                    binding.btnbatalkantransfer.text="Tolak Pembayaran"
                 }
 
                 else if(dataBuktiTransfer.urlBuktiTransfer!="" && dataBuktiTransfer.emailPemilik==emailSaatIni)
@@ -51,12 +53,17 @@ private val itemClickLihatBukti:ItemOnCLickLihatBukti):
                     binding.btnlihatbuktitransfer.text="Lihat Bukti Transfer"
                     binding.btnlihatbuktitransfer
                     binding.btnlihatbuktitransfer.isEnabled=true
+                    binding.btnbatalkantransfer.visibility=View.GONE
                 }
 
             }
 
             binding.btnlihatbuktitransfer.setOnClickListener {view->
-                itemClickLihatBukti.OnClick(view, dataBuktiTransfer)
+                itemClickLihatBukti.OnClickTransfer(view, dataBuktiTransfer)
+            }
+
+            binding.btnbatalkantransfer.setOnClickListener {view->
+                itemClickLihatBukti.OnCancelTransfer(view, dataBuktiTransfer)
             }
         }
     }
@@ -82,5 +89,7 @@ private val itemClickLihatBukti:ItemOnCLickLihatBukti):
 
 interface ItemOnCLickLihatBukti
 {
-    fun OnClick(v: View, dataBuktiTransfer: BuktiTransfer)
+    fun OnClickTransfer(v: View, dataBuktiTransfer: BuktiTransfer)
+
+    fun OnCancelTransfer(v:View, dataBuktiTransfer: BuktiTransfer)
 }

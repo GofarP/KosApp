@@ -106,6 +106,11 @@ class SignupActivity : AppCompatActivity() {
             gagal=true
         }
 
+        else if(username.length<8)
+        {
+            Toast.makeText(this@SignupActivity, "Panjang Password Minimal Karakter", Toast.LENGTH_SHORT).show()
+        }
+
         else if(binding.spinnerjk.selectedItemPosition==0)
         {
             Toast.makeText(this@SignupActivity, "Silahkan Pilih Jenis Kelamin Anda Terlebih Dahulu", Toast.LENGTH_SHORT).show()

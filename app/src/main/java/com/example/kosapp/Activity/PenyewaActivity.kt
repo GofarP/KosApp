@@ -14,10 +14,7 @@ import com.example.kosapp.Adapter.RecyclerviewAdapter.PenyewaAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.PenyewaAdapter.*
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
-import com.example.kosapp.Model.Kos
-import com.example.kosapp.Model.Pengguna
-import com.example.kosapp.Model.RatingProfile
-import com.example.kosapp.Model.Transaksi
+import com.example.kosapp.Model.*
 import com.example.kosapp.R
 import com.example.kosapp.databinding.ActivityPenyewaBinding
 import com.example.kosapp.databinding.LayoutBeriRatingProfileBinding
@@ -53,6 +50,7 @@ class PenyewaActivity : AppCompatActivity(), PenggunaItemOnCLick {
     private lateinit var tanggalHariIni:String
     private lateinit var ratingProfile:RatingProfile
     private lateinit var ratingProfileMap:MutableMap<String,Any>
+    private lateinit var history: History
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +65,7 @@ class PenyewaActivity : AppCompatActivity(), PenggunaItemOnCLick {
         tanggalHariIni= SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(calendar.time)
 
         dataKosIntent=intent
-        kos=dataKosIntent.getParcelableExtra("dataKos")!!
+        kos=dataKosIntent.getParcelableExtra(Constant().KEY_DATA_KOS)!!
 
 
 
@@ -76,66 +74,60 @@ class PenyewaActivity : AppCompatActivity(), PenggunaItemOnCLick {
     }
 
 
-    fun getData()
+    private fun getData()
     {
         database.child(Constant().KEY_DAFTAR_SEWA_KOS)
-            .addValueEventListener(object: ValueEventListener{
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     penyewaArrayList.clear()
-                    snapshot.children.forEach { snapSewa->
+                    snapshot.children.forEach {snapPenyewa->
+                        snapPenyewa.children.forEach {snapKos->
+                            val snapSewaIdKos=snapKos.child(Constant().KEY_ID_KOS).value.toString()
+                            val snapIdPenyewa=snapKos.child(Constant().KEY_ID_PENYEWA).value.toString()
 
-                        val snapSewaIdKos=snapSewa.child(Constant().KEY_ID_KOS).value.toString()
-                        val snapSewaEmail=snapSewa.child(Constant().KEY_EMAIL).value.toString()
+                            if(snapSewaIdKos==kos.idKos)
+                            {
+                                database.child(Constant().KEY_USER)
+                                    .child(snapIdPenyewa)
+                                    .get().addOnSuccessListener {snapUser->
 
-                        if(snapSewaIdKos==kos.idKos)
-                        {
-                            database.child(Constant().KEY_USER)
-                                .addValueEventListener(object:ValueEventListener{
-                                    override fun onDataChange(snapshot: DataSnapshot) {
-                                        snapshot.children.forEach { snapUser->
+                                        pengguna= Pengguna(
+                                            id=snapUser.child(Constant().KEY_ID_PENGGUNA).value.toString(),
+                                            email=snapUser.child(Constant().KEY_EMAIL).value.toString(),
+                                            foto=snapUser.child(Constant().KEY_FOTO).value.toString(),
+                                            jenisKelamin = snapUser.child(Constant().KEY_JENIS_KELAMIN).value.toString(),
+                                            noTelp=snapUser.child(Constant().KEY_NOTELP).value.toString(),
+                                            username = snapUser.child(Constant().KEY_USERNAME).value.toString(),
+                                            nik=snapUser.child(Constant().KEY_NIK).value.toString(),
+                                            kelurahan=snapUser.child(Constant().KEY_KELURAHAN).value.toString(),
+                                            kecamatan=snapUser.child(Constant().KEY_KECAMATAN).value.toString()
+                                        )
 
-                                            val snapUserEmail=snapUser.child(Constant().KEY_EMAIL).value.toString()
-
-                                            if(snapUserEmail==snapSewaEmail)
-                                            {
-                                                pengguna= Pengguna(
-                                                    id=snapUser.child(Constant().KEY_ID_PENGGUNA).value.toString(),
-                                                    email=snapUser.child(Constant().KEY_EMAIL).value.toString(),
-                                                    foto=snapUser.child(Constant().KEY_FOTO).value.toString(),
-                                                    jenisKelamin = snapUser.child(Constant().KEY_JENIS_KELAMIN).value.toString(),
-                                                    noTelp=snapUser.child(Constant().KEY_NOTELP).value.toString(),
-                                                    username = snapUser.child(Constant().KEY_USERNAME).value.toString(),
-                                                    nik=snapUser.child(Constant().KEY_NIK).value.toString(),
-                                                    kelurahan=snapUser.child(Constant().KEY_KELURAHAN).value.toString(),
-                                                    kecamatan=snapUser.child(Constant().KEY_KECAMATAN).value.toString()
-                                                )
-
-                                                penyewaArrayList.add(pengguna)
-                                            }
-                                        }
+                                        penyewaArrayList.add(pengguna)
 
                                         adapter= PenyewaAdapter(penyewaArrayList, VIEW_PENGGUNA)
                                         adapter.penggunaClickListener=this@PenyewaActivity
                                         layoutManager=LinearLayoutManager(this@PenyewaActivity)
                                         binding.rvpenyewa.layoutManager=layoutManager
                                         binding.rvpenyewa.adapter=adapter
-
                                     }
 
-                                    override fun onCancelled(error: DatabaseError) {
-                                        Log.d("error db",error.message)
-                                    }
 
-                                })
+                            }
+
+
                         }
                     }
+
+
+
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.d("db error", error.message)
+                    Log.d("error",error.message)
                 }
-
             })
+
     }
 
 
@@ -161,6 +153,7 @@ class PenyewaActivity : AppCompatActivity(), PenggunaItemOnCLick {
         
         database.child(Constant().KEY_RATING_USER)
             .child(pengguna.id)
+            .child(kos.idKos)
             .addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
@@ -186,7 +179,7 @@ class PenyewaActivity : AppCompatActivity(), PenggunaItemOnCLick {
             idPengguna = pengguna.id,
             namaKos = kos.namaKos,
             ratingPengguna = customDialogBinding.spnrating.selectedItem.toString(),
-            tanggal ="20-02-1999"
+            tanggal =tanggalHariIni
         )
 
         customDialogBinding.btntambahrating.setOnClickListener {
@@ -236,54 +229,62 @@ class PenyewaActivity : AppCompatActivity(), PenggunaItemOnCLick {
             .setCancelable(true)
             .setPositiveButton("Ya"){dialog, id->
                 database.child(Constant().KEY_DAFTAR_SEWA_KOS)
-                    .addListenerForSingleValueEvent(object: ValueEventListener{
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            snapshot.children.forEach {snap->
-                                val snapEmail=snap.child(Constant().KEY_EMAIL).value.toString()
-                                val snapIdKos=snap.child(Constant().KEY_ID_KOS).value.toString()
-                                val snapKey=snap.key
+                    .child(pengguna.id)
+                    .child(kos.idKos)
+                    .removeValue()
+                    .addOnSuccessListener {
 
-                                if(snapEmail==pengguna.email && snapIdKos==kos.idKos)
-                                {
-                                    database.child(Constant().KEY_DAFTAR_SEWA_KOS)
-                                        .child(snapKey.toString())
-                                        .removeValue()
-                                        .addOnSuccessListener {
+                        transaksi= Transaksi(
+                            idTransaksi = UUID.randomUUID().toString(),
+                            idPenyewa = pengguna.id,
+                            idPemilik = idPengguna,
+                            judul="Pengeluaran Kos",
+                            isi = "Anda Dikeluarkan Dari Kos ${kos.namaKos} oleh pemilik",
+                            tipe = Constant().KEY_PENGELUARAN_KOS,
+                            tanggal =tanggalHariIni
+                        )
 
-                                            transaksi= Transaksi(
-                                                idTransaksi = UUID.randomUUID().toString(),
-                                                idPenyewa = pengguna.id,
-                                                idPemilik = idPengguna,
-                                                judul="Pengeluaran Kos",
-                                                isi = "Anda Dikeluarkan Dari Kos ${kos.namaKos} oleh pemilik",
-                                                tipe = Constant().KEY_PENGELUARAN_KOS,
-                                                tanggal =tanggalHariIni
-                                            )
+                        database.child(Constant().KEY_TRANSAKSI)
+                            .child(pengguna.id)
+                            .push()
+                            .setValue(transaksi)
 
-                                            database.child(Constant().KEY_TRANSAKSI)
-                                                .push()
-                                                .setValue(transaksi)
+                        transaksi.isi="Anda Mengeluarkan ${pengguna.email} Dari Kos Anda"
 
-                                            database.child(Constant().KEY_DAFTAR_KOS)
-                                                .child(kos.idKos)
-                                                .child(Constant().KEY_JUMLAH_KAMAR_KOS)
-                                                .setValue(ServerValue.increment(1))
+                        database.child(Constant().KEY_TRANSAKSI)
+                            .child(kos.idPemilik)
+                            .push()
+                            .setValue(transaksi)
+
+                        database.child(Constant().KEY_DAFTAR_KOS)
+                            .child(kos.idKos)
+                            .child(Constant().KEY_JUMLAH_KAMAR_KOS)
+                            .setValue(ServerValue.increment(1))
 
 
-                                            val indexPenyewa=penyewaArrayList.indexOf(pengguna)
-                                            adapter.notifyItemRemoved(indexPenyewa)
+                        history=History(
+                            idHistory = UUID.randomUUID().toString(),
+                            alamat=kos.alamat,
+                            idKos = kos.idKos,
+                            namaKos = kos.namaKos,
+                            tanggal = tanggalHariIni,
+                            thumbnailKos = kos.thumbnailKos
+                        )
 
-                                            Toast.makeText(this@PenyewaActivity, "Sukses Mengeluarkan Penyewa", Toast.LENGTH_SHORT).show()
-                                        }
-                                }
-                            }
-                        }
+                        database.child(Constant().KEY_HISTORY)
+                            .child(pengguna.id)
+                            .push()
+                            .setValue(history)
 
-                        override fun onCancelled(error: DatabaseError) {
-                            Log.d("db error", error.message)
-                        }
 
-                    })
+                        val indexPenyewa=penyewaArrayList.indexOf(pengguna)
+                        adapter.notifyItemRemoved(indexPenyewa)
+
+                        Toast.makeText(this@PenyewaActivity, "Sukses Mengeluarkan Penyewa", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this@PenyewaActivity, "Gagal Mengeluarkan Penyewas", Toast.LENGTH_SHORT).show()
+                    }
             }
             .setNegativeButton("Tidak"){dialog, id->
 

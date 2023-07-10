@@ -30,7 +30,7 @@ class HistoryKosAdapter(val historyKosList:ArrayList<History>)
                 itemView.apply {
 
 
-                    binding.lblnama.text=dataHistory.nama
+                    binding.lblnama.text=dataHistory.namaKos
                     binding.lblalamat.text=dataHistory.alamat
                     binding.lbltanggal.text=dataHistory.tanggal
 

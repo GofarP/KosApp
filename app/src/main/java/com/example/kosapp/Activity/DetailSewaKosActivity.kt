@@ -67,7 +67,7 @@ class DetailSewaKosActivity : AppCompatActivity() {
         Helper().setStatusBarColor(this@DetailSewaKosActivity)
 
         dataKosIntent=intent
-        kos=dataKosIntent.getParcelableExtra(Constant().KEY_ID_KOS)!!
+        kos=dataKosIntent.getParcelableExtra(Constant().KEY_DATA_KOS)!!
 
         if(idPengguna==kos.idPemilik)
         {

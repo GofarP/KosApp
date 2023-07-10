@@ -206,7 +206,7 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
     }
 
     override fun onPeminjamClick(v: View, dataKos: Kos) {
-        val intent=Intent(activity, PenyewaActivity::class.java).putExtra("dataKos", dataKos)
+        val intent=Intent(activity, PenyewaActivity::class.java).putExtra(Constant().KEY_DATA_KOS, dataKos)
         startActivity(intent)
     }
 

@@ -211,7 +211,7 @@ class CampurKosFragment : Fragment(), ItemOnClick {
 
         else
         {
-            val intent=Intent(activity, DetailSewaKosActivity::class.java).putExtra("dataKos", dataKos)
+            val intent=Intent(activity, DetailSewaKosActivity::class.java).putExtra(Constant().KEY_DATA_KOS, dataKos)
             startActivity(intent)
         }
     }

@@ -128,5 +128,7 @@ class Constant {
     val KEY_BUKTI_TRANSFER="buktiTransfer"
     val KEY_URL_BUKTI_TRANSFER="urlBuktiTransfer"
     val KEY_ID_BUKTI_TRANSFER="idBuktiTransfer"
+    val KEY_BATAL_BAYAR="Batal Bayar"
+    val KEY_TOLAK_BAYAR="Tolak Bayar"
 
 }
