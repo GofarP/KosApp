@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginTop="20dp"
-            android:text="Transaksi Saya"
+            android:text="Informasi Saya"
             android:textColor="@color/white"
             android:textSize="25dp"
             android:textStyle="bold" />

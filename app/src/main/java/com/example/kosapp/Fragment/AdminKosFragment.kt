@@ -129,7 +129,9 @@ class FragmentAdminKos : Fragment(), ItemOnClick {
                         val snapAlamat=snap.child(Constant().KEY_ALAMAT_KOS).value.toString()
                         val snapKelurahan=snap.child(Constant().KEY_KELURAHAN).value.toString()
                         val snapKecamatan=snap.child(Constant().KEY_KECAMATAN).value.toString()
-                        val snapBiaya=snap.child(Constant().KEY_BIAYA_KOS).value.toString()
+                        val snapBiayaHarian=snap.child(Constant().KEY_HARGA_KOS_HARIAN).value.toString()
+                        val snapBiayaBulanan=snap.child(Constant().KEY_HARGA_KOS_BULANAN).value.toString()
+                        val snapBiayaTahunan=snap.child(Constant().KEY_HARGA_KOS_TAHUNAN).value.toString()
                         val snapEmailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString()
                         val snapIdPemilik=snap.child(Constant().KEY_ID_PEMILIK).value.toString()
                         val snapGambarKos=snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>
@@ -151,7 +153,9 @@ class FragmentAdminKos : Fragment(), ItemOnClick {
                                 alamat = snapAlamat,
                                 kelurahan=snapKelurahan,
                                 kecamatan=snapKecamatan,
-                                biaya = snapBiaya.toDouble(),
+                                hargaHarian = snapBiayaHarian.toDouble(),
+                                hargaBulanan = snapBiayaHarian.toDouble(),
+                                hargaTahunan = snapBiayaHarian.toDouble(),
                                 idPemilik=snapIdPemilik,
                                 gambarKos = snapGambarKos,
                                 thumbnailKos = snapThumbnailKos,

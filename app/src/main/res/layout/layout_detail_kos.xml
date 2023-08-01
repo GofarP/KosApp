@@ -81,19 +81,14 @@
                 android:layout_marginTop="15dp"
                 android:orientation="horizontal"
                 >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="17sp"
-                    android:textColor="@color/black"
-                    android:text="Harga:"
-                    />
+
 
                 <TextView
                     android:id="@+id/lblhargakos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
+                    android:textSize="20sp"
                     android:text="Rp.999,999"
                     />
 

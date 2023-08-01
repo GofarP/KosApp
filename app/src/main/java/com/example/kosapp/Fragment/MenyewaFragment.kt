@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Activity.DetailKosSayaActivity
@@ -16,7 +15,6 @@ import com.example.kosapp.Adapter.RecyclerviewAdapter.MenyewaAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.MenyewaAdapter.*
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Model.Kos
-import com.example.kosapp.Model.Sewa
 import com.example.kosapp.databinding.FragmentMenyewaBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -76,7 +74,9 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
                                         alamat = snap_kos.child(Constant().KEY_ALAMAT_KOS).value.toString(),
                                         kecamatan=snap_kos.child(Constant().KEY_KECAMATAN).value.toString(),
                                         kelurahan=snap_kos.child(Constant().KEY_KELURAHAN).value.toString(),
-                                        biaya = snap_kos.child(Constant().KEY_BIAYA_KOS).value.toString().toDouble(),
+                                        hargaHarian = snap_kos.child(Constant().KEY_HARGA_KOS_HARIAN).value.toString().toDouble(),
+                                        hargaBulanan = snap_kos.child(Constant().KEY_HARGA_KOS_BULANAN).value.toString().toDouble(),
+                                        hargaTahunan = snap_kos.child(Constant().KEY_HARGA_KOS_TAHUNAN).value.toString().toDouble(),
                                         idPemilik=snap_kos.child(Constant().KEY_ID_PEMILIK).value.toString(),
                                         emailPemilik=snap_kos.child(Constant().KEY_EMAIL_PEMILIK).value.toString(),
                                         gambarKos = snap_kos.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>,

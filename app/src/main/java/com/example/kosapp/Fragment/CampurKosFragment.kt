@@ -1,5 +1,6 @@
 package com.example.kosapp.Fragment
 
+import android.R
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -8,6 +9,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +19,6 @@ import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter.ItemOnClick
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.PreferenceManager
-import com.example.kosapp.LocationManager.LocationManager
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.FragmentCampurKosBinding
 import com.google.firebase.database.DataSnapshot
@@ -68,12 +70,41 @@ class CampurKosFragment : Fragment(), ItemOnClick {
         preferenceManager=PreferenceManager()
         preferenceManager.preferenceManager(requireActivity())
 
+        val arrayFilterHarga=arrayOf(Constant().KEY_SEMUA,Constant().KEY_TERMURAH, Constant().KEY_TERMAHAL)
 
         val location = locationManager.getLastKnownLocation(android.location.LocationManager.GPS_PROVIDER)
 
         lokasiSekarangLatLng=Point.fromLngLat(location!!.longitude, location.latitude)
 
         getDataKosCampuran()
+
+        val filterHargaAdapter= ArrayAdapter(requireContext(), R.layout.simple_spinner_item, arrayFilterHarga)
+        filterHargaAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+        binding.spnfilterharga.adapter=filterHargaAdapter
+
+        binding.spnfilterharga.onItemSelectedListener=object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                val selected=p0?.getItemAtPosition(p2).toString()
+                when(selected){
+                    Constant().KEY_SEMUA->{
+                        getDataKosCampuran()
+                    }
+                    Constant().KEY_TERMURAH->{
+                        setTermurah()
+                    }
+
+                    Constant().KEY_TERMAHAL->{
+                        setTermahal()
+                    }
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+        }
+
 
     }
 
@@ -94,7 +125,9 @@ class CampurKosFragment : Fragment(), ItemOnClick {
                         val snapAlamat=snap.child(Constant().KEY_ALAMAT_KOS).value.toString()
                         val snapKelurahan=snap.child(Constant().KEY_KELURAHAN).value.toString()
                         val snapKecamatan=snap.child(Constant().KEY_KECAMATAN).value.toString()
-                        val snapBiaya=snap.child(Constant().KEY_BIAYA_KOS).value.toString()
+                        val snapHargaHarian=snap.child(Constant().KEY_HARGA_KOS_HARIAN).value.toString()
+                        val snapHargaBulanan=snap.child(Constant().KEY_HARGA_KOS_BULANAN).value.toString()
+                        val snapHargaTahunan=snap.child(Constant().KEY_HARGA_KOS_TAHUNAN).value.toString()
                         val snapEmailPemilik=snap.child(Constant().KEY_EMAIL_PEMILIK).value.toString()
                         val snapIdPemilik=snap.child(Constant().KEY_ID_PEMILIK).value.toString()
                         val snapGambarKos=snap.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>
@@ -122,7 +155,9 @@ class CampurKosFragment : Fragment(), ItemOnClick {
                                 alamat = snapAlamat,
                                 kelurahan=snapKelurahan,
                                 kecamatan=snapKecamatan,
-                                biaya = snapBiaya.toDouble(),
+                                hargaHarian = snapHargaHarian.toDouble(),
+                                hargaBulanan = snapHargaBulanan.toDouble(),
+                                hargaTahunan = snapHargaTahunan.toDouble(),
                                 idPemilik=snapIdPemilik,
                                 emailPemilik=snapEmailPemilik,
                                 gambarKos = snapGambarKos,
@@ -177,7 +212,9 @@ class CampurKosFragment : Fragment(), ItemOnClick {
                     emailPemilik=result.emailPemilik,
                     jenis = result.jenis,
                     alamat=result.alamat,
-                    biaya = result.biaya,
+                    hargaHarian = result.hargaHarian,
+                    hargaBulanan = result.hargaBulanan,
+                    hargaTahunan = result.hargaTahunan,
                     deskripsi = result.deskripsi,
                     fasilitas = result.fasilitas,
                     gambarKos = result.gambarKos,
@@ -202,6 +239,87 @@ class CampurKosFragment : Fragment(), ItemOnClick {
         binding.rvcampurkos.adapter=adapter
     }
 
+    fun setTermurah()
+    {
+        cariKosArrayList.clear()
+        kosArrayList.forEach {result->
+            if(result.hargaBulanan<=800000.00)
+            {
+                kos=Kos(
+                    idKos=result.idKos,
+                    namaKos=result.namaKos,
+                    idPemilik = result.idPemilik,
+                    emailPemilik=result.emailPemilik,
+                    jenis = result.jenis,
+                    alamat=result.alamat,
+                    hargaHarian = result.hargaHarian,
+                    hargaBulanan = result.hargaBulanan,
+                    hargaTahunan = result.hargaTahunan,
+                    deskripsi = result.deskripsi,
+                    fasilitas = result.fasilitas,
+                    gambarKos = result.gambarKos,
+                    jenisBayar = result.jenisBayar,
+                    kecamatan = result.kecamatan,
+                    kelurahan = result.kelurahan,
+                    lattitude = result.lattitude,
+                    longitude = result.longitude,
+                    sisa=result.sisa,
+                    status = result.status,
+                    thumbnailKos = result.thumbnailKos,
+                    rating = result.rating,
+                    jarak=result.jarak
+                )
+                cariKosArrayList.add(kos)
+            }
+        }
+
+        adapter= HomeKosAdapter(cariKosArrayList,this@CampurKosFragment)
+        layoutManager=LinearLayoutManager(activity)
+        binding.rvcampurkos.layoutManager=layoutManager
+        binding.rvcampurkos.adapter=adapter
+
+    }
+
+    fun setTermahal()
+    {
+        cariKosArrayList.clear()
+        kosArrayList.forEach {result->
+            if(result.hargaBulanan>800000.00)
+            {
+                kos=Kos(
+                    idKos=result.idKos,
+                    namaKos=result.namaKos,
+                    idPemilik = result.idPemilik,
+                    emailPemilik=result.emailPemilik,
+                    jenis = result.jenis,
+                    alamat=result.alamat,
+                    hargaHarian = result.hargaHarian,
+                    hargaBulanan = result.hargaBulanan,
+                    hargaTahunan = result.hargaTahunan,
+                    deskripsi = result.deskripsi,
+                    fasilitas = result.fasilitas,
+                    gambarKos = result.gambarKos,
+                    jenisBayar = result.jenisBayar,
+                    kecamatan = result.kecamatan,
+                    kelurahan = result.kelurahan,
+                    lattitude = result.lattitude,
+                    longitude = result.longitude,
+                    sisa=result.sisa,
+                    status = result.status,
+                    thumbnailKos = result.thumbnailKos,
+                    rating = result.rating,
+                    jarak=result.jarak
+                )
+                cariKosArrayList.add(kos)
+            }
+        }
+
+        adapter= HomeKosAdapter(cariKosArrayList,this@CampurKosFragment)
+        layoutManager=LinearLayoutManager(activity)
+        binding.rvcampurkos.layoutManager=layoutManager
+        binding.rvcampurkos.adapter=adapter
+
+    }
 
     override fun onClick(v: View, dataKos: Kos) {
         if(dataKos.sisa==0)

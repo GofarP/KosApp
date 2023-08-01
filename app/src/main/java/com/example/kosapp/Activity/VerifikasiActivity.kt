@@ -193,6 +193,9 @@ class VerifikasiActivity : AppCompatActivity() {
                 Toast.makeText(this@VerifikasiActivity, "Berhasil Mengajukan Permintaan Verifikasi AKun", Toast.LENGTH_SHORT).show()
                 binding.lblstatusverifikasi.text="Pengajuan"
 
+                binding.btnuploadverifikasi.isEnabled=false
+                binding.btnuploadverifikasi.setBackgroundColor(resources.getColor(R.color.grey_disabled))
+                binding.btnuploadverifikasi.text="Sedang Pengajuan"
 
                 preferenceManager.putString(Constant().KEY_STATUS_VERIFIKASI_AKUN,Constant().KEY_PENGAJUAN_VERIFIKASI)
             }

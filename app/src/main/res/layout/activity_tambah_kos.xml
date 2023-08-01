@@ -134,9 +134,9 @@
                         />
 
                     <EditText
-                        android:id="@+id/txtharga"
+                        android:id="@+id/txthargaharian"
                         android:inputType="number"
-                        android:hint="@string/harga_kos"
+                        android:hint="@string/harga_kos_harian"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:padding="10dp"
@@ -146,6 +146,34 @@
                         style="@style/EditText.Primary"
                         android:background="@drawable/edittext_outline"
                         />
+
+                <EditText
+                    android:id="@+id/txthargabulanan"
+                    android:inputType="number"
+                    android:hint="@string/harga_kos_bulanan"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:padding="10dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    style="@style/EditText.Primary"
+                    android:background="@drawable/edittext_outline"
+                    />
+
+                <EditText
+                    android:id="@+id/txthargatahunan"
+                    android:inputType="number"
+                    android:hint="@string/harga_kos_tahunan"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:padding="10dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    style="@style/EditText.Primary"
+                    android:background="@drawable/edittext_outline"
+                    />
 
                 <EditText
                     android:id="@+id/txtfasilitas"

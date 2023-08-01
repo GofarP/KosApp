@@ -60,6 +60,11 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     private var gambarKosLamaList=ArrayList<String>()
     private var gambarKosArrayList=ArrayList<GambarKos>()
 
+    private  var hargaHarian=0.0
+    private  var hargaBulanan=0.0
+    private  var hargaTahunan=0.0
+
+
     private lateinit var kos:Kos
     private lateinit var gambarKos:GambarKos
 
@@ -72,7 +77,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     private lateinit var lattitude:String
     private lateinit var longitude:String
     private lateinit var alamat:String
-    private lateinit var biaya:String
+
     private lateinit var deskripsi:String
     private lateinit var fasilitas:String
     private lateinit var idKos:String
@@ -197,7 +202,9 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         binding.txtjumlahkamarkos.setText(kos.sisa.toString())
         binding.spnjeniskos.setSelection(jenisKosPosition)
         binding.spnjenisbayar.setSelection(jenisBayarPosition)
-        binding.txtharga.setText(kos.biaya.toString())
+        binding.txthargaharian.setText(kos.hargaHarian.toString())
+        binding.txthargabulanan.setText(kos.hargaBulanan.toString())
+        binding.txthargatahunan.setText(kos.hargaTahunan.toString())
         binding.txtfasilitas.setText(kos.fasilitas)
         binding.txtdeskripsi.setText(kos.deskripsi)
         binding.txtkelurahankos.setText(kos.kelurahan)
@@ -225,7 +232,9 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         var gagal=false
 
         alamat=binding.txtalamatkos.text.trim().toString()
-        biaya=binding.txtalamatkos.text.trim().toString()
+        hargaHarian=binding.txthargaharian.text.trim().toString().toDouble()
+        hargaBulanan= binding.txthargabulanan.text.trim().toString().toDouble()
+        hargaTahunan=binding.txthargatahunan.text.trim().toString().toDouble()
         deskripsi=binding.txtdeskripsi.text.trim().toString()
         deskripsi=binding.txtdeskripsi.text.trim().toString()
         fasilitas=binding.txtfasilitas.text.trim().toString()
@@ -235,19 +244,29 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         nama=binding.txtnamakos.text.trim().toString()
         sisa=binding.txtjumlahkamarkos.text.trim().toString()
 
-        if(alamat.isNullOrEmpty())
+        if(alamat.isEmpty())
         {
             Toast.makeText(this@EditKosActivity, "Silahkan Isi Alamat", Toast.LENGTH_SHORT).show()
             gagal=true
         }
 
-        else if(biaya.isNullOrEmpty())
+        else if(hargaHarian!=0.0)
         {
-            Toast.makeText(this@EditKosActivity, "Silahkan Isi Biaya Kos", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@EditKosActivity, "Silahkan Isi Harga Kos Harian", Toast.LENGTH_SHORT).show()
             gagal=true
         }
 
-        else if(deskripsi.isNullOrEmpty())
+        else if(hargaBulanan!=0.0)
+        {
+            Toast.makeText(this@EditKosActivity, "Silahkan Isi Harga Kos Bulanan", Toast.LENGTH_SHORT).show()
+        }
+
+        else if(hargaTahunan!=0.0)
+        {
+            Toast.makeText(this@EditKosActivity, "Silahkan Isi Harga Kos Tahunan", Toast.LENGTH_SHORT).show()
+        }
+
+        else if(deskripsi.isEmpty())
         {
             Toast.makeText(this@EditKosActivity, "Silahkan Isi Deskripsi Kos", Toast.LENGTH_SHORT).show()
             gagal=true
@@ -290,7 +309,9 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     fun editDataKos()
     {
         alamat=binding.txtalamatkos.text.trim().toString()
-        biaya=binding.txtharga.text.trim().toString()
+        hargaHarian=binding.txthargaharian.text.trim().toString().toDouble()
+        hargaBulanan=binding.txthargabulanan.text.trim().toString().toDouble()
+        hargaTahunan=binding.txthargatahunan.text.toString().toDouble()
         deskripsi=binding.txtdeskripsi.text.trim().toString()
         fasilitas=binding.txtfasilitas.text.trim().toString()
         idKos=kos.idKos
@@ -305,7 +326,9 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
             idKos=idKos,
             namaKos=nama,
             alamat = alamat,
-            biaya =biaya.toDouble(),
+            hargaHarian =hargaHarian,
+            hargaBulanan =hargaBulanan,
+            hargaTahunan =hargaTahunan,
             idPemilik=idPengguna,
             emailPemilik = emailPengguna,
             jenisBayar=jenisBayar,

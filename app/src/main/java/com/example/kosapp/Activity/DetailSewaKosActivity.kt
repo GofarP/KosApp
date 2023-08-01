@@ -6,6 +6,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -56,7 +58,8 @@ class DetailSewaKosActivity : AppCompatActivity() {
     private lateinit var jumlahHari:String
     private lateinit var tanggalHariIni:String
     private lateinit var buktiTransfer: BuktiTransfer
-
+    private lateinit var isi:String
+    private lateinit var durasiSewa:String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityDetailSewaKosBinding.inflate(layoutInflater)
@@ -130,12 +133,38 @@ class DetailSewaKosActivity : AppCompatActivity() {
                 bindingWaktuSewa= LayoutWaktuSewaBinding.inflate(layoutInflater)
                 customDialog.setContentView(bindingWaktuSewa.root)
 
-                val arrayWaktu=arrayOf(Constant().KEY_HARI, Constant().KEY_BULAN)
+                val arrayWaktu=arrayOf(Constant().KEY_HARI, Constant().KEY_BULAN, Constant().KEY_TAHUN)
 
                 val waktuProfileAdapter= ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayWaktu)
                 waktuProfileAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 bindingWaktuSewa.spnsatuanwaktu.adapter=waktuProfileAdapter
 
+                bindingWaktuSewa.lblhargakos.text="Harga Kos 1 ${Constant().KEY_HARI} : ${NumberFormat.getCurrencyInstance().format(kos.hargaHarian)} "
+
+                bindingWaktuSewa.spnsatuanwaktu.onItemSelectedListener=object :OnItemSelectedListener{
+                    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                        val selected=p0?.getItemAtPosition(p2).toString()
+
+                        when (selected) {
+                            Constant().KEY_HARI -> {
+                                bindingWaktuSewa.lblhargakos.text="Harga Kos 1 ${Constant().KEY_HARI} : ${NumberFormat.getCurrencyInstance().format(kos.hargaHarian)} "
+                            }
+                            Constant().KEY_BULAN -> {
+                                bindingWaktuSewa.lblhargakos.text="Harga Kos 1 ${Constant().KEY_BULAN} : ${NumberFormat.getCurrencyInstance().format(kos.hargaBulanan)} "
+                            }
+                            Constant().KEY_TAHUN -> {
+                                bindingWaktuSewa.lblhargakos.text="Harga Kos 1 ${Constant().KEY_TAHUN} : ${NumberFormat.getCurrencyInstance().format(kos.hargaTahunan)} "
+
+                            }
+                        }
+
+                    }
+
+                    override fun onNothingSelected(p0: AdapterView<*>?) {
+                        TODO("Not yet implemented")
+                    }
+
+                }
 
                 val textWatcher=object:TextWatcher{
                     override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -153,12 +182,17 @@ class DetailSewaKosActivity : AppCompatActivity() {
 
                         else if(bindingWaktuSewa.spnsatuanwaktu.selectedItem.toString()==Constant().KEY_HARI)
                         {
-                            total=jumlahHari.toDouble() * kos.biaya
+                            total=jumlahHari.toDouble() * kos.hargaHarian
                         }
 
                         else if(bindingWaktuSewa.spnsatuanwaktu.selectedItem.toString()==Constant().KEY_BULAN)
                         {
-                            total=(jumlahHari.toDouble()*30) * kos.biaya
+                            total=jumlahHari.toDouble() * kos.hargaBulanan
+                        }
+
+                        else if(bindingWaktuSewa.spnsatuanwaktu.selectedItem.toString()==Constant().KEY_TAHUN)
+                        {
+                            total=jumlahHari.toDouble() * kos.hargaTahunan
                         }
 
                         bindingWaktuSewa.lbltotalharga.text=NumberFormat.getCurrencyInstance().format(total)
@@ -196,6 +230,16 @@ class DetailSewaKosActivity : AppCompatActivity() {
 
     private fun sewaKos()
     {
+        if(kos.jenisBayar==Constant().KEY_BAYARDITEMPAT)
+        {
+            isi="Mengajukan Permintaan Untuk Menyewa Kos ${kos.namaKos} Per $durasiSewa VIA Bayar Ditempat"
+        }
+
+        else if(kos.jenisBayar==Constant().KEY_TRANSFER)
+        {
+            isi="Mengajukan Permintaan Untuk Menyewa Kos ${kos.namaKos} Per $durasiSewa VIA Transfer"
+        }
+
         permintaan=Permintaan(
             idPermintaan=UUID.randomUUID().toString(),
             idKos=kos.idKos,
@@ -205,7 +249,7 @@ class DetailSewaKosActivity : AppCompatActivity() {
             emailPemilik =kos.emailPemilik,
             namaKos=kos.namaKos,
             judul = Constant().KEY_PERMINTAAN_SEWA,
-            isi ="Mengajukan Permintaan Untuk Menyewa Kos ${kos.namaKos}",
+            isi =isi,
             tanggal = tanggalHariIni,
         )
 
@@ -315,7 +359,9 @@ class DetailSewaKosActivity : AppCompatActivity() {
 
         binding.includeLayoutDetail.lblnamakos.text= kos.namaKos
         binding.includeLayoutDetail.lblfasilitas.text= kos.fasilitas
-        binding.includeLayoutDetail.lblhargakos.text=  format.format(kos.biaya)
+        binding.includeLayoutDetail.lblhargakos.text= "Harga Harian: ${format.format(kos.hargaHarian)} \n" +
+                "Harga Bulanan: ${format.format(kos.hargaBulanan)} \n" +
+                "Harga Tahunan: ${format.format(kos.hargaTahunan)}"
         binding.includeLayoutDetail.lbljenispembayaran.text=kos.jenisBayar
         binding.includeLayoutDetail.lbljeniskos.text=kos.jenis
         binding.includeLayoutDetail.lbldeskripsikos.text=kos.deskripsi

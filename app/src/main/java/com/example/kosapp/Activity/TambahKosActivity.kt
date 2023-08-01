@@ -115,7 +115,9 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                 val kosId=UUID.randomUUID().toString()
                 val namaKos=binding.txtnamakos.text.trim().toString()
                 val alamat=binding.txtalamatkos.text.trim().toString()
-                val biaya=binding.txtharga.text.trim().toString()
+                val hargaHarian=binding.txthargaharian.text.trim().toString()
+                val hargaBulanan=binding.txthargabulanan.text.trim().toString()
+                val hargaTahunan=binding.txthargatahunan.text.trim().toString()
                 val jenisBayar=binding.spnjenisbayar.selectedItem.toString()
                 val gambarThumbnail="${Constant().KEY_GAMBAR_THUMBNAIL_KOS}/$kosId/${UUID.randomUUID()}"
                 val gambarKosUrl="${Constant().KEY_GAMBAR_KOS}/$kosId/"
@@ -139,7 +141,9 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
                     alamat = alamat,
                     kelurahan=kelurahan,
                     kecamatan=kecamatan,
-                    biaya =biaya.toDouble(),
+                    hargaHarian=hargaHarian.toDouble(),
+                    hargaBulanan=hargaBulanan.toDouble(),
+                    hargaTahunan=hargaTahunan.toDouble(),
                     jenisBayar=jenisBayar,
                     gambarKos =gambarKosList,
                     thumbnailKos = gambarThumbnail,
@@ -342,7 +346,9 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
         val alamatKos=binding.txtalamatkos.text.trim()
         val jenisKos=binding.spnjeniskos
         val jenisBayar=binding.spnjenisbayar
-        val hargaKos=binding.txtharga.text.trim()
+        val hargaKosHarian=binding.txthargaharian.text.trim()
+        val hargaKosBulanan=binding.txthargaharian.text.trim()
+        val hargaKosTahunan=binding.txthargaharian.text.trim()
         val fasilitasKos=binding.txtfasilitas.text.trim()
         val deskripsiKos=binding.txtdeskripsi.text.trim()
 
@@ -370,10 +376,20 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
             gagal=true
         }
 
-        else if(hargaKos.isNullOrEmpty())
+        else if(hargaKosHarian.isEmpty())
         {
-            Toast.makeText(applicationContext, "Silahkan Masukkan Harga Kos", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "Silahkan Masukkan Harga Kos Harian", Toast.LENGTH_SHORT).show()
             gagal=true
+        }
+
+        else if(hargaKosBulanan.isEmpty())
+        {
+            Toast.makeText(this@TambahKosActivity, "Silahkan Masukkan Harga Kos Bulanan", Toast.LENGTH_SHORT).show()
+        }
+        
+        else if(hargaKosTahunan.isEmpty())
+        {
+            Toast.makeText(this@TambahKosActivity, "Silahkan Masukkan Harga Kos Tahunan", Toast.LENGTH_SHORT).show()
         }
 
         else if(fasilitasKos.isNullOrEmpty())
@@ -443,7 +459,9 @@ class TambahKosActivity : AppCompatActivity(),MapboxMap.OnMapClickListener {
         binding.txtjumlahkamarkos.text.clear()
         binding.spnjeniskos.setSelection(0)
         binding.spnjenisbayar.setSelection(0)
-        binding.txtharga.text.clear()
+        binding.txthargaharian.text.clear()
+        binding.txthargabulanan.text.clear()
+        binding.txthargatahunan.text.clear()
         binding.txtfasilitas.text.clear()
         binding.txtdeskripsi.text.clear()
 

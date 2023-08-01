@@ -1,6 +1,5 @@
 package com.example.kosapp.Activity
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -13,13 +12,13 @@ import com.example.kosapp.Callback.KosImageCallback
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.Helper
 import com.example.kosapp.Model.GambarKos
-import com.example.kosapp.Model.PermintaanVerifikasi
 import com.example.kosapp.databinding.ActivityDetailVerifikasiKosBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
+import java.text.NumberFormat
 
 class DetailVerifikasiKosActivity : AppCompatActivity() {
 
@@ -31,6 +30,8 @@ class DetailVerifikasiKosActivity : AppCompatActivity() {
     private var storage=FirebaseStorage.getInstance().reference
     private var gambarKosArrayList=ArrayList<GambarKos>()
     private var slideImageArrayList=ArrayList<SlideModel>()
+    val format: NumberFormat = NumberFormat.getCurrencyInstance()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,7 +86,9 @@ class DetailVerifikasiKosActivity : AppCompatActivity() {
                     val snapKelurahanKos=snapshot.child(Constant().KEY_KELURAHAN).value.toString()
                     val snapKecamatanKos=snapshot.child(Constant().KEY_KECAMATAN).value.toString()
                     val snapEmailPemilik=snapshot.child(Constant().KEY_EMAIL_PEMILIK).value.toString()
-                    val snapHargaKos=snapshot.child(Constant().KEY_BIAYA_KOS).value.toString()
+                    val snapHargaHarian=snapshot.child(Constant().KEY_HARGA_KOS_HARIAN).value.toString().toDouble()
+                    val snapHargaBulanan=snapshot.child(Constant().KEY_HARGA_KOS_BULANAN).value.toString().toDouble()
+                    val snapHargaTahunan=snapshot.child(Constant().KEY_HARGA_KOS_TAHUNAN).value.toString().toDouble()
                     val snapJenisKos=snapshot.child(Constant().KEY_JENIS_KOS).value.toString()
                     val snapDeskripsiKos=snapshot.child(Constant().KEY_DESKRIPSI).value.toString()
                     val snapFasilitasKos=snapshot.child(Constant().KEY_FASILITAS).value.toString()
@@ -98,7 +101,9 @@ class DetailVerifikasiKosActivity : AppCompatActivity() {
                     binding.lblkecamatankos.text=snapKecamatanKos
                     binding.lblkelurahankos.text=snapKelurahanKos
                     binding.lblemailpemilik.text=snapEmailPemilik
-                    binding.lblhargakos.text=snapHargaKos
+                    binding.lblhargakosharian.text=format.format(snapHargaHarian)
+                    binding.lblhargakosbulanan.text=format.format(snapHargaBulanan)
+                    binding.lblhargakostahunan.text=format.format(snapHargaTahunan)
                     binding.lbljeniskos.text=snapJenisKos
                     binding.lbldeskripsikos.text=snapDeskripsiKos
                     binding.lblfasilitaskos.text=snapFasilitasKos

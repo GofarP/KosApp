@@ -35,7 +35,9 @@ class Constant {
     val KEY_ID_PEMILIK="idPemilik"
     val KEY_ID_PENYEWA="idPenyewa"
     val KEY_ALAMAT_KOS="alamat"
-    val KEY_BIAYA_KOS="biaya"
+    val KEY_HARGA_KOS_HARIAN="hargaHarian"
+    val KEY_HARGA_KOS_BULANAN="hargaBulanan"
+    val KEY_HARGA_KOS_TAHUNAN="hargaTahunan"
     val KEY_JENIS_BAYAR_KOS="jenisBayar"
     val KEY_GAMBAR_KOS="gambarKos"
     val KEY_GAMBAR_THUMBNAIL_KOS="thumbnailKos"
@@ -124,11 +126,18 @@ class Constant {
 
     val KEY_HARI="Hari"
     val KEY_BULAN="Bulan"
+    val KEY_TAHUN="Tahun"
 
     val KEY_BUKTI_TRANSFER="buktiTransfer"
     val KEY_URL_BUKTI_TRANSFER="urlBuktiTransfer"
     val KEY_ID_BUKTI_TRANSFER="idBuktiTransfer"
     val KEY_BATAL_BAYAR="Batal Bayar"
     val KEY_TOLAK_BAYAR="Tolak Bayar"
+
+
+    val KEY_SEMUA="Semua"
+    val KEY_TERMURAH="Termurah (0-Rp.800.000,00)"
+    val KEY_TERMAHAL="Termahal (> Rp.800.000,00)"
+
 
 }

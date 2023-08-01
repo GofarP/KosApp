@@ -110,7 +110,9 @@ class DetailKosSayaActivity : AppCompatActivity() {
 
         binding.includeLayoutDetail.lblnamakos.text= kos.namaKos
         binding.includeLayoutDetail.lblfasilitas.text= kos.fasilitas
-        binding.includeLayoutDetail.lblhargakos.text=  format.format(kos.biaya)
+        binding.includeLayoutDetail.lblhargakos.text= "Harga Harian: ${format.format(kos.hargaHarian)} \n" +
+                "Harga Bulanan: ${format.format(kos.hargaBulanan)} \n" +
+                "Harga Tahunan: ${format.format(kos.hargaTahunan)}"
         binding.includeLayoutDetail.lbljenispembayaran.text=kos.jenisBayar
         binding.includeLayoutDetail.lbljeniskos.text=kos.jenis
         binding.includeLayoutDetail.lbldeskripsikos.text=kos.deskripsi
