@@ -136,8 +136,10 @@ class Constant {
 
 
     val KEY_SEMUA="Semua"
-    val KEY_TERMURAH="Termurah (0-Rp.800.000,00)"
-    val KEY_TERMAHAL="Termahal (> Rp.800.000,00)"
+    val KEY_TERMURAH="Rp.0-Rp.400.000,00"
+    val KEY_SEDANG="Rp.400.000,00-Rp.700.000,00"
+    val KEY_TERMAHAL="Rp.700.000,00 - Rp.1.000.000,00"
+    val KEY_SANGAT_MAHAL=">RP.1.000.000"
 
 
 }

@@ -49,7 +49,7 @@ class CampurKosFragment : Fragment(), ItemOnClick {
     private lateinit var lokasiKosLatLng:Point
     private lateinit var preferenceManager: PreferenceManager
     private var jarak=0.0
-
+    private var rentang=false
 
 
     override fun onCreateView(
@@ -85,18 +85,9 @@ class CampurKosFragment : Fragment(), ItemOnClick {
         binding.spnfilterharga.onItemSelectedListener=object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 val selected=p0?.getItemAtPosition(p2).toString()
-                when(selected){
-                    Constant().KEY_SEMUA->{
-                        getDataKosCampuran()
-                    }
-                    Constant().KEY_TERMURAH->{
-                        setTermurah()
-                    }
 
-                    Constant().KEY_TERMAHAL->{
-                        setTermahal()
-                    }
-                }
+                filterHarga(selected)
+
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -239,11 +230,31 @@ class CampurKosFragment : Fragment(), ItemOnClick {
         binding.rvcampurkos.adapter=adapter
     }
 
-    fun setTermurah()
+    fun filterHarga(filter:String)
     {
         cariKosArrayList.clear()
         kosArrayList.forEach {result->
-            if(result.hargaBulanan<=800000.00)
+
+            when(filter)
+            {
+                Constant().KEY_TERMURAH->{
+                    rentang=result.hargaBulanan > 0 && result.hargaHarian <=400000.00
+                }
+
+                Constant().KEY_SEDANG->{
+                    rentang=result.hargaBulanan > 400000.00 && result.hargaHarian <=700000.00
+                }
+
+                Constant().KEY_TERMAHAL->{
+                    rentang=result.hargaBulanan > 700000.00 && result.hargaHarian <=1000000.00
+                }
+
+                Constant().KEY_SANGAT_MAHAL->{
+                    rentang=result.hargaBulanan > 1000000.00
+                }
+            }
+
+            if(rentang)
             {
                 kos=Kos(
                     idKos=result.idKos,
@@ -280,46 +291,6 @@ class CampurKosFragment : Fragment(), ItemOnClick {
 
     }
 
-    fun setTermahal()
-    {
-        cariKosArrayList.clear()
-        kosArrayList.forEach {result->
-            if(result.hargaBulanan>800000.00)
-            {
-                kos=Kos(
-                    idKos=result.idKos,
-                    namaKos=result.namaKos,
-                    idPemilik = result.idPemilik,
-                    emailPemilik=result.emailPemilik,
-                    jenis = result.jenis,
-                    alamat=result.alamat,
-                    hargaHarian = result.hargaHarian,
-                    hargaBulanan = result.hargaBulanan,
-                    hargaTahunan = result.hargaTahunan,
-                    deskripsi = result.deskripsi,
-                    fasilitas = result.fasilitas,
-                    gambarKos = result.gambarKos,
-                    jenisBayar = result.jenisBayar,
-                    kecamatan = result.kecamatan,
-                    kelurahan = result.kelurahan,
-                    lattitude = result.lattitude,
-                    longitude = result.longitude,
-                    sisa=result.sisa,
-                    status = result.status,
-                    thumbnailKos = result.thumbnailKos,
-                    rating = result.rating,
-                    jarak=result.jarak
-                )
-                cariKosArrayList.add(kos)
-            }
-        }
-
-        adapter= HomeKosAdapter(cariKosArrayList,this@CampurKosFragment)
-        layoutManager=LinearLayoutManager(activity)
-        binding.rvcampurkos.layoutManager=layoutManager
-        binding.rvcampurkos.adapter=adapter
-
-    }
 
     override fun onClick(v: View, dataKos: Kos) {
         if(dataKos.sisa==0)

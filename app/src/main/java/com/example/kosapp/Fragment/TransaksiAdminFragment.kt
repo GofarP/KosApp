@@ -77,7 +77,7 @@ class TransaksiAdminFragment : Fragment() {
                             }
 
                             adapter=TransaksiAdapter(transaksiArrayList)
-                            layoutManager=LinearLayoutManager(requireActivity())
+                            layoutManager=LinearLayoutManager(context)
                             binding.rvnotifikasiadmin.layoutManager=layoutManager
                             binding.rvnotifikasiadmin.adapter=adapter
 

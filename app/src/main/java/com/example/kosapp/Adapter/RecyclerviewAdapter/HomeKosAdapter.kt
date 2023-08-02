@@ -33,7 +33,7 @@ class HomeKosAdapter(private val listKos: ArrayList<Kos>,private val  itemOnClic
                 binding.lblnama.text=dataKos.namaKos
                 binding.lblalamat.text="${dataKos.alamat} (${dataKos.jarak} Km)"
                 binding.lblfasilitas.text=dataKos.fasilitas
-                binding.lblharga.text=format.format(dataKos.hargaBulanan)
+                binding.lblharga.text="${format.format(dataKos.hargaBulanan)} / Bulan"
                 binding.lblrating.text= dataKos.rating?.toString()
 
 

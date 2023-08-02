@@ -123,7 +123,6 @@ class DetailSewaKosActivity : AppCompatActivity() {
 
             else
             {
-
                 val dialogSewa=layoutInflater.inflate(R.layout.layout_waktu_sewa, null)
                 val customDialog=AlertDialog
                     .Builder(this)
@@ -138,6 +137,8 @@ class DetailSewaKosActivity : AppCompatActivity() {
                 val waktuProfileAdapter= ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayWaktu)
                 waktuProfileAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 bindingWaktuSewa.spnsatuanwaktu.adapter=waktuProfileAdapter
+
+                durasiSewa=bindingWaktuSewa.txtjmlhari.text.toString()
 
                 bindingWaktuSewa.lblhargakos.text="Harga Kos 1 ${Constant().KEY_HARI} : ${NumberFormat.getCurrencyInstance().format(kos.hargaHarian)} "
 
