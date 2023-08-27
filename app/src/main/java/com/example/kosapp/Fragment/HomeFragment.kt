@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.kosapp.Activity.MenuChatActivity
+import com.example.kosapp.Activity.SigninActivity
 import com.example.kosapp.Adapter.PagerAdapter.HomePagerAdapter
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.PreferenceManager
@@ -25,6 +26,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.type.LatLng
 import com.mapbox.android.core.location.LocationEngine
 import com.mapbox.android.core.location.LocationEnginePriority
 import com.mapbox.android.core.location.LocationEngineProvider
@@ -39,9 +41,8 @@ class HomeFragment : Fragment() {
     private lateinit var locationEngine: LocationEngine
     private lateinit var lokasiSekarang: Location
 
-
     private var database=Firebase.database.reference
-
+    private var firebaseAuth=FirebaseAuth.getInstance()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,11 +59,25 @@ class HomeFragment : Fragment() {
         preferenceManager=PreferenceManager()
         preferenceManager.preferenceManager(view.context)
 
-        //ambil data user
-        getUser()
+        if(firebaseAuth.currentUser!=null)
+        {
+            //ambil data user
+            getUser()
 
-        //check Verifikasi Akun
-        checkVerifikasi()
+            //check Verifikasi Akun
+            checkVerifikasi()
+        }
+
+        else
+        {
+            binding.lblnamapengguna.text="Halo Pengguna"
+            binding.lblverifikasi.text="Login Dulu Disini"
+            binding.lblverifikasi.setOnClickListener {
+                startActivity(Intent(activity, SigninActivity::class.java))
+            }
+        }
+
+
 
         binding.viewPager.adapter=HomePagerAdapter(requireActivity())
         TabLayoutMediator(binding.tabLayout,binding.viewPager){tab, index->

@@ -83,6 +83,8 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
     private lateinit var idKos:String
     private lateinit var kelurahan:String
     private lateinit var kecamatan:String
+    private lateinit var status:String
+
 
     private var jenis:Int?=null
     private var jenisBayar:Int?=null
@@ -142,7 +144,6 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
 
         binding.btnedit.setOnClickListener {
-//            checkDeletedImage()
             if(!gagalValidasi())
             {
                 editDataKos()
@@ -193,6 +194,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         binding.spnjenisbayar.adapter=jenisBayarAdapter
 
         gambarKosLamaList=kos.gambarKos
+        status=kos.status
 
         val jenisKosPosition=jenisKosAdapter.getPosition(kos.jenis)
         val jenisBayarPosition=jenisBayarAdapter.getPosition(kos.jenisBayar)
@@ -250,18 +252,18 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
             gagal=true
         }
 
-        else if(hargaHarian!=0.0)
+        else if(hargaHarian==0.0)
         {
             Toast.makeText(this@EditKosActivity, "Silahkan Isi Harga Kos Harian", Toast.LENGTH_SHORT).show()
             gagal=true
         }
 
-        else if(hargaBulanan!=0.0)
+        else if(hargaBulanan==0.0)
         {
             Toast.makeText(this@EditKosActivity, "Silahkan Isi Harga Kos Bulanan", Toast.LENGTH_SHORT).show()
         }
 
-        else if(hargaTahunan!=0.0)
+        else if(hargaTahunan==0.0)
         {
             Toast.makeText(this@EditKosActivity, "Silahkan Isi Harga Kos Tahunan", Toast.LENGTH_SHORT).show()
         }
@@ -322,6 +324,7 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
         kelurahan=binding.txtkelurahankos.text.trim().toString()
         kecamatan=binding.txtkecamatankos.text.trim().toString()
 
+
         kos=Kos(
             idKos=idKos,
             namaKos=nama,
@@ -342,7 +345,8 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
             deskripsi=deskripsi,
             kecamatan=kecamatan,
             kelurahan=kelurahan,
-            status=Constant().KEY_PENGAJUAN_VERIFIKASI,
+            rating=kos.rating,
+            status=kos.status,
         )
 
         database.child(Constant().KEY_DAFTAR_KOS)
@@ -413,7 +417,6 @@ class EditKosActivity : AppCompatActivity(), OnMapClickListener {
 
     private fun dialogHapus(position: Int)
     {
-        Toast.makeText(this@EditKosActivity, gambarKosArrayList[position].name, Toast.LENGTH_SHORT).show()
         val dialogBuilder= AlertDialog.Builder(this)
         dialogBuilder.setTitle("Hapus Gambar?")
         dialogBuilder.setMessage("Hapus Gambar Ini Dari Daftar Gambar?")

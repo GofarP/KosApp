@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Activity.DetailSewaKosActivity
+import com.example.kosapp.Activity.SigninActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter.ItemOnClick
 import com.example.kosapp.Helper.Constant
@@ -56,6 +57,7 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
     private var jarak=0.0
     private lateinit var locationManager: LocationManager
     private var rentang=false
+    private var auth=FirebaseAuth.getInstance().currentUser
 
 
 
@@ -240,6 +242,10 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
 
                 when(filter)
                 {
+                    Constant().KEY_SEMUA->{
+                        rentang=result.hargaBulanan > 0
+                    }
+
                     Constant().KEY_TERMURAH->{
                         rentang=result.hargaBulanan > 0 && result.hargaBulanan <=400000.00
                     }
@@ -300,6 +306,12 @@ class SemuaKosFragment : Fragment(), ItemOnClick {
     override fun onClick(v: View, dataKos: Kos) {
 
         val jenisKelaminUser=preferenceManager.getString(Constant().KEY_JENIS_KELAMIN)
+
+        if(auth==null)
+        {
+            startActivity(Intent(activity, SigninActivity::class.java))
+            return
+        }
 
         if(dataKos.sisa==0)
         {

@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Activity.DetailSewaKosActivity
+import com.example.kosapp.Activity.SigninActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.PreferenceManager
@@ -46,6 +47,8 @@ class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationList
     private var jarak=0.0
     private var emailPemilik=FirebaseAuth.getInstance().currentUser?.email.toString()
     private var rentang=false
+    private var auth=FirebaseAuth.getInstance().currentUser
+
     private lateinit var kos: Kos
     private lateinit var  layoutManager: RecyclerView.LayoutManager
     private lateinit var preferenceManager: PreferenceManager
@@ -88,7 +91,7 @@ class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationList
         binding.spnfilterharga.onItemSelectedListener=object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 val selected=p0?.getItemAtPosition(p2).toString()
-                filterHarga(selected)
+                //filterHarga(selected)
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -235,15 +238,15 @@ class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationList
             when(filter)
             {
                 Constant().KEY_TERMURAH->{
-                    rentang=result.hargaBulanan > 0 && result.hargaHarian <=400000.00
+                    rentang=result.hargaBulanan > 0
                 }
 
                 Constant().KEY_SEDANG->{
-                    rentang=result.hargaBulanan > 400000.00 && result.hargaHarian <=700000.00
+                    rentang=result.hargaBulanan > 400000.00 && result.hargaBulanan <=700000.00
                 }
 
                 Constant().KEY_TERMAHAL->{
-                    rentang=result.hargaBulanan > 700000.00 && result.hargaHarian <=1000000.00
+                    rentang=result.hargaBulanan > 700000.00 && result.hargaBulanan <=1000000.00
                 }
 
                 Constant().KEY_SANGAT_MAHAL->{
@@ -292,6 +295,12 @@ class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationList
 
     override fun onClick(v: View, dataKos: Kos) {
         val jenisKelaminUser=preferenceManager.getString(Constant().KEY_JENIS_KELAMIN)
+
+        if(auth==null)
+        {
+            startActivity(Intent(activity, SigninActivity::class.java))
+            return
+        }
 
         if(dataKos.sisa==0)
         {

@@ -174,7 +174,7 @@ class SettingsFragment : Fragment(), ItemOnClick {
                 preferenceManager.clear()
                 Toast.makeText(activity, "Sukses Logout", Toast.LENGTH_SHORT).show()
                 activity?.finish()
-                startActivity(Intent(activity,SigninActivity::class.java))
+                startActivity(Intent(activity,MainActivity::class.java))
             }
 
             "Rating Profile Saya"->{

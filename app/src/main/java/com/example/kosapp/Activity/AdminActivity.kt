@@ -37,6 +37,7 @@ class AdminActivity : AppCompatActivity() {
                 2->{"Kos"}
                 3->{"Pengguna"}
                 4->{"Transaksi"}
+                5->{"Pembayaran"}
                 else->{throw Resources.NotFoundException("Posisi Tidak DItemukan")}
             }
         }.attach()

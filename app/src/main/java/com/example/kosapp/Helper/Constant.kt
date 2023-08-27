@@ -54,6 +54,7 @@ class Constant {
 
     val KEY_DAFTAR_SEWA_KOS="daftarSewa"
     val KEY_DAFTAR_KOS="daftarKos"
+    val KEY_BIAYA_BUKA_KOS="biayaBukaKos"
     val KEY_USER="user"
 
 
@@ -117,6 +118,7 @@ class Constant {
     val KEY_TERVERIFIKASI="Terverifikasi"
     val KEY_BELUM_VERIFIKASI="Belum Verifikasi"
     val KEY_PENGAJUAN_VERIFIKASI="Pengajuan"
+    val KEY_PEMBAYARAN_BUKA_KOS="Menunggu Pembayaran Buka Kos"
 
     val KEY_NIK="nik"
     val KEY_KELURAHAN="kelurahan"
@@ -134,6 +136,8 @@ class Constant {
     val KEY_BATAL_BAYAR="Batal Bayar"
     val KEY_TOLAK_BAYAR="Tolak Bayar"
 
+    val KEY_TRANSFER_BUKA_KOS="transferBukaKos"
+    val KEY_URL_TRANSFER_BUKA_KOS="urlTransferBukaKos"
 
     val KEY_SEMUA="Semua"
     val KEY_TERMURAH="Rp.0-Rp.400.000,00"

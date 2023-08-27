@@ -67,39 +67,39 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
                         val snapIdKosSewa=snap.child(Constant().KEY_ID_KOS).value.toString()
 
                         database.child(Constant().KEY_DAFTAR_KOS)
-                                .child(snapIdKosSewa)
-                                .get().addOnSuccessListener {snap_kos->
-                                    val kos=Kos(
-                                        idKos=snap_kos.child(Constant().KEY_ID_KOS).value.toString(),
-                                        alamat = snap_kos.child(Constant().KEY_ALAMAT_KOS).value.toString(),
-                                        kecamatan=snap_kos.child(Constant().KEY_KECAMATAN).value.toString(),
-                                        kelurahan=snap_kos.child(Constant().KEY_KELURAHAN).value.toString(),
-                                        hargaHarian = snap_kos.child(Constant().KEY_HARGA_KOS_HARIAN).value.toString().toDouble(),
-                                        hargaBulanan = snap_kos.child(Constant().KEY_HARGA_KOS_BULANAN).value.toString().toDouble(),
-                                        hargaTahunan = snap_kos.child(Constant().KEY_HARGA_KOS_TAHUNAN).value.toString().toDouble(),
-                                        idPemilik=snap_kos.child(Constant().KEY_ID_PEMILIK).value.toString(),
-                                        emailPemilik=snap_kos.child(Constant().KEY_EMAIL_PEMILIK).value.toString(),
-                                        gambarKos = snap_kos.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>,
-                                        thumbnailKos = snap_kos.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString(),
-                                        jenis=snap_kos.child(Constant().KEY_JENIS_KOS).value.toString(),
-                                        jenisBayar = snap_kos.child(Constant().KEY_JENIS_BAYAR_KOS).value.toString(),
-                                        lattitude = snap_kos.child(Constant().KEY_LATTITUDE_KOS).value.toString(),
-                                        longitude = snap_kos.child(Constant().KEY_LONGITUDE_KOS).value.toString(),
-                                        namaKos = snap_kos.child(Constant().KEY_NAMA_KOS).value.toString(),
-                                        sisa = snap_kos.child(Constant().KEY_JUMLAH_KAMAR_KOS).value.toString().toInt(),
-                                        fasilitas=snap_kos.child(Constant().KEY_FASILITAS).value.toString(),
-                                        deskripsi=snap_kos.child(Constant().KEY_DESKRIPSI).value.toString(),
-                                        status=snap_kos.child(Constant().KEY_STATUS_VERIFIKASI_AKUN).value.toString(),
-                                        rating=snap_kos.child(Constant().KEY_RATING).value.toString().toInt()
-                                    )
+                            .child(snapIdKosSewa)
+                            .get().addOnSuccessListener {snap_kos->
+                                val kos=Kos(
+                                    idKos=snap_kos.child(Constant().KEY_ID_KOS).value.toString(),
+                                    alamat = snap_kos.child(Constant().KEY_ALAMAT_KOS).value.toString(),
+                                    kecamatan=snap_kos.child(Constant().KEY_KECAMATAN).value.toString(),
+                                    kelurahan=snap_kos.child(Constant().KEY_KELURAHAN).value.toString(),
+                                    hargaHarian = snap_kos.child(Constant().KEY_HARGA_KOS_HARIAN).value.toString().toDouble(),
+                                    hargaBulanan = snap_kos.child(Constant().KEY_HARGA_KOS_BULANAN).value.toString().toDouble(),
+                                    hargaTahunan = snap_kos.child(Constant().KEY_HARGA_KOS_TAHUNAN).value.toString().toDouble(),
+                                    idPemilik=snap_kos.child(Constant().KEY_ID_PEMILIK).value.toString(),
+                                    emailPemilik=snap_kos.child(Constant().KEY_EMAIL_PEMILIK).value.toString(),
+                                    gambarKos = snap_kos.child(Constant().KEY_GAMBAR_KOS).value as ArrayList<String>,
+                                    thumbnailKos = snap_kos.child(Constant().KEY_GAMBAR_THUMBNAIL_KOS).value.toString(),
+                                    jenis=snap_kos.child(Constant().KEY_JENIS_KOS).value.toString(),
+                                    jenisBayar = snap_kos.child(Constant().KEY_JENIS_BAYAR_KOS).value.toString(),
+                                    lattitude = snap_kos.child(Constant().KEY_LATTITUDE_KOS).value.toString(),
+                                    longitude = snap_kos.child(Constant().KEY_LONGITUDE_KOS).value.toString(),
+                                    namaKos = snap_kos.child(Constant().KEY_NAMA_KOS).value.toString(),
+                                    sisa = snap_kos.child(Constant().KEY_JUMLAH_KAMAR_KOS).value.toString().toInt(),
+                                    fasilitas=snap_kos.child(Constant().KEY_FASILITAS).value.toString(),
+                                    deskripsi=snap_kos.child(Constant().KEY_DESKRIPSI).value.toString(),
+                                    status=snap_kos.child(Constant().KEY_STATUS_VERIFIKASI_AKUN).value.toString(),
+                                    rating=snap_kos.child(Constant().KEY_RATING).value.toString().toInt()
+                                )
 
-                                    kosArrayList.add(kos)
+                                kosArrayList.add(kos)
 
-                                    adapter= MenyewaAdapter(kosArrayList,this@MenyewaFragment)
-                                    layoutManager= LinearLayoutManager(activity)
-                                    binding.rvmenyewa.layoutManager=layoutManager
-                                    binding.rvmenyewa.adapter=adapter
-                                }
+                                adapter= MenyewaAdapter(kosArrayList,this@MenyewaFragment)
+                                layoutManager= LinearLayoutManager(activity)
+                                binding.rvmenyewa.layoutManager=layoutManager
+                                binding.rvmenyewa.adapter=adapter
+                            }
                     }
                 }
 
@@ -117,7 +117,7 @@ class MenyewaFragment : Fragment(), ItemOnCLickMenyewa {
     }
 
     override fun OnPetunjukClick(v: View, dataKos: Kos) {
-       val intent=Intent(activity, RouteJalanActivity::class.java)
+        val intent=Intent(activity, RouteJalanActivity::class.java)
         intent.putExtra("lattitude",dataKos.lattitude)
         intent.putExtra("longitude",dataKos.longitude)
         startActivity(intent)

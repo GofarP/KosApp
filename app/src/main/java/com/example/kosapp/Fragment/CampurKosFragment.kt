@@ -15,12 +15,14 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kosapp.Activity.DetailSewaKosActivity
+import com.example.kosapp.Activity.SigninActivity
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter
 import com.example.kosapp.Adapter.RecyclerviewAdapter.HomeKosAdapter.ItemOnClick
 import com.example.kosapp.Helper.Constant
 import com.example.kosapp.Helper.PreferenceManager
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.FragmentCampurKosBinding
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -50,6 +52,7 @@ class CampurKosFragment : Fragment(), ItemOnClick {
     private lateinit var preferenceManager: PreferenceManager
     private var jarak=0.0
     private var rentang=false
+    private var auth=FirebaseAuth.getInstance().currentUser
 
 
     override fun onCreateView(
@@ -237,16 +240,19 @@ class CampurKosFragment : Fragment(), ItemOnClick {
 
             when(filter)
             {
+                Constant().KEY_SEMUA->{
+                    rentang=result.hargaBulanan > 0
+                }
                 Constant().KEY_TERMURAH->{
-                    rentang=result.hargaBulanan > 0 && result.hargaHarian <=400000.00
+                    rentang=result.hargaBulanan > 0 && result.hargaBulanan <=400000.00
                 }
 
                 Constant().KEY_SEDANG->{
-                    rentang=result.hargaBulanan > 400000.00 && result.hargaHarian <=700000.00
+                    rentang=result.hargaBulanan > 400000.00 && result.hargaBulanan <=700000.00
                 }
 
                 Constant().KEY_TERMAHAL->{
-                    rentang=result.hargaBulanan > 700000.00 && result.hargaHarian <=1000000.00
+                    rentang=result.hargaBulanan > 700000.00 && result.hargaBulanan <=1000000.00
                 }
 
                 Constant().KEY_SANGAT_MAHAL->{
@@ -293,6 +299,13 @@ class CampurKosFragment : Fragment(), ItemOnClick {
 
 
     override fun onClick(v: View, dataKos: Kos) {
+
+        if(auth==null)
+        {
+            startActivity(Intent(activity, SigninActivity::class.java))
+            return
+        }
+
         if(dataKos.sisa==0)
         {
             Toast.makeText(activity, "Mohon Maaf, Kos Sedang Penuh", Toast.LENGTH_SHORT).show()

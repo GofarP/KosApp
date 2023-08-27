@@ -68,18 +68,6 @@ class SigninActivity : AppCompatActivity() {
 
         checkLocationPermission()
 
-        if(user!=null && preferenceManager.getString(Constant().KEY_ROLE)==Constant().KEY_ROLE_ADMIN)
-        {
-            startActivity(Intent(this@SigninActivity, AdminActivity::class.java))
-            finish()
-        }
-
-        else if(user!=null && preferenceManager.getString(Constant().KEY_ROLE)==Constant().KEY_ROLE_USER)
-        {
-            startActivity(Intent(this@SigninActivity, MainActivity::class.java))
-            finish()
-        }
-
 
         binding.btnsignin.setOnClickListener{
             if(validation())

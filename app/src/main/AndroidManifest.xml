@@ -5,11 +5,12 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <uses-feature android:name="android.hardware.location.gps" />
     <uses-feature android:name="android.hardware.location.network" />
-
 
     <application
         android:allowBackup="true"
@@ -22,10 +23,15 @@
         android:theme="@style/Theme.KosApp"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.TestMapActivity"
+            android:exported="false">
+
+        </activity>
+
+        <activity
             android:name=".Activity.RatingProfileActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".Activity.DetailVerifikasiKosActivity"
             android:exported="false"
@@ -90,7 +96,9 @@
         <activity
             android:name=".Activity.KosSayaActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+        </activity>
+
         <activity
             android:name=".Activity.ProfileActivity"
             android:exported="false"
@@ -119,11 +127,14 @@
             android:name=".Activity.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
         </activity>
     </application>
 

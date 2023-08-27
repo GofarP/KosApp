@@ -24,7 +24,7 @@
             <ImageView
                 android:id="@+id/ivkos"
                 android:layout_width="150dp"
-                android:layout_height="200dp"
+                android:layout_height="match_parent"
                 android:src="@drawable/ic_sample_product2"
                 android:scaleType="fitXY"
                 />
@@ -33,7 +33,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             >
 
@@ -77,6 +77,7 @@
             </LinearLayout>
 
             <RelativeLayout
+                android:id="@+id/rlaction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="35dp"
@@ -109,6 +110,27 @@
                     android:src="@drawable/ic_people" />
 
             </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rluploadtransfer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20sp"
+                >
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnuploadbuktitransfer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20sp"
+                    android:layout_marginEnd="20sp"
+                    android:layout_marginBottom="20sp"
+                    style="@style/Button.Primary"
+                    android:text="Upload Transfer"
+                    android:textColor="@color/white"
+                    />
+            </RelativeLayout>
+
 
 
         </LinearLayout>

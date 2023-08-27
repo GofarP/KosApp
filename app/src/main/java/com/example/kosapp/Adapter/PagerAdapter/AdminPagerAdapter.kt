@@ -7,7 +7,7 @@ import com.example.kosapp.Fragment.*
 
 class AdminPagerAdapter(fragmentActivity: FragmentActivity):FragmentStateAdapter(fragmentActivity) {
     override fun getItemCount(): Int {
-        return 5
+        return 6
     }
 
     override fun createFragment(position: Int): Fragment {
@@ -20,6 +20,7 @@ class AdminPagerAdapter(fragmentActivity: FragmentActivity):FragmentStateAdapter
             2->fragment=FragmentAdminKos()
             3->fragment= AkunFragment()
             4->fragment=TransaksiAdminFragment()
+            5->fragment=AdminBuktiTransferFragment()
         }
 
         return fragment as Fragment

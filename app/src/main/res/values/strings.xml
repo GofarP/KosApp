@@ -15,11 +15,11 @@
     <string name="sign_up">Sign Up</string>
     <string name="my_kos_text">My Kos Text</string>
     <string name="tambah_kos">Tambah Kos</string>
+    <string name="edit_kos">Edit Kos</string>
     <string name="alamat_kos">Alamat Kos</string>
     <string name="harga_kos_harian">Harga Kos Harian</string>
     <string name="harga_kos_bulanan">Harga Kos Bulanan</string>
     <string name="harga_kos_tahunan">Harga Kos Tahunan</string>
-
 
 
     <!-- TODO: Key -->

@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.kosapp.Helper.Constant
+import com.example.kosapp.Model.BiayaBukaKos
 import com.example.kosapp.Model.Kos
 import com.example.kosapp.databinding.LayoutKosDisewaBinding
 import com.google.firebase.storage.FirebaseStorage
@@ -26,6 +28,17 @@ class DisewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickDis
                          binding.lblnama.text=dataKos.namaKos
                          binding.lblalamat.text=dataKos.alamat
 
+                         if(dataKos.status==Constant().KEY_PEMBAYARAN_BUKA_KOS)
+                         {
+                             binding.rlaction.visibility=View.GONE
+                             binding.rluploadtransfer.visibility=View.VISIBLE
+                         }
+
+                         else{
+                             binding.rlaction.visibility=View.VISIBLE
+                             binding.rluploadtransfer.visibility=View.GONE
+                         }
+
                          binding.btndisewaedit.setOnClickListener {view->
                              itemAdapterCallback.OnEditClick(view, dataKos)
                          }
@@ -36,6 +49,10 @@ class DisewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickDis
 
                          binding.btndisewapeminjam.setOnClickListener {view->
                              itemAdapterCallback.onPeminjamClick(view, dataKos)
+                         }
+
+                         binding.btnuploadbuktitransfer.setOnClickListener {view->
+                             itemAdapterCallback.OnUploadBuktiTransfer(view, dataKos)
                          }
 
                          storage.child(dataKos.thumbnailKos)
@@ -73,11 +90,9 @@ class DisewaAdapter(val kosArrayList: ArrayList<Kos>, private val itemOnClickDis
         fun OnDeleteClick(v:View, dataKos: Kos)
 
         fun onPeminjamClick(v:View, dataKos: Kos)
+
+        fun OnUploadBuktiTransfer(v:View, dataKos: Kos)
     }
 
-    interface ItemOnCLickMenyewa
-    {
-        fun OnSelengkapnyaClick(v: View, dataKos: Kos)
-    }
 
 }

@@ -55,8 +55,8 @@ class RouteJalanActivity : AppCompatActivity(),  PermissionsListener, LocationEn
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding= ActivityRouteJalanBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
+        binding= ActivityRouteJalanBinding.inflate(layoutInflater)
         setContentView(binding.root)
         Mapbox.getInstance(applicationContext,getString(R.string.access_token))
 
@@ -85,14 +85,22 @@ class RouteJalanActivity : AppCompatActivity(),  PermissionsListener, LocationEn
         }
 
         binding.btnroute.setOnClickListener {
-            destinationPosition=Point.fromLngLat(latLng.longitude, latLng.latitude)
-            originPosition=Point.fromLngLat(originLocation.longitude, originLocation.latitude)
-            val options= NavigationLauncherOptions.builder()
-                .origin(originPosition)
-                .destination(destinationPosition)
-                .shouldSimulateRoute(false)
-                .build()
-            NavigationLauncher.startNavigation(this, options)
+            try{
+                destinationPosition=Point.fromLngLat(longitude.toDouble() , lattitude.toDouble())
+                originPosition=Point.fromLngLat(originLocation.longitude,originLocation.latitude)
+                val options=NavigationLauncherOptions.builder()
+                    .origin(originPosition)
+                    .destination(destinationPosition)
+                    .shouldSimulateRoute(false)
+                    .build()
+                NavigationLauncher.startNavigation(this, options)
+            }
+
+            catch (e:Exception)
+            {
+                Log.d("Route Exception",e.message.toString())
+            }
+
         }
 
     }
@@ -246,7 +254,7 @@ class RouteJalanActivity : AppCompatActivity(),  PermissionsListener, LocationEn
                 }
 
                 override fun onFailure(call: Call<DirectionsResponse>, t: Throwable) {
-                    Log.e("MainActivity","Error ${t?.message}")
+                    Log.e("RouteJalanActivity","Error ${t?.message}")
                 }
 
             })
