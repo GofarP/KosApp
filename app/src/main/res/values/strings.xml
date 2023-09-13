@@ -21,6 +21,13 @@
     <string name="harga_kos_bulanan">Harga Kos Bulanan</string>
     <string name="harga_kos_tahunan">Harga Kos Tahunan</string>
 
+    <string name="petunjuk_buka_kos">
+        1. Untuk Menyewa Kos Pelanggan Wajib Untuk Daftar Terlebih Dahulu.
+
+        2. Untuk Melakukan Pembukaan Kos Untuk Disewa, Pemilik Kos Harus Mengunggah Bukti Pembayaran Terlebih Dahulu
+
+        3. setiap pendaftaran kos harus membayar sejumlah 100 ribu setiap pendaftaran kos
+    </string>
 
     <!-- TODO: Key -->
     <string name="access_token">pk.eyJ1IjoiZ29mYXJwdXRyYSIsImEiOiJja3k1M2Rsb3kwaHlyMnJwcXFuMmYweHE4In0.XCsO5PZDWc_ZPg4vXHTbXQ</string>

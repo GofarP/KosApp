@@ -54,12 +54,15 @@ class DetailSewaKosActivity : AppCompatActivity() {
     private var kosSudahDisewa=false
     private var calendar=Calendar.getInstance()
     private var idPengguna=FirebaseAuth.getInstance().currentUser?.uid.toString()
+    private var auth=FirebaseAuth.getInstance().currentUser
+
     private var total:Double=0.0
     private lateinit var jumlahHari:String
     private lateinit var tanggalHariIni:String
     private lateinit var buktiTransfer: BuktiTransfer
     private lateinit var isi:String
     private lateinit var durasiSewa:String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityDetailSewaKosBinding.inflate(layoutInflater)
@@ -78,9 +81,13 @@ class DetailSewaKosActivity : AppCompatActivity() {
             binding.btnchatpemilik.visibility=View.INVISIBLE
         }
 
+        if(auth==null)
+        {
+            binding.relativelayoutbottom.visibility=View.INVISIBLE
+            binding.btnchatpemilik.visibility=View.INVISIBLE
+        }
 
         checkSewaKos()
-
 
         setDataKos()
         

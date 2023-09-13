@@ -41,6 +41,11 @@ import kotlin.concurrent.schedule
                 finish()
             }
 
+            else{
+                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                finish()
+            }
+
         }
     }
 }

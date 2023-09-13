@@ -222,7 +222,7 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
     }
 
 
-    private fun uploadBuktiTransfer(dataKos: Kos)
+    private fun uploadBuktiTransfer()
     {
         ImagePicker.with(requireActivity())
             .crop()
@@ -260,7 +260,7 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
             bindingPopUpBuktiTransferBinding.btnpopup.setOnClickListener {
 
                 database.child(Constant().KEY_DAFTAR_KOS)
-                    .child(kos.idKos)
+                    .child(idKos)
                     .child(Constant().KEY_STATUS_VERIFIKASI_KOS)
                     .setValue(Constant().KEY_TERVERIFIKASI)
                     .addOnSuccessListener {
@@ -313,7 +313,9 @@ class DisewaFragment : Fragment(), ItemOnClickDisewa {
     }
 
     override fun OnUploadBuktiTransfer(v: View, dataKos: Kos) {
-        uploadBuktiTransfer(dataKos)
+        idKos=dataKos.idKos
+        uploadBuktiTransfer()
+
     }
 
 }

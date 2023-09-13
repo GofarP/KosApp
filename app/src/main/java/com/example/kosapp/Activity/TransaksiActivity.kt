@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class TransaksiActivity : AppCompatActivity() {
+class   TransaksiActivity : AppCompatActivity() {
 
     private lateinit var binding:ActivityTransaksiBinding
     private  var transaksiList=ArrayList<Transaksi>()

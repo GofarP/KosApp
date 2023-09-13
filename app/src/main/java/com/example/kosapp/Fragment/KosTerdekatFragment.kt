@@ -296,18 +296,13 @@ class KosTerdekatFragment : Fragment(), HomeKosAdapter.ItemOnClick, LocationList
     override fun onClick(v: View, dataKos: Kos) {
         val jenisKelaminUser=preferenceManager.getString(Constant().KEY_JENIS_KELAMIN)
 
-        if(auth==null)
-        {
-            startActivity(Intent(activity, SigninActivity::class.java))
-            return
-        }
 
         if(dataKos.sisa==0)
         {
             Toast.makeText(activity, "Mohon Maaf, Kos Sedang Penuh", Toast.LENGTH_SHORT).show()
         }
 
-        else if(dataKos.jenis != jenisKelaminUser && dataKos.jenis!="Campur" && dataKos.idPemilik!= emailPemilik)
+        else if(dataKos.jenis != jenisKelaminUser && dataKos.jenis!="Campur" && dataKos.idPemilik!= emailPemilik && auth!=null)
         {
             Toast.makeText(activity, "Jenis Kelamin Anda Tidak Cocok Untuk Kos Ini $jenisKelaminUser", Toast.LENGTH_SHORT).show()
         }

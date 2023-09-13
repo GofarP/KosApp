@@ -1,5 +1,6 @@
 package com.example.kosapp.Fragment
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.location.Location
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.kosapp.Activity.MenuChatActivity
@@ -59,6 +61,10 @@ class HomeFragment : Fragment() {
         preferenceManager=PreferenceManager()
         preferenceManager.preferenceManager(view.context)
 
+        binding.ivpetunjuk.setOnClickListener {
+            showDialogPetunjuk()
+        }
+
         if(firebaseAuth.currentUser!=null)
         {
             //ambil data user
@@ -66,10 +72,13 @@ class HomeFragment : Fragment() {
 
             //check Verifikasi Akun
             checkVerifikasi()
+
+            binding.ivpetunjuk.visibility=View.GONE
         }
 
         else
         {
+            binding.ivpetunjuk.visibility=View.VISIBLE
             binding.lblnamapengguna.text="Halo Pengguna"
             binding.lblverifikasi.text="Login Dulu Disini"
             binding.lblverifikasi.setOnClickListener {
@@ -250,6 +259,20 @@ class HomeFragment : Fragment() {
                 }
 
             })
+    }
+
+    private fun showDialogPetunjuk(){
+        // Inflate the custom layout
+        val inflater = LayoutInflater.from(activity)
+        val dialogView: View = inflater.inflate(R.layout.layout_petunjuk_buka_kos, null)
+
+        // Create the AlertDialog
+        val builder = AlertDialog.Builder(activity!!)
+        builder.setView(dialogView)
+
+        // Create and show the dialog
+        val alertDialog = builder.create()
+        alertDialog.show()
     }
 
 

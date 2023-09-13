@@ -145,8 +145,8 @@ class VerifikasiKosFragment : Fragment(), PermintaanVerifikasiKosAdapter.OnItemC
 
         database.child(Constant().KEY_DAFTAR_KOS)
             .child(permintaanVerifikasiKos.idKos)
-            .child(Constant().KEY_STATUS_VERIFIKASI_AKUN)
-            .setValue(Constant().KEY_BIAYA_BUKA_KOS)
+            .child(Constant().KEY_STATUS_VERIFIKASI_KOS)
+            .setValue(Constant().KEY_PEMBAYARAN_BUKA_KOS)
 
         database.child(Constant().KEY_TRANSAKSI)
             .child(permintaanVerifikasiKos.idPemohon)

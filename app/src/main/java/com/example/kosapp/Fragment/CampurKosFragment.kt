@@ -300,11 +300,6 @@ class CampurKosFragment : Fragment(), ItemOnClick {
 
     override fun onClick(v: View, dataKos: Kos) {
 
-        if(auth==null)
-        {
-            startActivity(Intent(activity, SigninActivity::class.java))
-            return
-        }
 
         if(dataKos.sisa==0)
         {
